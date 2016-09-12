@@ -17,6 +17,7 @@
         public static int SkinID;
         public static int LastPingT;
         public static int LastShowNoit;
+        public static int CastSpellFarmTime;
         public static Menu Menu;
         public static Obj_AI_Hero Me;
         public static Vector2 PingLocation;
@@ -70,6 +71,8 @@
             var HarassMenu = Menu.AddSubMenu(new Menu("Harass", "Harass"));
             {
                 HarassMenu.AddItem(new MenuItem("HaraassQ", "Use Q", true).SetValue(true));
+                HarassMenu.AddItem(new MenuItem("HaraassQLH", "Use Q| Last Hit", true).SetValue(true));
+                HarassMenu.AddItem(new MenuItem("HaraassE", "Use E| Last Hit", true).SetValue(false));
                 HarassMenu.AddItem(new MenuItem("AutoHarass", "Auto Harass?", true).SetValue(new KeyBind('T', KeyBindType.Toggle))).Permashow();
                 HarassMenu.AddItem(new MenuItem("HaraassMana", "When Player ManaPercent >= x%", true).SetValue(new Slider(60)));
             }
@@ -152,8 +155,22 @@
                 SPrediction.Prediction.Initialize(PredMenu);
             }
 
+            Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
             Game.OnUpdate += OnUpdate;
             Drawing.OnDraw += OnDraw;
+        }
+
+        private static void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs Args)
+        {
+            if (sender.IsMe && Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
+            {
+                var castedSlot = ObjectManager.Player.GetSpellSlot(Args.SData.Name);
+
+                if (castedSlot == SpellSlot.Q || castedSlot == SpellSlot.E)
+                {
+                    CastSpellFarmTime = Utils.TickCount;
+                }
+            }
         }
 
         private static void EnbaleSkin(object obj, OnValueChangeEventArgs Args)
@@ -270,13 +287,60 @@
         {
             if (Me.ManaPercent >= Menu.Item("HaraassMana", true).GetValue<Slider>().Value)
             {
-                var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
-
-                if (target.IsValidTarget())
+                if (Menu.Item("HaraassQLH", true).GetValue<bool>())
                 {
-                    if (Menu.Item("HaraassQ", true).GetValue<bool>() && Q.IsReady() && target.IsValidTarget(Q.Range))
+                    var minions = MinionManager.GetMinions(Q.Range).Where(x => x.Health < GetQDamage(x));
+
+                    if (minions.Any())
                     {
-                        Q.CastTo(target, true);
+                        var min = minions.FirstOrDefault();
+
+                        if (Utils.TickCount - CastSpellFarmTime > 1500)
+                        {
+                            Q.CastTo(min, true);
+                        }
+                    }
+                }
+
+                if (Menu.Item("HaraassQ", true).GetValue<bool>() && Q.IsReady())
+                {
+                    var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+
+                    if (target.IsValidTarget())
+                    {
+                        if (target.IsValidTarget(Q.Range))
+                        {
+                            Q.CastTo(target, true);
+                        }
+                    }
+                }
+
+                if (Menu.Item("HaraassE", true).GetValue<bool>() && E.IsReady())
+                {
+                    var minions =
+                        ObjectManager.Get<Obj_AI_Minion>()
+                            .Where(
+                                x =>
+                                    x.IsEnemy && x.Name != "gangplankbarrel" && x.Name != "WardCorpse" &&
+                                    x.Name != "jarvanivstandard" && !MinionManager.IsWard(x) && x.Distance(Me) < E.Range &&
+                                    x.Health < GetEDamage(x)).ToList();
+
+                    if (minions.Count(x => x.Distance(Me) < E.Range) > 0)
+                    {
+                        if (Utils.TickCount - CastSpellFarmTime > 1500)
+                        {
+                            if (E.Instance.ToggleState != 2)
+                            {
+                                E.Cast();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (E.Instance.ToggleState == 2)
+                        {
+                            E.Cast();
+                        }
                     }
                 }
             }
@@ -444,17 +508,18 @@
                         CanCastR = true;
                     }
 
-                    if (Me.CountEnemiesInRange(850) > 0 && target.Health < GetRDamage(target) + GetQDamage(target) * 3)
-                    {
-                        CanCastR = true;
-                    }
+                    //if (Me.CountEnemiesInRange(850) > 0 && target.Health < GetRDamage(target) + GetQDamage(target) * 3)
+                    //{
+                    //    CanCastR = true;
+                    //}
 
                     if (Me.CountEnemiesInRange(1000) >= 3 && Me.CountAlliesInRange(850) <= 3)
                     {
                         CanCastR = true;
                     }
 
-                    if (target.Health + target.MagicalShield + target.HPRegenRate * 3 < GetRDamage(target))
+                    if (target.Health + target.MagicalShield + target.HPRegenRate*3 < GetRDamage(target) &&
+                        Menu.Item("KillStealR" + target.ChampionName.ToLower(), true).GetValue<bool>())
                     {
                         CanCastR = true;
                     }

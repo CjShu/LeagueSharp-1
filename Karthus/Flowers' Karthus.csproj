@@ -64,7 +64,7 @@
   <ItemGroup>
     <Compile Include="Common\Common.cs" />
     <Compile Include="Common\HpBarDraw.cs" />
-    <Compile Include="EnemyTracker.cs" />
+    <Compile Include="Common\EnemyTracker.cs" />
     <Compile Include="Prediction\OKTWPrediction.cs" />
     <Compile Include="Orbwalking\Orbwalking.cs" />
     <Compile Include="Program.cs" />
