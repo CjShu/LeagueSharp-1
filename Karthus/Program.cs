@@ -238,7 +238,8 @@
                 Orbwalker.SetAttack(true);
             }
 
-            if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None && !Me.IsZombie && E.Instance.ToggleState == 2)
+            if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None && !Me.IsZombie && E.Instance.ToggleState == 2 &&
+                !Me.InFountain())
             {
                 E.Cast();
             }
