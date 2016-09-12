@@ -518,12 +518,6 @@
                     {
                         CanCastR = true;
                     }
-
-                    if (target.Health + target.MagicalShield + target.HPRegenRate*3 < GetRDamage(target) &&
-                        Menu.Item("KillStealR" + target.ChampionName.ToLower(), true).GetValue<bool>())
-                    {
-                        CanCastR = true;
-                    }
                 }
 
                 if (Me.IsZombie)
