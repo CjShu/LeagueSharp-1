@@ -107,6 +107,7 @@
             {
                 UltMenu.AddItem(new MenuItem("TeamFightR", "Use R TeamFight", true).SetValue(true));
                 UltMenu.AddItem(new MenuItem("KillStealR", "Use R KillSteal", true).SetValue(true));
+                UltMenu.AddItem(new MenuItem("KillStealRCount", "Use R KillSteal Count >=", true).SetValue(new Slider(2, 1, 5)));
                 foreach (var target in HeroManager.Enemies)
                 {
                     UltMenu.AddItem(new MenuItem("KillStealR" + target.ChampionName.ToLower(), "Kill: " + target.ChampionName, true).SetValue(true));
@@ -641,7 +642,7 @@
                     }
                 }
 
-                if (targets.Count > 0)
+                if (targets.Count >= Menu.Item("KillStealRCount", true).GetValue<Slider>().Value)
                 {
                     if (!Me.IsZombie && Me.CountEnemiesInRange(800) > 0)
                     {
