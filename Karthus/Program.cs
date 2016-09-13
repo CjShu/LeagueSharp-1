@@ -45,10 +45,10 @@
             E = new Spell(SpellSlot.E, 550f);
             R = new Spell(SpellSlot.R, 20000f);
 
-            Q.SetSkillshot(1.02f, 150f, float.MaxValue, false, SkillshotType.SkillshotCircle);
+            Q.SetSkillshot(0.95f, 145f, float.MaxValue, false, SkillshotType.SkillshotCircle);
             W.SetSkillshot(0.5f, 50f, float.MaxValue, false, SkillshotType.SkillshotCircle);
-            E.SetSkillshot(1f, 505f, float.MaxValue, false, SkillshotType.SkillshotCircle);
-            R.SetSkillshot(3f, float.MaxValue, float.MaxValue, false, SkillshotType.SkillshotCircle);
+            E.SetSkillshot(1.0f, 505f, float.MaxValue, false, SkillshotType.SkillshotCircle);
+            R.SetSkillshot(3.0f, float.MaxValue, float.MaxValue, false, SkillshotType.SkillshotCircle);
 
             SkinID = Me.BaseSkinId;
 
@@ -143,6 +143,7 @@
                 DrawMenu.AddItem(new MenuItem("DrawW", "Draw W Range", true).SetValue(false));
                 DrawMenu.AddItem(new MenuItem("DrawE", "Draw E Range", true).SetValue(false));
                 DrawMenu.AddItem(new MenuItem("DrawDamage", "Draw ComboDamage", true).SetValue(true));
+                DrawMenu.AddItem(new MenuItem("DrawKillSteal", "Draw KillSteal target", true).SetValue(true));
             }
 
             Menu.AddItem(new MenuItem("Credit", "Credit: NightMoon", true));
@@ -578,11 +579,6 @@
 
                 foreach (var ult in EnemyTracker.enemyInfo)
                 {
-                    if (!ult.target.IsValidTarget())
-                    {
-                        continue;
-                    }
-
                     if (ult.target.IsDead)
                     {
                         continue;
@@ -635,6 +631,11 @@
                     {
                         targets.Add(ult.target);
                     }
+
+                    if (!ult.target.IsVisible && Utils.TickCount < ult.LastSeen + 5000 && targets.Contains(ult.target))
+                    {
+                        targets.Remove(ult.target);
+                    }
                 }
 
                 if (targets.Count >= Menu.Item("KillStealRCount", true).GetValue<Slider>().Value)
@@ -668,16 +669,90 @@
                     Render.Circle.DrawCircle(Me.Position, E.Range, System.Drawing.Color.FromArgb(143, 16, 146), 1);
                 }
 
-                if (!Menu.Item("DrawDamage", true).GetValue<bool>())
+                if (Menu.Item("DrawDamage", true).GetValue<bool>())
                 {
-                    return;
+                    foreach (
+                        var x in ObjectManager.Get<Obj_AI_Hero>().Where(e => e.IsValidTarget() && !e.IsDead && !e.IsZombie))
+                    {
+                        HpBarDraw.Unit = x;
+                        HpBarDraw.DrawDmg(ComboDamage(x), new ColorBGRA(255, 204, 0, 170));
+                    }
                 }
 
-                foreach (
-                    var x in ObjectManager.Get<Obj_AI_Hero>().Where(e => e.IsValidTarget() && !e.IsDead && !e.IsZombie))
+                if (Menu.Item("DrawKillSteal", true).GetValue<bool>())
                 {
-                    HpBarDraw.Unit = x;
-                    HpBarDraw.DrawDmg(ComboDamage(x), new ColorBGRA(255, 204, 0, 170));
+                    Drawing.DrawText(Drawing.Width  - 150, Drawing.Height - 500, System.Drawing.Color.Yellow, "Ult Kill Target: ");
+
+                    var targets = new List<Obj_AI_Hero>();
+
+                    foreach (var ult in EnemyTracker.enemyInfo)
+                    {
+                        if (ult.target.IsDead)
+                        {
+                            continue;
+                        }
+
+                        if (ult.target.IsZombie)
+                        {
+                            continue;
+                        }
+
+                        if (ult.target.HasBuff("KindredRNoDeathBuff"))
+                        {
+                            continue;
+                        }
+
+                        if (ult.target.HasBuff("UndyingRage") && ult.target.GetBuff("UndyingRage").EndTime - Game.Time > 0.3)
+                        {
+                            continue;
+                        }
+
+                        if (ult.target.HasBuff("JudicatorIntervention"))
+                        {
+                            continue;
+                        }
+
+                        if (ult.target.HasBuff("ChronoShift") && ult.target.GetBuff("ChronoShift").EndTime - Game.Time > 0.3)
+                        {
+                            continue;
+                        }
+
+                        if (ult.target.HasBuff("FioraW"))
+                        {
+                            continue;
+                        }
+
+                        if (!Menu.Item("KillStealR" + ult.target.ChampionName.ToLower(), true).GetValue<bool>())
+                        {
+                            continue;
+                        }
+
+                        if (ult.target.IsVisible &&
+                            R.GetDamage(ult.target) >
+                            ult.target.Health + ult.target.MagicalShield + ult.target.HPRegenRate * 2)
+                        {
+                            targets.Add(ult.target);
+                        }
+
+                        if (!ult.target.IsVisible && Utils.TickCount > ult.LastSeen + 5000 &&
+                            R.GetDamage(ult.target) > EnemyTracker.GetTargetHealth(ult, R.Delay))
+                        {
+                            targets.Add(ult.target);
+                        }
+
+                        if (!ult.target.IsVisible && Utils.TickCount < ult.LastSeen + 5000 && targets.Contains(ult.target))
+                        {
+                            targets.Remove(ult.target);
+                        }
+                    }
+
+                    if (targets.Count > 0)
+                    {
+                        for (var i = 0; i <= targets.Count; i++)
+                        {
+                            Drawing.DrawText(Drawing.Width - 150, Drawing.Height - 470 + i * 30, System.Drawing.Color.Red, "   " + targets.ElementAt(i).ChampionName);
+                        }
+                    }
                 }
             }
         }
