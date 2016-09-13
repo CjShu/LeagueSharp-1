@@ -118,6 +118,7 @@
             {
                 MiscMenu.AddItem(new MenuItem("AutoZombie", "Auto Zombie Mode?", true).SetValue(true));
                 MiscMenu.AddItem(new MenuItem("PingKill", "Auto Ping Kill Target", true).SetValue(true));
+                MiscMenu.AddItem(new MenuItem("NormalPingKill", "Normal Ping?", true).SetValue(true));
                 MiscMenu.AddItem(new MenuItem("NotificationKill", "Notification Kill Target", true).SetValue(true));
             }
 
@@ -776,7 +777,9 @@
 
         private static void SimplePing()
         {
-            Game.ShowPing(PingCategory.Fallback, PingLocation, true);
+            Game.ShowPing(
+                Menu.Item("NormalPingKill", true).GetValue<bool>() ? PingCategory.Normal : PingCategory.Fallback,
+                PingLocation, true);
         }
 
         private static float ComboDamage(Obj_AI_Hero target)
