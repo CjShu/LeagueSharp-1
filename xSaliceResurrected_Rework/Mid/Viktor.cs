@@ -86,7 +86,6 @@ namespace xSaliceResurrected.Mid
                 combo.AddItem(new MenuItem("UseWCombo", "Use W", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseECombo", "Use E", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseRCombos", "Use R", true).SetValue(true));
-                combo.AddSubMenu(HitChanceManager.AddHitChanceMenuCombo(false, true, false, true));
                 //add to menu
                 menu.AddSubMenu(combo);
             }
@@ -96,7 +95,6 @@ namespace xSaliceResurrected.Mid
                 harass.AddItem(new MenuItem("UseQHarass", "Use Q", true).SetValue(false));
                 harass.AddItem(new MenuItem("UseWHarass", "Use W", true).SetValue(false));
                 harass.AddItem(new MenuItem("UseEHarass", "Use E", true).SetValue(true));
-                harass.AddSubMenu(HitChanceManager.AddHitChanceMenuHarass(false, true, false, false));
                 //add to menu
                 menu.AddSubMenu(harass);
             }
@@ -235,7 +233,7 @@ namespace xSaliceResurrected.Mid
                 return;
             }
 
-            if (useR &&  R.IsReady() && _rObj == null && ShouldR(target, dmg) && R.GetPrediction(target).Hitchance >= HitChanceManager.GetRHitChance(source))
+            if (useR &&  R.IsReady() && _rObj == null && ShouldR(target, dmg) && R.GetPrediction(target).Hitchance >= HitChance.VeryHigh)
             {
                 if (target != null) R.Cast(target.Position);
             }

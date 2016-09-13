@@ -1,6 +1,7 @@
 ﻿using LeagueSharp;
 using LeagueSharp.Common;
 using System;
+using System.Reflection;
 using xSaliceResurrected.Base;
 using xSaliceResurrected.Managers;
 
@@ -54,7 +55,7 @@ namespace xSaliceResurrected
         {
             Game.PrintChat("<font color = \"#FFB6C1\">xSalice's Ressurected AIO</font> by <font color = \"#00FFFF\">xSalice</font>, imsosharp HotFix, NightMoon Rework!");
             Game.PrintChat("---------------------------------");
-            Game.PrintChat("Azir Orbwalker, Rework Lucian, Azir Insec Work Fine!");
+            Game.PrintChat("Change Log: Syndra Change(just little), Default All SkillSlot Hitchance is VeryHigh, Fix Azir Q and Update Q Logic");
 
             menu = new Menu("xSalice's " + Player.ChampionName, Player.ChampionName, true);
 

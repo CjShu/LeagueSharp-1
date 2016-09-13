@@ -107,7 +107,6 @@ namespace xSaliceResurrected.Mid
                 combo.AddItem(new MenuItem("UseECombo", "Use E", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseRCombo", "Use R", true).SetValue(true));
                 combo.AddItem(new MenuItem("autoRCombo", "Use R if hit", true).SetValue(new Slider(2, 1, 5)));
-                combo.AddSubMenu(HitChanceManager.AddHitChanceMenuCombo(true, false, false, false));
                 menu.AddSubMenu(combo);
             }
             //Harass menu:
@@ -116,7 +115,6 @@ namespace xSaliceResurrected.Mid
                 harass.AddItem(new MenuItem("UseQHarass", "Use Q", true).SetValue(true));
                 harass.AddItem(new MenuItem("UseWHarass", "Use W", true).SetValue(false));
                 harass.AddItem(new MenuItem("UseEHarass", "Use E", true).SetValue(true));
-                harass.AddSubMenu(HitChanceManager.AddHitChanceMenuHarass(true, false, false, false));
                 ManaManager.AddManaManagertoMenu(harass, "Harass", 30);
                 menu.AddSubMenu(harass);
             }
@@ -480,7 +478,7 @@ namespace xSaliceResurrected.Mid
 
             PredictionOutput prediction = Util.GetP(_currentBallPosition, Q, target,  true);
 
-            if (Q.IsReady() && prediction.Hitchance >= HitChanceManager.GetQHitChance(source) && Player.Distance(target.Position) <= Q.Range)
+            if (Q.IsReady() && prediction.Hitchance >= HitChance.VeryHigh && Player.Distance(target.Position) <= Q.Range)
             {
                 Q.Cast(prediction.CastPosition);
             }

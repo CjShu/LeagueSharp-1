@@ -50,7 +50,6 @@ namespace xSaliceResurrected.ADC
                 combo.AddItem(new MenuItem("UseRCombo", "Use R", true).SetValue(true));
                 combo.AddItem(new MenuItem("NoMovementDuringW", "Dont Move During W").SetValue(true));
                 combo.AddItem(new MenuItem("ComboR_Limit", "Limit R Stack", true).SetValue(new Slider(7, 0, 7)));
-                combo.AddSubMenu(HitChanceManager.AddHitChanceMenuCombo(true, false, true, true));
                 menu.AddSubMenu(combo);
             }
 
@@ -61,7 +60,6 @@ namespace xSaliceResurrected.ADC
                 harass.AddItem(new MenuItem("UseEHarass", "Use E", true).SetValue(false));
                 harass.AddItem(new MenuItem("UseRHarass", "Use R", true).SetValue(true));
                 harass.AddItem(new MenuItem("HarassR_Limit", "Limit R Stack", true).SetValue(new Slider(3, 0, 7)));
-                harass.AddSubMenu(HitChanceManager.AddHitChanceMenuHarass(true, false, true, true));
                 ManaManager.AddManaManagertoMenu(harass, "Harass", 50);
                 menu.AddSubMenu(harass);
             }
@@ -186,9 +184,9 @@ namespace xSaliceResurrected.ADC
             if (useR && R.IsReady())
                 Cast_R(source);
             if (useQ && Q.IsReady())
-                SpellCastManager.CastBasicSkillShot(Q, Q.Range, TargetSelector.DamageType.Magical, HitChanceManager.GetQHitChance(source));
+                SpellCastManager.CastBasicSkillShot(Q, Q.Range, TargetSelector.DamageType.Magical, HitChance.VeryHigh);
             if (useE && E.IsReady())
-                SpellCastManager.CastBasicSkillShot(E, E.Range, TargetSelector.DamageType.Physical, HitChanceManager.GetEHitChance(source));
+                SpellCastManager.CastBasicSkillShot(E, E.Range, TargetSelector.DamageType.Physical, HitChance.VeryHigh);
             if (useW && W.IsReady())
             {
                 var target = TargetSelector.GetTarget(Player.AttackRange + new[] { 130 , 150 , 170 , 190 , 210 }[W.Level - 1], TargetSelector.DamageType.Magical);
@@ -225,9 +223,9 @@ namespace xSaliceResurrected.ADC
         private void Cast_R(string mode)
         {
             if (mode == "Combo" && RStacks <= menu.Item("ComboR_Limit", true).GetValue<Slider>().Value)
-                SpellCastManager.CastBasicSkillShot(R, new[] { 1200f, 1500f, 1800f }[R.Level - 1], TargetSelector.DamageType.Magical, HitChanceManager.GetRHitChance(mode));
+                SpellCastManager.CastBasicSkillShot(R, new[] { 1200f, 1500f, 1800f }[R.Level - 1], TargetSelector.DamageType.Magical, HitChance.VeryHigh);
             else if (mode == "Harass" && RStacks <= menu.Item("HarassR_Limit", true).GetValue<Slider>().Value)
-                SpellCastManager.CastBasicSkillShot(R, new[] { 1200f, 1500f, 1800f }[R.Level - 1], TargetSelector.DamageType.Magical, HitChanceManager.GetRHitChance(mode));
+                SpellCastManager.CastBasicSkillShot(R, new[] { 1200f, 1500f, 1800f }[R.Level - 1], TargetSelector.DamageType.Magical, HitChance.VeryHigh);
             else if (mode == "Farm" && RStacks <= menu.Item("LaneClearR_Limit", true).GetValue<Slider>().Value)
                 SpellCastManager.CastBasicFarm(R);
         }

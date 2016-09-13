@@ -95,7 +95,6 @@ namespace xSaliceResurrected.Mid
                 combo.AddItem(new MenuItem("UseWCombo", "Use W", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseECombo", "Use E", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseRCombo", "Use R", true).SetValue(true));
-                combo.AddSubMenu(HitChanceManager.AddHitChanceMenuCombo(true, false, true, false));
                 menu.AddSubMenu(combo);
             }
 
@@ -104,7 +103,6 @@ namespace xSaliceResurrected.Mid
                 harass.AddItem(new MenuItem("UseQHarass", "Use Q", true).SetValue(true));
                 harass.AddItem(new MenuItem("UseWHarass", "Use W", true).SetValue(false));
                 harass.AddItem(new MenuItem("UseEHarass", "Use E", true).SetValue(true));
-                harass.AddSubMenu(HitChanceManager.AddHitChanceMenuHarass(true, false, true, false));
                 ManaManager.AddManaManagertoMenu(harass, "Harass", 50);
                 menu.AddSubMenu(harass);
             }
@@ -332,9 +330,9 @@ namespace xSaliceResurrected.Mid
             if (useQ && Q.IsReady())
             {
                 SpellCastManager.CastBasicSkillShot(Q, Q.Range, TargetSelector.DamageType.Magical,
-                    HitChanceManager.GetQHitChance(source));
+                    HitChance.VeryHigh);
                 SpellCastManager.CastBasicSkillShot(Q2, Q2.Range, TargetSelector.DamageType.Magical,
-                    HitChanceManager.GetQHitChance(source));
+                    HitChance.VeryHigh);
             }
 
             if (useR && R.IsReady() && _ekkoPast != null)

@@ -83,7 +83,6 @@ namespace xSaliceResurrected.ADC
                 combo.AddItem(new MenuItem("UseWCombo", "Use W", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseECombo", "Use E", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseRCombo", "Use R", true).SetValue(true));
-                combo.AddSubMenu(HitChanceManager.AddHitChanceMenuCombo(true, false, true, false));
                 menu.AddSubMenu(combo);
             }
 
@@ -92,7 +91,6 @@ namespace xSaliceResurrected.ADC
                 harass.AddItem(new MenuItem("UseQHarass", "Use Q", true).SetValue(true));
                 harass.AddItem(new MenuItem("UseWHarass", "Use W", true).SetValue(false));
                 harass.AddItem(new MenuItem("UseEHarass", "Use E", true).SetValue(true));
-                harass.AddSubMenu(HitChanceManager.AddHitChanceMenuHarass(true, false, true, false));
                 ManaManager.AddManaManagertoMenu(harass, "Harass", 50);
                 menu.AddSubMenu(harass);
             }
@@ -213,7 +211,7 @@ namespace xSaliceResurrected.ADC
             if (useW && W.IsReady())
                 Cast_W(target);
             if (useE && E.IsReady())
-                SpellCastManager.CastBasicSkillShot(E, E.Range, TargetSelector.DamageType.Physical, HitChanceManager.GetEHitChance(source));
+                SpellCastManager.CastBasicSkillShot(E, E.Range, TargetSelector.DamageType.Physical, HitChance.VeryHigh);
             if (useQ && Q.IsReady())
             {
                 if (Player.ServerPosition.Distance(target.ServerPosition) > E.Range || !E.IsReady() || !menu.Item("ForceE", true).GetValue<bool>())
@@ -345,7 +343,7 @@ namespace xSaliceResurrected.ADC
             if (target.HasBuff("urgotcorrosivedebuff"))
                 Q2.Cast(target);
             else 
-                SpellCastManager.CastBasicSkillShot(Q, Q.Range, TargetSelector.DamageType.Physical, HitChanceManager.GetQHitChance(source));
+                SpellCastManager.CastBasicSkillShot(Q, Q.Range, TargetSelector.DamageType.Physical, HitChance.VeryHigh);
         }
 
         private void CheckKs()

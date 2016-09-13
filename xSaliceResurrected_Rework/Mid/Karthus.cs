@@ -97,7 +97,6 @@ namespace xSaliceResurrected.Mid
                 combo.AddItem(new MenuItem("UseQCombo", "Use Q", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseWCombo", "Use W", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseECombo", "Use E", true).SetValue(true));
-                combo.AddSubMenu(HitChanceManager.AddHitChanceMenuCombo(true, true, false, false));
                 menu.AddSubMenu(combo);
             }
 
@@ -108,7 +107,6 @@ namespace xSaliceResurrected.Mid
                 harass.AddItem(new MenuItem("UseWHarass", "Use W", true).SetValue(false));
                 harass.AddItem(new MenuItem("UseEHarass", "Use E", true).SetValue(true));
                 ManaManager.AddManaManagertoMenu(harass, "Harass", 30);
-                harass.AddSubMenu(HitChanceManager.AddHitChanceMenuHarass(true, true, false, false));
                 menu.AddSubMenu(harass);
             }
 
@@ -234,14 +232,14 @@ namespace xSaliceResurrected.Mid
             {
                 if (ShouldW())
                     SpellCastManager.CastBasicSkillShot(W, W.Range, TargetSelector.DamageType.Magical,
-                        HitChanceManager.GetWHitChance(source));
+                        HitChance.VeryHigh);
             }
 
             //Q
             if (useQ && Q.IsReady())
             {
                 SpellCastManager.CastBasicSkillShot(Q, Q.Range, TargetSelector.DamageType.Magical,
-                    HitChanceManager.GetQHitChance(source));
+                    HitChance.VeryHigh);
             }
 
             //E
@@ -365,13 +363,13 @@ namespace xSaliceResurrected.Mid
             {
                 if ((Q.GetPrediction(target).Hitchance == HitChance.Immobile || IsStunned(target)) && qImmo && Player.Distance(target.Position) < Q.Range)
                 {
-                    SpellCastManager.CastBasicSkillShot(Q, Q.Range, TargetSelector.DamageType.Magical, HitChanceManager.GetQHitChance("Combo"));
+                    SpellCastManager.CastBasicSkillShot(Q, Q.Range, TargetSelector.DamageType.Magical, HitChance.VeryHigh);
                     return;
                 }
 
                 if (Q.GetPrediction(target).Hitchance == HitChance.Dashing && qDashing && Player.Distance(target.Position) < Q.Range)
                 {
-                    SpellCastManager.CastBasicSkillShot(Q, Q.Range, TargetSelector.DamageType.Magical, HitChanceManager.GetQHitChance("Combo"));
+                    SpellCastManager.CastBasicSkillShot(Q, Q.Range, TargetSelector.DamageType.Magical, HitChance.VeryHigh);
                 }
             }
         }

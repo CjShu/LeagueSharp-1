@@ -10,6 +10,7 @@ namespace xSaliceResurrected.Managers
         public static readonly List<Spell> SpellList = new List<Spell>();
 
         public static Spell P;
+        public static Spell QE;
         public static Spell Q;
         public static Spell Q2;
         public static Spell QExtend;

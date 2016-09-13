@@ -93,7 +93,6 @@ namespace xSaliceResurrected.Mid
             //Combo menu:
             var combo = new Menu("Combo", "Combo");
             {
-                combo.AddSubMenu(HitChanceManager.AddHitChanceMenuCombo(true, false, false, false));
                 combo.AddItem(new MenuItem("selected", "Focus Selected Target", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseQCombo", "Use Q", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseWCombo", "Use W", true).SetValue(true));
@@ -105,7 +104,6 @@ namespace xSaliceResurrected.Mid
             //Harass menu:
             var harass = new Menu("Harass", "Harass");
             {
-                combo.AddSubMenu(HitChanceManager.AddHitChanceMenuHarass(true, false, false, false));
                 harass.AddItem(new MenuItem("UseQHarass", "Use Q", true).SetValue(false));
                 harass.AddItem(new MenuItem("UseWHarass", "Use W", true).SetValue(false));
                 harass.AddItem(new MenuItem("UseEHarass", "Use E", true).SetValue(true));
@@ -116,7 +114,6 @@ namespace xSaliceResurrected.Mid
             //Farming menu:
             var farm = new Menu("Farm", "Farm");
             {
-                combo.AddSubMenu(HitChanceManager.AddHitChanceMenuHarass(true, false, false, false));
                 farm.AddItem(new MenuItem("UseQFarm", "Use Q", true).SetValue(false));
                 farm.AddItem(new MenuItem("UseEFarm", "Use E", true).SetValue(false));
                 farm.AddItem(new MenuItem("UseRFarm", "Use R", true).SetValue(false));
@@ -221,7 +218,7 @@ namespace xSaliceResurrected.Mid
 
             //Q
             if (useQ && Q.IsReady() && Player.Distance(Q.GetPrediction(target).CastPosition) <= Q.Range &&
-                Q.GetPrediction(target).Hitchance >= HitChanceManager.GetQHitChance(source) && ShouldQ())
+                Q.GetPrediction(target).Hitchance >= HitChance.VeryHigh && ShouldQ())
             {
                 Q.Cast(Q.GetPrediction(target).CastPosition);
             }

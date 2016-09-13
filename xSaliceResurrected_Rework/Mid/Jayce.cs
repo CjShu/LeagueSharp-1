@@ -57,7 +57,6 @@ namespace xSaliceResurrected.Mid
                 combo.AddItem(new MenuItem("UseWComboHam", "Use Hammer W", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseEComboHam", "Use Hammer E", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseRCombo", "Use R to Switch", true).SetValue(true));
-                combo.AddSubMenu(HitChanceManager.AddHitChanceMenuCombo(true, false, false, false));
                 menu.AddSubMenu(combo);
             }
 
@@ -71,7 +70,6 @@ namespace xSaliceResurrected.Mid
                 harass.AddItem(new MenuItem("UseWHarassHam", "Use W Hammer", true).SetValue(true));
                 harass.AddItem(new MenuItem("UseEHarassHam", "Use E Hammer", true).SetValue(true));
                 harass.AddItem(new MenuItem("UseRHarass", "Use R to switch", true).SetValue(true));
-                harass.AddSubMenu(HitChanceManager.AddHitChanceMenuHarass(true, false, false, false));
                 ManaManager.AddManaManagertoMenu(harass, "Harass", 60);
                 menu.AddSubMenu(harass);
             }
@@ -439,7 +437,7 @@ namespace xSaliceResurrected.Mid
 
             var tarPred = QExtend.GetPrediction(target, true);
 
-            if (tarPred.Hitchance >= HitChanceManager.GetQHitChance(source) && CanQcd == 0 && CanEcd == 0 && useE)
+            if (tarPred.Hitchance >= HitChance.VeryHigh && CanQcd == 0 && CanEcd == 0 && useE)
             {
                 var gateVector = Player.Position + Vector3.Normalize(target.ServerPosition - Player.Position) * gateDis;
 
@@ -454,7 +452,7 @@ namespace xSaliceResurrected.Mid
                 }
             }
 
-            if ((menu.Item("UseQAlways", true).GetValue<bool>() || !useE) && CanQcd == 0 && Q.GetPrediction(target, true).Hitchance >= HitChanceManager.GetQHitChance(source) && Player.Distance(target.ServerPosition) <= Q.Range && Q.IsReady())
+            if ((menu.Item("UseQAlways", true).GetValue<bool>() || !useE) && CanQcd == 0 && Q.GetPrediction(target, true).Hitchance >= HitChance.VeryHigh && Player.Distance(target.ServerPosition) <= Q.Range && Q.IsReady())
             {
                 Q.Cast(target);
             }

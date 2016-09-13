@@ -24,18 +24,15 @@
         private static void LoadSpells()
         {
             //intalize spell
-            SpellManager.Q = new Spell(SpellSlot.Q, 875);
+            SpellManager.Q = new Spell(SpellSlot.Q, 1150);
             SpellManager.Q2 = new Spell(SpellSlot.Q, 875);
-            SpellManager.QExtend = new Spell(SpellSlot.Q, 1150);
             SpellManager.W = new Spell(SpellSlot.W, 450);
-            SpellManager.W2 = new Spell(SpellSlot.W, 800);
             SpellManager.E = new Spell(SpellSlot.E, 1100);
             SpellManager.R = new Spell(SpellSlot.R, 450);
             SpellManager.R2 = new Spell(SpellSlot.R);
 
             SpellManager.Q.SetSkillshot(0, 80, 1600, false, SkillshotType.SkillshotCircle);
             SpellManager.Q2.SetSkillshot(0, 80, 1600, false, SkillshotType.SkillshotCircle);
-            SpellManager.QExtend.SetSkillshot(0.1f, 100, 1700, false, SkillshotType.SkillshotLine);
             SpellManager.E.SetSkillshot(0.25f, 100, 1200, false, SkillshotType.SkillshotLine);
             SpellManager.R.SetSkillshot(0.5f, 700, 1400, false, SkillshotType.SkillshotLine);
 
@@ -99,7 +96,6 @@
                 combo.AddItem(new MenuItem("UseWCombo", "Use W", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseECombo", "Use E", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseRCombo", "Use R", true).SetValue(true));
-                combo.AddSubMenu(HitChanceManager.AddHitChanceMenuCombo(true, false, false, false));
                 menu.AddSubMenu(combo);
             }
 
@@ -109,7 +105,6 @@
                 harass.AddItem(new MenuItem("UseQHarass", "Use Q", true).SetValue(true));
                 harass.AddItem(new MenuItem("UseWHarass", "Use W", true).SetValue(true));
                 harass.AddItem(new MenuItem("UseEHarass", "Use E", true).SetValue(false));
-                harass.AddSubMenu(HitChanceManager.AddHitChanceMenuHarass(true, false, false, false));
                 ManaManager.AddManaManagertoMenu(harass, "Harass", 60);
                 menu.AddSubMenu(harass);
             }
@@ -375,7 +370,7 @@
 
                 var qPred = Util.GetP(wVec, Q, target, W.Delay + Q.Delay, true);
 
-                if ((Q.IsReady() || QSpell.State == SpellState.Surpressed) && (E.IsReady() || ESpell.State == SpellState.Surpressed) && Player.Distance(target.Position) < Q.Range - 75 && qPred.Hitchance >= HitChanceManager.GetQHitChance(source))
+                if ((Q.IsReady() || QSpell.State == SpellState.Surpressed) && (E.IsReady() || ESpell.State == SpellState.Surpressed) && Player.Distance(target.Position) < Q.Range - 75 && qPred.Hitchance >= HitChance.VeryHigh)
                 {
                     var vec = target.ServerPosition - Player.ServerPosition;
                     var castBehind = qPred.CastPosition + Vector3.Normalize(vec) * 75;
@@ -407,13 +402,13 @@
                             var qPred = Prediction.GetPrediction(new PredictionInput
                             {
                                 Unit = target,
-                                Delay = QExtend.Delay,
-                                Radius = QExtend.Width,
-                                Speed = QExtend.Speed,
+                                Delay = Q.Delay,
+                                Radius = Q.Width,
+                                Speed = Q.Speed,
                                 From = slave.Position,
-                                Range = QExtend.Range,
-                                Collision = QExtend.Collision,
-                                Type = QExtend.Type,
+                                Range = Q.Range,
+                                Collision = Q.Collision,
+                                Type = Q.Type,
                                 RangeCheckFrom = Player.ServerPosition,
                                 Aoe = true,
                             });
@@ -435,7 +430,7 @@
                 {
                     if (Player.Distance(target.Position) < 200 && Environment.TickCount - E.LastCastAttemptT > Game.Ping + 150)
                     {
-                        R.Cast(_rVec);
+                        R.Cast(_rVec, true);
                     }
                 }
             }
@@ -443,17 +438,16 @@
             {
                 var wVec = Player.ServerPosition + Vector3.Normalize(target.ServerPosition - Player.ServerPosition) * W.Range;
 
-               // var qPred = GetP(wVec, QExtend, target, true);
                 var qPred = Prediction.GetPrediction(new PredictionInput
                 {
                     Unit = target,
-                    Delay = QExtend.Delay,
-                    Radius = QExtend.Width,
-                    Speed = QExtend.Speed,
+                    Delay = Q.Delay,
+                    Radius = Q.Width,
+                    Speed = Q.Speed,
                     From = wVec,
-                    Range = QExtend.Range,
-                    Collision = QExtend.Collision,
-                    Type = QExtend.Type,
+                    Range = Q.Range,
+                    Collision = Q.Collision,
+                    Type = Q.Type,
                     RangeCheckFrom = Player.ServerPosition,
                     Aoe = true,
                 });
@@ -464,23 +458,23 @@
                     var castBehind = qPred.CastPosition + Vector3.Normalize(vec) * 75;
                     _rVec = Player.Position;
 
-                    W.Cast(wVec);
-                    QExtend.Cast(castBehind, true);
+                    W.Cast(wVec, true);
+                    Q.Cast(castBehind, true);
                     E.Cast(getNearestSoldierToEnemy(target).Position, true);
                 }
                 if (R.IsReady())
                 {
                     if (Player.Distance(target.Position) < 200 && Environment.TickCount - E.LastCastAttemptT > Game.Ping + 150)
                     {
-                        R.Cast(_rVec);
+                        R.Cast(_rVec, true);
                     }
                 }
             }
         }
 
-        private void CastW(Obj_AI_Hero target)
+        private void CastW(Obj_AI_Base target)
         {
-            if (target == null || Player.Distance(Prediction.GetPrediction(target, W.Delay).UnitPosition, true) < W2.RangeSqr)
+            if (target == null || Player.Distance(Prediction.GetPrediction(target, W.Delay).UnitPosition, true) < 800 * 800)
                 return;
 
             if (Q.IsReady() || QSpell.State == SpellState.Surpressed)
@@ -500,7 +494,7 @@
             if (unit is Obj_AI_Hero && target is Obj_AI_Base)
             {
                 if (Player.Distance(Prediction.GetPrediction((Obj_AI_Hero) target, W.Delay).UnitPosition, true) <
-                    W2.RangeSqr)
+                    800 * 800)
                     W.Cast(Prediction.GetPrediction((Obj_AI_Hero) target, W.Delay).UnitPosition.To2D());
             }
         }
@@ -516,11 +510,10 @@
             {
                 if (Player.Distance(target.Position) < Q.Range && ShouldQ(target, slave))
                 {
-
                     Q.UpdateSourcePosition(slave.Position, Player.ServerPosition);
-                    var qPred = Q.GetPrediction(target);
+                    var qPred = Q.GetPrediction(target, true);
 
-                    if (Q.IsReady() && Player.Distance(target.Position) < Q.Range && qPred.Hitchance >= HitChanceManager.GetQHitChance(source))
+                    if (Q.IsReady() && Player.Distance(target.Position) < Q.Range && qPred.Hitchance >= HitChance.VeryHigh)
                     {
                         Q.Cast(qPred.CastPosition);
                         return;
@@ -568,12 +561,9 @@
             if (!Orbwalker.InSoldierAttackRange(target))
                 return true;
 
-            if (Player.GetSpellDamage(target, SpellSlot.Q) > target.Health + 10)
-                return true;
-
-
-            return false;
+            return Player.GetSpellDamage(target, SpellSlot.Q) > target.Health + 10;
         }
+
         private bool ShouldE(Obj_AI_Hero target)
         {
             if (target == null)

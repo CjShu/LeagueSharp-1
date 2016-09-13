@@ -74,7 +74,6 @@ namespace xSaliceResurrected.ADC
                 combo.AddItem(new MenuItem("UseQCombo", "Use Q", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseWCombo", "Use W", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseRCombo", "Use R", true).SetValue(true));
-                combo.AddSubMenu(HitChanceManager.AddHitChanceMenuCombo(false, true, false, true));
                 menu.AddSubMenu(combo);
             }
 
@@ -82,7 +81,6 @@ namespace xSaliceResurrected.ADC
             {
                 harass.AddItem(new MenuItem("UseQHarass", "Use Q", true).SetValue(true));
                 harass.AddItem(new MenuItem("UseWHarass", "Use W", true).SetValue(true));
-                harass.AddSubMenu(HitChanceManager.AddHitChanceMenuHarass(false, true, false, true));
                 ManaManager.AddManaManagertoMenu(harass, "Harass", 30);
                 //add to menu
                 menu.AddSubMenu(harass);
@@ -193,7 +191,7 @@ namespace xSaliceResurrected.ADC
                 var dmg = GetComboDamage(target);
 
                 if (useR && dmg > target.Health && Player.ServerPosition.Distance(target.ServerPosition) > menu.Item("R_Min_Range", true).GetValue<Slider>().Value)
-                    SpellCastManager.CastBasicSkillShot(R, R.Range, TargetSelector.DamageType.Physical, HitChanceManager.GetRHitChance(source));
+                    SpellCastManager.CastBasicSkillShot(R, R.Range, TargetSelector.DamageType.Physical, HitChance.VeryHigh);
 
                 if (Q.IsReady() && Player.ServerPosition.Distance(target.ServerPosition) < 550)
                 {
@@ -205,7 +203,7 @@ namespace xSaliceResurrected.ADC
             }
 
             if (useW && W.IsReady())
-                SpellCastManager.CastBasicSkillShot(W, W.Range, TargetSelector.DamageType.Magical, HitChanceManager.GetWHitChance(source));
+                SpellCastManager.CastBasicSkillShot(W, W.Range, TargetSelector.DamageType.Magical, HitChance.VeryHigh);
 
             //items
             if (source == "Combo")

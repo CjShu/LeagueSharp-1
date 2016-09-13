@@ -61,7 +61,6 @@
     <Compile Include="Mid\Syndra.cs" />
     <Compile Include="Mid\Viktor.cs" />
     <Compile Include="Managers\AOESpellManager.cs" />
-    <Compile Include="Managers\HitChanceManager.cs" />
     <Compile Include="Managers\ItemManager.cs" />
     <Compile Include="Base\SpellBase.cs" />
     <Compile Include="Champion.cs" />

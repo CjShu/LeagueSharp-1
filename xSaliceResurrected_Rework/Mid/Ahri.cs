@@ -58,8 +58,6 @@ namespace xSaliceResurrected.Mid
                 combo.AddItem(new MenuItem("UseECombo", "Use E", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseRCombo", "Use R", true).SetValue(true));
                 combo.AddItem(new MenuItem("rSpeed", "Use All R fast Duel", true).SetValue(true));
-                //hitchance
-                combo.AddSubMenu(HitChanceManager.AddHitChanceMenuCombo(true, false, true, false));
                 //add to menu
                 menu.AddSubMenu(combo);
             }
@@ -70,8 +68,6 @@ namespace xSaliceResurrected.Mid
                 harass.AddItem(new MenuItem("UseWHarass", "Use W", true).SetValue(false));
                 harass.AddItem(new MenuItem("UseEHarass", "Use E", true).SetValue(true));
                 harass.AddItem(new MenuItem("longQ", "Cast Long range Q", true).SetValue(true));
-                //hitchance
-                harass.AddSubMenu(HitChanceManager.AddHitChanceMenuHarass(true, false, true, false));
                 //mana
                 ManaManager.AddManaManagertoMenu(harass, "Harass", 60);
                 //add to menu
@@ -226,10 +222,10 @@ namespace xSaliceResurrected.Mid
             //E
             if (useE && E.IsReady() && Player.Distance(eTarget.Position) < E.Range)
             {
-                SpellCastManager.CastBasicSkillShot(E, E.Range, TargetSelector.DamageType.Magical, HitChanceManager.GetEHitChance(source));
+                SpellCastManager.CastBasicSkillShot(E, E.Range, TargetSelector.DamageType.Magical, HitChance.VeryHigh);
                 if (menu.Item("EQ", true).GetValue<bool>() && Q.IsReady() && !E.IsReady())
                 {
-                    SpellCastManager.CastBasicSkillShot(Q, Q.Range, TargetSelector.DamageType.Magical, HitChanceManager.GetQHitChance(source));
+                    SpellCastManager.CastBasicSkillShot(Q, Q.Range, TargetSelector.DamageType.Magical, HitChance.VeryHigh);
                 }
             }
 
@@ -245,13 +241,13 @@ namespace xSaliceResurrected.Mid
                 if (useQ && Q.IsReady() && Player.Distance(eTarget.Position) <= Q.Range &&
                     ShouldQ(eTarget, source) && Player.Distance(eTarget.Position) > 600)
                 {
-                    SpellCastManager.CastBasicSkillShot(Q, Q.Range, TargetSelector.DamageType.Magical, HitChanceManager.GetQHitChance(source));
+                    SpellCastManager.CastBasicSkillShot(Q, Q.Range, TargetSelector.DamageType.Magical, HitChance.VeryHigh);
                 }
             }
             else if (useQ && Q.IsReady() && Player.Distance(eTarget.Position) <= Q.Range &&
                      ShouldQ(eTarget, source))
             {
-                SpellCastManager.CastBasicSkillShot(Q, Q.Range, TargetSelector.DamageType.Magical, HitChanceManager.GetQHitChance(source));
+                SpellCastManager.CastBasicSkillShot(Q, Q.Range, TargetSelector.DamageType.Magical, HitChance.VeryHigh);
             }
 
             //R
@@ -260,7 +256,7 @@ namespace xSaliceResurrected.Mid
                 if (E.IsReady())
                 {
                     if (CheckReq(rETarget))
-                        SpellCastManager.CastBasicSkillShot(E, E.Range, TargetSelector.DamageType.Magical, HitChanceManager.GetEHitChance(source));
+                        SpellCastManager.CastBasicSkillShot(E, E.Range, TargetSelector.DamageType.Magical, HitChance.VeryHigh);
                 }
                 if (ShouldR(eTarget, dmg) && R.IsReady())
                 {

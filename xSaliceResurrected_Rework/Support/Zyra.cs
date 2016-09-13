@@ -64,7 +64,6 @@ namespace xSaliceResurrected.Support
                 harass.AddItem(new MenuItem("UseWHarass", "Use W", true).SetValue(false));
                 harass.AddItem(new MenuItem("UseEHarass", "Use E", true).SetValue(true));
                 harass.AddItem(new MenuItem("disableAA", "Disable AA", true).SetValue(true));
-                combo.AddSubMenu(HitChanceManager.AddHitChanceMenuCombo(true, false, true, false));
                 ManaManager.AddManaManagertoMenu(harass, "Harass", 30);
                 //add to menu
                 menu.AddSubMenu(harass);
@@ -75,7 +74,6 @@ namespace xSaliceResurrected.Support
                 farm.AddItem(new MenuItem("UseQFarm", "Use Q", true).SetValue(false));
                 farm.AddItem(new MenuItem("UseWFarm", "Use W", true).SetValue(false));
                 farm.AddItem(new MenuItem("UseEFarm", "Use E", true).SetValue(false));
-                harass.AddSubMenu(HitChanceManager.AddHitChanceMenuHarass(true, false, true, false));
                 ManaManager.AddManaManagertoMenu(farm, "LaneClear", 30);
                 //add to menu
                 menu.AddSubMenu(farm);
@@ -184,7 +182,7 @@ namespace xSaliceResurrected.Support
                 if (useE)
                 {
                     var pred = E.GetPrediction(target, true);
-                    if (pred.Hitchance >= HitChanceManager.GetEHitChance(source) && E.IsReady())
+                    if (pred.Hitchance >= HitChance.VeryHigh&& E.IsReady())
                     {
                         E.Cast(target);
                         Cast_W(pred.CastPosition);
@@ -210,7 +208,7 @@ namespace xSaliceResurrected.Support
                 if (useQ)
                 {
                     var pred = Q.GetPrediction(target);
-                    if (pred.Hitchance >= HitChanceManager.GetQHitChance(source) && pred.CastPosition.Distance(Player.ServerPosition) < Q.Range)
+                    if (pred.Hitchance >= HitChance.VeryHigh && pred.CastPosition.Distance(Player.ServerPosition) < Q.Range)
                     {
                         Q.Cast(pred.CastPosition);
                         Cast_W(pred.CastPosition);
@@ -221,10 +219,10 @@ namespace xSaliceResurrected.Support
             else
             {
                 if (useQ)
-                    SpellCastManager.CastBasicSkillShot(Q, Q.Range, TargetSelector.DamageType.Magical, HitChanceManager.GetQHitChance((source)));
+                    SpellCastManager.CastBasicSkillShot(Q, Q.Range, TargetSelector.DamageType.Magical, HitChance.VeryHigh);
 
                 if (useE)
-                    SpellCastManager.CastBasicSkillShot(E, E.Range, TargetSelector.DamageType.Magical, HitChanceManager.GetEHitChance((source)));
+                    SpellCastManager.CastBasicSkillShot(E, E.Range, TargetSelector.DamageType.Magical, HitChance.VeryHigh);
             }
 
             if (useR)

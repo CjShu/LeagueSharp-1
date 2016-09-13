@@ -49,7 +49,6 @@ namespace xSaliceResurrected.ADC
                 combo.AddItem(new MenuItem("UseRCombo", "Use R", true).SetValue(true));
                 combo.AddItem(new MenuItem("Always_Use", "Spell after AA in AA range", true).SetValue(true));
                 combo.AddItem(new MenuItem("ComboR_Limit", "Save R Stack", true).SetValue(new Slider(0, 0, 7)));
-                combo.AddSubMenu(HitChanceManager.AddHitChanceMenuCombo(true, false, false, true));
                 menu.AddSubMenu(combo);
             }
 
@@ -59,7 +58,6 @@ namespace xSaliceResurrected.ADC
                 harass.AddItem(new MenuItem("UseEHarass", "Use E", true).SetValue(false));
                 harass.AddItem(new MenuItem("UseRHarass", "Use R", true).SetValue(true));
                 harass.AddItem(new MenuItem("HarassR_Limit", "Save R Stack", true).SetValue(new Slider(5, 0, 7)));
-                harass.AddSubMenu(HitChanceManager.AddHitChanceMenuHarass(true, false, false, true));
                 ManaManager.AddManaManagertoMenu(harass, "Harass", 50);
                 menu.AddSubMenu(harass);
             }
@@ -187,7 +185,7 @@ namespace xSaliceResurrected.ADC
             if (useR && R.IsReady())
                 Cast_R(source);
             if (useQ && Q.IsReady())
-                SpellCastManager.CastBasicSkillShot(Q, Q.Range, TargetSelector.DamageType.Magical, HitChanceManager.GetQHitChance(source));
+                SpellCastManager.CastBasicSkillShot(Q, Q.Range, TargetSelector.DamageType.Magical, HitChance.VeryHigh);
             if (useE && E.IsReady())
                 SpellCastManager.CastBasicSkillShot(E, E.Range, TargetSelector.DamageType.Physical, HitChance.Low);
         }
@@ -234,9 +232,9 @@ namespace xSaliceResurrected.ADC
             var range = Player.HasBuff("CorkiMissileBarrageCounterBig") ? 1500 : 1300;
 
             if (mode == "Combo" && menu.Item("ComboR_Limit", true).GetValue<Slider>().Value < Player.Spellbook.GetSpell(SpellSlot.R).Ammo)
-                SpellCastManager.CastBasicSkillShot(R, range, TargetSelector.DamageType.Magical, HitChanceManager.GetRHitChance(mode));
+                SpellCastManager.CastBasicSkillShot(R, range, TargetSelector.DamageType.Magical, HitChance.VeryHigh);
             else if (mode == "Harass" && menu.Item("HarassR_Limit", true).GetValue<Slider>().Value < Player.Spellbook.GetSpell(SpellSlot.R).Ammo)
-                SpellCastManager.CastBasicSkillShot(R, range, TargetSelector.DamageType.Magical, HitChanceManager.GetRHitChance(mode));
+                SpellCastManager.CastBasicSkillShot(R, range, TargetSelector.DamageType.Magical, HitChance.VeryHigh);
             else if (mode == "Farm" && menu.Item("LaneClearR_Limit", true).GetValue<Slider>().Value < Player.Spellbook.GetSpell(SpellSlot.R).Ammo)
                 SpellCastManager.CastBasicFarm(R);
         }

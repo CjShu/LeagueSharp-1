@@ -66,7 +66,6 @@ namespace xSaliceResurrected.Top
                 combo.AddItem(new MenuItem("UseRCombo", "Use R", true).SetValue(true));
                 combo.AddItem(new MenuItem("rHp", "R if HP <", true).SetValue(new Slider(20)));
                 combo.AddItem(new MenuItem("defR", "R Self if > enemy", true).SetValue(new Slider(3, 0, 5)));
-                combo.AddSubMenu(HitChanceManager.AddHitChanceMenuCombo(true, false, true, false));
                 menu.AddSubMenu(combo);
             }
 
@@ -76,7 +75,6 @@ namespace xSaliceResurrected.Top
                 harass.AddItem(new MenuItem("UseQHarass", "Use Q", true).SetValue(true));
                 harass.AddItem(new MenuItem("UseWHarass", "Use W", true).SetValue(false));
                 harass.AddItem(new MenuItem("UseEHarass", "Use E", true).SetValue(true));
-                harass.AddSubMenu(HitChanceManager.AddHitChanceMenuHarass(true, false, true, false));
                 ManaManager.AddManaManagertoMenu(harass, "Harass", 30);
                 menu.AddSubMenu(harass);
             }
@@ -197,7 +195,7 @@ namespace xSaliceResurrected.Top
             //E
             if (useE && eTarget != null && E.IsReady() && Player.Distance(eTarget.Position) < E.Range && ShouldE(eTarget))
             {
-                SpellCastManager.CastBasicSkillShot(E, E.Range, TargetSelector.DamageType.Magical, HitChanceManager.GetEHitChance(source));
+                SpellCastManager.CastBasicSkillShot(E, E.Range, TargetSelector.DamageType.Magical, HitChance.VeryHigh);
             }
 
             //R
@@ -244,7 +242,7 @@ namespace xSaliceResurrected.Top
 
             if (target != null && target.IsValidTarget(Q.Range))
             {
-                SpellCastManager.CastBasicSkillShot(Q, Q.Range, TargetSelector.DamageType.Magical, HitChanceManager.GetQHitChance(source));
+                SpellCastManager.CastBasicSkillShot(Q, Q.Range, TargetSelector.DamageType.Magical, HitChance.VeryHigh);
             }
 
             target = TargetSelector.GetTarget(QExtend.Range, TargetSelector.DamageType.Physical);

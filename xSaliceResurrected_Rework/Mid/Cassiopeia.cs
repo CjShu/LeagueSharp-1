@@ -99,7 +99,6 @@ namespace xSaliceResurrected.Mid
                 combo.AddItem(new MenuItem("UseWCombo", "Use W", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseECombo", "Use E", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseRCombo", "Use R", true).SetValue(true));
-                combo.AddSubMenu(HitChanceManager.AddHitChanceMenuCombo(true, true, false, true));
                 menu.AddSubMenu(combo);
             }
 
@@ -108,7 +107,6 @@ namespace xSaliceResurrected.Mid
                 harass.AddItem(new MenuItem("UseQHarass", "Use Q", true).SetValue(true));
                 harass.AddItem(new MenuItem("UseWHarass", "Use W", true).SetValue(false));
                 harass.AddItem(new MenuItem("UseEHarass", "Use E", true).SetValue(true));
-                harass.AddSubMenu(HitChanceManager.AddHitChanceMenuHarass(true, true, false, true));
                 ManaManager.AddManaManagertoMenu(harass, "Harass", 50);
                 menu.AddSubMenu(harass);
             }
@@ -564,7 +562,7 @@ namespace xSaliceResurrected.Mid
                         //if killable
                         if (menu.Item("KillableCombo", true).GetValue<bool>())
                         {
-                            if (GetComboDamage(target) > target.Health && R.GetPrediction(target).Hitchance >= HitChanceManager.GetRHitChance(source))
+                            if (GetComboDamage(target) > target.Health && R.GetPrediction(target).Hitchance >= HitChance.VeryHigh)
                             {
                                 if (ShouldR(target))
                                 {

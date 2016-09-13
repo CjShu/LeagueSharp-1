@@ -88,7 +88,6 @@ namespace xSaliceResurrected.Top
                 combo.AddItem(new MenuItem("UseWCombo", "Use W", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseECombo", "Use E", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseRCombos", "Use R", true).SetValue(false));
-                combo.AddSubMenu(HitChanceManager.AddHitChanceMenuCombo(false, false, true, true));
                 //add to menu
                 menu.AddSubMenu(combo);
             }
@@ -98,7 +97,6 @@ namespace xSaliceResurrected.Top
                 harass.AddItem(new MenuItem("UseQHarass", "Use Q", true).SetValue(false));
                 harass.AddItem(new MenuItem("UseWHarass", "Use W", true).SetValue(false));
                 harass.AddItem(new MenuItem("UseEHarass", "Use E", true).SetValue(true));
-                harass.AddSubMenu(HitChanceManager.AddHitChanceMenuHarass(false, false, true, true));
                 //add to menu
                 menu.AddSubMenu(harass);
             }
@@ -298,7 +296,7 @@ namespace xSaliceResurrected.Top
             if (Player.Distance(target.Position) > E.Range)
                 return false;
 
-            if (E.GetPrediction(target).Hitchance < HitChanceManager.GetEHitChance(source))
+            if (E.GetPrediction(target).Hitchance < HitChance.VeryHigh)
 
                 if (!menu.Item("E_Over_Heat", true).GetValue<bool>() && GetCurrentHeat() > 80)
                     return false;
