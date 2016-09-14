@@ -55,7 +55,7 @@ namespace xSaliceResurrected.Top
                 key.AddItem(new MenuItem("alwaysR", "Always Cast R", true).SetValue(new KeyBind("H".ToCharArray()[0], KeyBindType.Toggle)));
                 key.AddItem(new MenuItem("LastHitQQ", "Last hit with Q", true).SetValue(new KeyBind("A".ToCharArray()[0], KeyBindType.Press)));
                 key.AddItem(new MenuItem("LaneClear", "Farm!", true).SetValue(new KeyBind("Z".ToCharArray()[0], KeyBindType.Press)));
-                menu.AddSubMenu(key);
+                Menu.AddSubMenu(key);
             }
             //Combo menu:
             var combo = new Menu("Combo", "Combo");
@@ -66,7 +66,7 @@ namespace xSaliceResurrected.Top
                 combo.AddItem(new MenuItem("UseRCombo", "Use R", true).SetValue(true));
                 combo.AddItem(new MenuItem("rHp", "R if HP <", true).SetValue(new Slider(20)));
                 combo.AddItem(new MenuItem("defR", "R Self if > enemy", true).SetValue(new Slider(3, 0, 5)));
-                menu.AddSubMenu(combo);
+                Menu.AddSubMenu(combo);
             }
 
             //Harass menu
@@ -76,7 +76,7 @@ namespace xSaliceResurrected.Top
                 harass.AddItem(new MenuItem("UseWHarass", "Use W", true).SetValue(false));
                 harass.AddItem(new MenuItem("UseEHarass", "Use E", true).SetValue(true));
                 ManaManager.AddManaManagertoMenu(harass, "Harass", 30);
-                menu.AddSubMenu(harass);
+                Menu.AddSubMenu(harass);
             }
 
             //Farming menu:
@@ -86,7 +86,7 @@ namespace xSaliceResurrected.Top
                 farm.AddItem(new MenuItem("UseWFarm", "Use W", true).SetValue(false));
                 farm.AddItem(new MenuItem("UseEFarm", "Use E", true).SetValue(false));
                 ManaManager.AddManaManagertoMenu(harass, "Farm", 30);
-                menu.AddSubMenu(farm);
+                Menu.AddSubMenu(farm);
             }
 
             //Misc Menu:
@@ -99,7 +99,7 @@ namespace xSaliceResurrected.Top
                 misc.AddItem(new MenuItem("UseHAM", "Always use E", true).SetValue(new KeyBind("I".ToCharArray()[0], KeyBindType.Toggle)));
                 misc.AddItem(new MenuItem("UseEGap", "Use E to Gap Close", true).SetValue(true));
                 misc.AddItem(new MenuItem("gapD", "Min Distance", true).SetValue(new Slider(600, 300, 1050)));
-                menu.AddSubMenu(misc);
+                Menu.AddSubMenu(misc);
             }
 
             //Drawings menu:
@@ -131,7 +131,7 @@ namespace xSaliceResurrected.Top
                         DamageIndicator.FillColor = eventArgs.GetNewValue<Circle>().Color;
                     };
 
-                menu.AddSubMenu(drawing);
+                Menu.AddSubMenu(drawing);
             }
 
             var customMenu = new Menu("Custom Perma Show", "Custom Perma Show");
@@ -147,7 +147,7 @@ namespace xSaliceResurrected.Top
                 customMenu.AddItem(myCust.AddToMenu("StunTower Active: ", "stunTowers"));
                 customMenu.AddItem(myCust.AddToMenu("Always R Active: ", "alwaysR"));
                  customMenu.AddItem(myCust.AddToMenu("Always E Active: ", "UseHAM"));
-                menu.AddSubMenu(customMenu);
+                Menu.AddSubMenu(customMenu);
             }
         }
 
@@ -174,14 +174,14 @@ namespace xSaliceResurrected.Top
 
         private void Combo()
         {
-            UseSpells(menu.Item("UseQCombo", true).GetValue<bool>(), menu.Item("UseWCombo", true).GetValue<bool>(),
-                menu.Item("UseECombo", true).GetValue<bool>(), menu.Item("UseRCombo", true).GetValue<bool>(), "Combo");
+            UseSpells(Menu.Item("UseQCombo", true).GetValue<bool>(), Menu.Item("UseWCombo", true).GetValue<bool>(),
+                Menu.Item("UseECombo", true).GetValue<bool>(), Menu.Item("UseRCombo", true).GetValue<bool>(), "Combo");
         }
 
         private void Harass()
         {
-            UseSpells(menu.Item("UseQHarass", true).GetValue<bool>(), menu.Item("UseWHarass", true).GetValue<bool>(),
-                menu.Item("UseEHarass", true).GetValue<bool>(), false, "Harass");
+            UseSpells(Menu.Item("UseQHarass", true).GetValue<bool>(), Menu.Item("UseWHarass", true).GetValue<bool>(),
+                Menu.Item("UseEHarass", true).GetValue<bool>(), false, "Harass");
         }
 
         private void UseSpells(bool useQ, bool useW, bool useE, bool useR, string source)
@@ -278,7 +278,7 @@ namespace xSaliceResurrected.Top
             if (GetComboDamage(target) >= target.Health + 20)
                 return true;
 
-            if (menu.Item("UseHAM", true).GetValue<KeyBind>().Active)
+            if (Menu.Item("UseHAM", true).GetValue<KeyBind>().Active)
                 return true;
 
             return false;
@@ -286,7 +286,7 @@ namespace xSaliceResurrected.Top
 
         private void CastR(Obj_AI_Hero target)
         {
-            if (menu.Item("alwaysR", true).GetValue<KeyBind>().Active)
+            if (Menu.Item("alwaysR", true).GetValue<KeyBind>().Active)
             {
                 R.Cast(target);
                 return;
@@ -305,7 +305,7 @@ namespace xSaliceResurrected.Top
             }
 
             //Defensive R
-            var rHp = menu.Item("rHp", true).GetValue<Slider>().Value;
+            var rHp = Menu.Item("rHp", true).GetValue<Slider>().Value;
             var hpPercent = Player.Health / Player.MaxHealth * 100;
 
             if (hpPercent < rHp)
@@ -314,7 +314,7 @@ namespace xSaliceResurrected.Top
                 return;
             }
 
-            var rDef = menu.Item("defR", true).GetValue<Slider>().Value;
+            var rDef = Menu.Item("defR", true).GetValue<Slider>().Value;
 
             if (Player.CountEnemiesInRange(300) >= rDef)
             {
@@ -324,7 +324,7 @@ namespace xSaliceResurrected.Top
 
         private void SmartKs()
         {
-            if (!menu.Item("smartKS", true).GetValue<bool>())
+            if (!Menu.Item("smartKS", true).GetValue<bool>())
                 return;
 
             foreach (Obj_AI_Hero target in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsValidTarget(1000) && !x.HasBuffOfType(BuffType.Invulnerability)).OrderByDescending(GetComboDamage))
@@ -367,11 +367,11 @@ namespace xSaliceResurrected.Top
             if (_eMissle == null || !enemy.IsValidTarget(2000))
                 return;
 
-            if (enemy.ServerPosition.Distance(_eMissle.Position) < 110 && _eCreated && menu.Item("Orbwalk", true).GetValue<KeyBind>().Active && E.IsReady())
+            if (enemy.ServerPosition.Distance(_eMissle.Position) < 110 && _eCreated && Menu.Item("Orbwalk", true).GetValue<KeyBind>().Active && E.IsReady())
             {
                 E.Cast();
             }
-            else if (_eCreated && menu.Item("Orbwalk", true).GetValue<KeyBind>().Active && menu.Item("UseEGap", true).GetValue<bool>()
+            else if (_eCreated && Menu.Item("Orbwalk", true).GetValue<KeyBind>().Active && Menu.Item("UseEGap", true).GetValue<bool>()
                 && Player.Distance(enemy.Position) > enemy.Distance(_eMissle.Position) && E.IsReady())
             {
                 if (_eMissle.EndPosition.Distance(_eMissle.Position) < 400 && enemy.Distance(_eMissle.Position) < enemy.Distance(_eMissle.EndPosition))
@@ -385,7 +385,7 @@ namespace xSaliceResurrected.Top
         private void GapClose()
         {
             var target = TargetSelector.GetTarget(1500, TargetSelector.DamageType.Magical);
-            var distance = menu.Item("gapD", true).GetValue<Slider>().Value;
+            var distance = Menu.Item("gapD", true).GetValue<Slider>().Value;
 
             if (!target.IsValidTarget(1500))
                 return;
@@ -427,9 +427,9 @@ namespace xSaliceResurrected.Top
             var allMinionsW = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, W.Width);
             var allMinionsE = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, E.Range + E.Width, MinionTypes.All, MinionTeam.NotAlly);
 
-            var useQ = menu.Item("UseQFarm", true).GetValue<bool>();
-            var useW = menu.Item("UseWFarm", true).GetValue<bool>();
-            var useE = menu.Item("UseEFarm", true).GetValue<bool>();
+            var useQ = Menu.Item("UseQFarm", true).GetValue<bool>();
+            var useW = Menu.Item("UseWFarm", true).GetValue<bool>();
+            var useE = Menu.Item("UseEFarm", true).GetValue<bool>();
 
             if (useE && E.IsReady() && !_eCreated)
             {
@@ -475,7 +475,7 @@ namespace xSaliceResurrected.Top
 
             SmartKs();
 
-            if (menu.Item("stunMelles", true).GetValue<KeyBind>().Active && R.IsReady())
+            if (Menu.Item("stunMelles", true).GetValue<KeyBind>().Active && R.IsReady())
             {
                 foreach (Obj_AI_Hero target in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsValidTarget(200) && !x.HasBuffOfType(BuffType.Invulnerability)).OrderByDescending(GetComboDamage))
                 {
@@ -483,34 +483,34 @@ namespace xSaliceResurrected.Top
                 }
             }
 
-            if (menu.Item("stunTowers", true).GetValue<KeyBind>().Active)
+            if (Menu.Item("stunTowers", true).GetValue<KeyBind>().Active)
             {
                 CheckUnderTower();
             }
 
-            if (menu.Item("Orbwalk", true).GetValue<KeyBind>().Active)
+            if (Menu.Item("Orbwalk", true).GetValue<KeyBind>().Active)
             {
-                if (menu.Item("UseEGap", true).GetValue<bool>())
+                if (Menu.Item("UseEGap", true).GetValue<bool>())
                     GapClose();
 
                 Combo();
             }
             else
             {
-                if (menu.Item("LaneClear", true).GetValue<KeyBind>().Active)
+                if (Menu.Item("LaneClear", true).GetValue<KeyBind>().Active)
                 {
                     Farm();
                 }
 
-                if (menu.Item("LastHitQQ", true).GetValue<KeyBind>().Active)
+                if (Menu.Item("LastHitQQ", true).GetValue<KeyBind>().Active)
                 {
                     LastHit();
                 }
 
-                if (menu.Item("Farm", true).GetValue<KeyBind>().Active)
+                if (Menu.Item("Farm", true).GetValue<KeyBind>().Active)
                     Harass();
 
-                if (menu.Item("FarmT", true).GetValue<KeyBind>().Active)
+                if (Menu.Item("FarmT", true).GetValue<KeyBind>().Active)
                     Harass();
             }
         }
@@ -519,12 +519,12 @@ namespace xSaliceResurrected.Top
         {
             foreach (var spell in SpellList)
             {
-                var menuItem = menu.Item(spell.Slot + "Range", true).GetValue<Circle>();
+                var menuItem = Menu.Item(spell.Slot + "Range", true).GetValue<Circle>();
                 if (menuItem.Active)
                     Render.Circle.DrawCircle(Player.Position, spell.Slot == SpellSlot.W ? spell.Width : spell.Range, menuItem.Color);
             }
 
-            if (menu.Item("qExtend", true).GetValue<Circle>().Active)
+            if (Menu.Item("qExtend", true).GetValue<Circle>().Active)
             {
                 Render.Circle.DrawCircle(Player.Position, QExtend.Range, Color.Aquamarine);
             }
@@ -534,7 +534,7 @@ namespace xSaliceResurrected.Top
 
         protected override void AntiGapcloser_OnEnemyGapcloser(ActiveGapcloser gapcloser)
         {
-            if (!menu.Item("UseGap", true).GetValue<bool>()) return;
+            if (!Menu.Item("UseGap", true).GetValue<bool>()) return;
 
             if (W.IsReady() && gapcloser.Sender.IsValidTarget(W.Width))
                 W.Cast();
@@ -542,7 +542,7 @@ namespace xSaliceResurrected.Top
 
         protected override void Interrupter_OnPosibleToInterrupt(Obj_AI_Hero unit, Interrupter2.InterruptableTargetEventArgs spell)
         {
-            if (!menu.Item("UseInt", true).GetValue<bool>()) return;
+            if (!Menu.Item("UseInt", true).GetValue<bool>()) return;
 
             if (Player.Distance(unit.Position) < R.Range && R.IsReady())
             {

@@ -40,10 +40,10 @@
 
         protected virtual void Drawing_OnDraw(EventArgs arg)
         {
-            if (!Champion.menu.Item("enableCustMenu", true).GetValue<bool>())
+            if (!Champion.Menu.Item("enableCustMenu", true).GetValue<bool>())
                 return;
 
-            if (Champion.menu.Item("custMenu", true).GetValue<KeyBind>().Active)
+            if (Champion.Menu.Item("custMenu", true).GetValue<KeyBind>().Active)
             {
                 _menuX = (int) Drawing.WorldToScreen(Game.CursorPos).X;
                 _menuY = (int) Drawing.WorldToScreen(Game.CursorPos).Y;
@@ -60,7 +60,7 @@
                         obj.RenderTxt.X = _menuX;
                         obj.RenderTxt.Y = _menuY + yOffset;
 
-                        if (Champion.menu.Item(obj.Source, true).GetValue<KeyBind>().Active)
+                        if (Champion.Menu.Item(obj.Source, true).GetValue<KeyBind>().Active)
                         {
                             obj.RenderTxt.Color = new ColorBGRA(209, 179, 40, 255);
                             obj.RenderTxt.text = obj.Text + "On";

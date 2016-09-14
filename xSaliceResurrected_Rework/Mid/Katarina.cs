@@ -41,7 +41,7 @@
                 key.AddItem(new MenuItem("FarmT", "Harass (toggle)!", true).SetValue(new KeyBind("N".ToCharArray()[0], KeyBindType.Toggle)));
                 key.AddItem(new MenuItem("Wardjump", "Escape/Ward jump", true).SetValue(new KeyBind("Z".ToCharArray()[0], KeyBindType.Press)));
                 //add to menu
-                menu.AddSubMenu(key);
+                Menu.AddSubMenu(key);
             }
 
             //Combo menu:
@@ -56,7 +56,7 @@
                 combo.AddItem(new MenuItem("comboMode", "Mode", true).SetValue(new StringList(new[] { "QEW", "EQW" })));
                 combo.AddItem(new MenuItem("disableaa", "Disable AA").SetValue(true));
                 //add to menu
-                menu.AddSubMenu(combo);
+                Menu.AddSubMenu(combo);
             }
             //Harass menu:
             var harass = new Menu("Harass", "Harass");
@@ -66,7 +66,7 @@
                 harass.AddItem(new MenuItem("UseEHarass", "Use E", true).SetValue(false));
                 harass.AddItem(new MenuItem("harassMode", "Mode", true).SetValue(new StringList(new[] { "QEW", "EQW", "QW" }, 2)));
                 //add to menu
-                menu.AddSubMenu(harass);
+                Menu.AddSubMenu(harass);
             }
             //Farming menu:
             var farm = new Menu("Farm", "Farm");
@@ -77,7 +77,7 @@
                 farm.AddItem(new MenuItem("UseQHit", "Use Q Last Hit", true).SetValue(true));
                 farm.AddItem(new MenuItem("UseWHit", "Use W Last Hit", true).SetValue(false));
                 //add to menu
-                menu.AddSubMenu(farm);
+                Menu.AddSubMenu(farm);
             }
             //killsteal
             var killSteal = new Menu("KillSteal", "KillSteal");
@@ -88,7 +88,7 @@
                 killSteal.AddItem(new MenuItem("rCancel", "NO R Cancel for KS", true).SetValue(true));
                 killSteal.AddItem(new MenuItem("KS_With_E", "Don't KS with E Toggle!", true).SetValue(new KeyBind("H".ToCharArray()[0], KeyBindType.Toggle)));
                 //add to menu
-                menu.AddSubMenu(killSteal);
+                Menu.AddSubMenu(killSteal);
             }
             //Misc Menu:
             var misc = new Menu("Misc", "Misc");
@@ -97,7 +97,7 @@
                 misc.AddItem(new MenuItem("autoWz", "Auto W Enemy", true).SetValue(true));
                 misc.AddItem(new MenuItem("E_Delay_Slider", "Delay Between E(ms)", true).SetValue(new Slider(0, 0, 1000)));
                 //add to menu
-                menu.AddSubMenu(misc);
+                Menu.AddSubMenu(misc);
             }
 
             //Drawings menu:
@@ -130,7 +130,7 @@
                     };
 
                 //add to menu
-                menu.AddSubMenu(drawing);
+                Menu.AddSubMenu(drawing);
             }
 
             var customMenu = new Menu("Custom Perma Show", "Custom Perma Show");
@@ -144,7 +144,7 @@
                 customMenu.AddItem(myCust.AddToMenu("Laneclear Active: ", "LaneClear"));
                 customMenu.AddItem(myCust.AddToMenu("LastHit Active: ", "LastHit"));
                 customMenu.AddItem(myCust.AddToMenu("WardJump Active: ", "Wardjump"));
-                menu.AddSubMenu(customMenu);
+                Menu.AddSubMenu(customMenu);
             }
         }
 
@@ -173,23 +173,23 @@
 
         private void Combo()
         {
-            Combo(menu.Item("UseQCombo", true).GetValue<bool>(), menu.Item("UseWCombo", true).GetValue<bool>(),
-                menu.Item("UseECombo", true).GetValue<bool>(), menu.Item("UseRCombo", true).GetValue<bool>());
+            Combo(Menu.Item("UseQCombo", true).GetValue<bool>(), Menu.Item("UseWCombo", true).GetValue<bool>(),
+                Menu.Item("UseECombo", true).GetValue<bool>(), Menu.Item("UseRCombo", true).GetValue<bool>());
         }
 
         private void Harass()
         {
-            Harass(menu.Item("UseQHarass", true).GetValue<bool>(), menu.Item("UseWHarass", true).GetValue<bool>(),
-                menu.Item("UseEHarass", true).GetValue<bool>());
+            Harass(Menu.Item("UseQHarass", true).GetValue<bool>(), Menu.Item("UseWHarass", true).GetValue<bool>(),
+                Menu.Item("UseEHarass", true).GetValue<bool>());
         }
 
         private void Combo(bool useQ, bool useW, bool useE, bool useR)
         {
             var target = TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Magical);
 
-            var mode = menu.Item("comboMode", true).GetValue<StringList>().SelectedIndex;
+            var mode = Menu.Item("comboMode", true).GetValue<StringList>().SelectedIndex;
 
-            var eDis = menu.Item("eDis", true).GetValue<Slider>().Value;
+            var eDis = Menu.Item("eDis", true).GetValue<Slider>().Value;
 
             if (!target.IsValidTarget(E.Range))
                 return;
@@ -224,12 +224,12 @@
                         if (useE && E.IsReady() && Player.Distance(target.Position) < E.Range && Utils.TickCount - E.LastCastAttemptT > 0 &&
                             Player.Distance(target.Position) > eDis && !Q.IsReady())
                         {
-                            if (menu.Item("smartE", true).GetValue<bool>() &&
+                            if (Menu.Item("smartE", true).GetValue<bool>() &&
                                 Player.CountEnemiesInRange(500) > 2 &&
                                 (!R.IsReady() || !(RSpell.State == SpellState.Surpressed && R.Level > 0)))
                                 return;
 
-                            var delay = menu.Item("E_Delay_Slider", true).GetValue<Slider>().Value;
+                            var delay = Menu.Item("E_Delay_Slider", true).GetValue<Slider>().Value;
                             OrbwalkManager.SetAttack(false);
                             OrbwalkManager.SetMovement(false);
                             E.Cast(target);
@@ -256,12 +256,12 @@
                         if (useE && E.IsReady() && Player.Distance(target.Position) < E.Range && Utils.TickCount - E.LastCastAttemptT > 0 &&
                             Player.Distance(target.Position) > eDis)
                         {
-                            if (menu.Item("smartE", true).GetValue<bool>() &&
+                            if (Menu.Item("smartE", true).GetValue<bool>() &&
                                 Player.CountEnemiesInRange(500) > 2 &&
                                 (!R.IsReady() || !(RSpell.State == SpellState.Surpressed && R.Level > 0)))
                                 return;
 
-                            var delay = menu.Item("E_Delay_Slider", true).GetValue<Slider>().Value;
+                            var delay = Menu.Item("E_Delay_Slider", true).GetValue<Slider>().Value;
                             OrbwalkManager.SetAttack(false);
                             OrbwalkManager.SetMovement(false);
                             E.Cast(target);
@@ -301,7 +301,7 @@
             var eTarget = TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Magical);
             TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Magical);
 
-            var mode = menu.Item("harassMode", true).GetValue<StringList>().SelectedIndex;
+            var mode = Menu.Item("harassMode", true).GetValue<StringList>().SelectedIndex;
 
             switch (mode)
             {
@@ -353,8 +353,8 @@
                 MinionTeam.NotAlly);
             MinionManager.GetMinions(Player.ServerPosition, W.Range);
 
-            var useQ = menu.Item("UseQHit", true).GetValue<bool>();
-            var useW = menu.Item("UseWHit", true).GetValue<bool>();
+            var useQ = Menu.Item("UseQHit", true).GetValue<bool>();
+            var useW = Menu.Item("UseWHit", true).GetValue<bool>();
 
             if (Q.IsReady() && useQ)
             {
@@ -393,9 +393,9 @@
             var allMinionsW = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, W.Range,
                 MinionTypes.All, MinionTeam.NotAlly);
 
-            var useQ = menu.Item("UseQFarm", true).GetValue<bool>();
-            var useW = menu.Item("UseWFarm", true).GetValue<bool>();
-            var useE = menu.Item("UseEFarm", true).GetValue<bool>();
+            var useQ = Menu.Item("UseQFarm", true).GetValue<bool>();
+            var useW = Menu.Item("UseWFarm", true).GetValue<bool>();
+            var useE = Menu.Item("UseEFarm", true).GetValue<bool>();
 
             if (useQ && allMinionsQ.Count > 0 && Q.IsReady() && allMinionsQ[0].IsValidTarget(Q.Range))
             {
@@ -427,8 +427,8 @@
             var allMinionsW = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, W.Range,
                 MinionTypes.All, MinionTeam.Neutral);
 
-            var useQ = menu.Item("UseQFarm", true).GetValue<bool>();
-            var useW = menu.Item("UseWFarm", true).GetValue<bool>();
+            var useQ = Menu.Item("UseQFarm", true).GetValue<bool>();
+            var useW = Menu.Item("UseWFarm", true).GetValue<bool>();
 
             if (useQ && allMinionsQ.Count > 0 && Q.IsReady() && allMinionsQ[0].IsValidTarget(Q.Range))
             {
@@ -444,18 +444,18 @@
 
         private void SmartKs()
         {
-            if (!menu.Item("smartKS", true).GetValue<bool>())
+            if (!Menu.Item("smartKS", true).GetValue<bool>())
                 return;
 
-            if (menu.Item("rCancel", true).GetValue<bool>() && Player.CountEnemiesInRange(570) > 1)
+            if (Menu.Item("rCancel", true).GetValue<bool>() && Player.CountEnemiesInRange(570) > 1)
                 return;
 
             foreach (var target in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsValidTarget(1375) && !x.HasBuffOfType(BuffType.Invulnerability)).OrderByDescending(GetComboDamage))
             {
                 if (target != null)
                 {
-                    var delay = menu.Item("E_Delay_Slider", true).GetValue<Slider>().Value;
-                    var shouldE = !menu.Item("KS_With_E", true).GetValue<KeyBind>().Active && Utils.TickCount - E.LastCastAttemptT > 0;
+                    var delay = Menu.Item("E_Delay_Slider", true).GetValue<Slider>().Value;
+                    var shouldE = !Menu.Item("KS_With_E", true).GetValue<KeyBind>().Active && Utils.TickCount - E.LastCastAttemptT > 0;
                     //QEW
                     if (Player.Distance(target.ServerPosition) <= E.Range && shouldE &&
                         (Player.GetSpellDamage(target, SpellSlot.E) + Player.GetSpellDamage(target, SpellSlot.Q) + MarkDmg(target) +
@@ -517,7 +517,7 @@
                             return;
                         }
                         if (Q.IsReady() && E.IsReady() && Player.Distance(target.ServerPosition) <= 1375 &&
-                            menu.Item("wardKs", true).GetValue<bool>() &&
+                            Menu.Item("wardKs", true).GetValue<bool>() &&
                             target.CountEnemiesInRange(500) < 3)
                         {
                             CancelUlt(target);
@@ -544,7 +544,7 @@
                     //R
                     if (Player.Distance(target.ServerPosition) <= E.Range &&
                         (Player.GetSpellDamage(target, SpellSlot.R) * 5) > target.Health + 20 &&
-                        menu.Item("rKS", true).GetValue<bool>())
+                        Menu.Item("rKS", true).GetValue<bool>())
                     {
                         if (R.IsReady())
                         {
@@ -601,7 +601,7 @@
 
         private bool QSuccessfullyCasted()
         {
-            return Utils.TickCount - Q.LastCastAttemptT > 350 || !menu.Item("waitQ", true).GetValue<bool>();
+            return Utils.TickCount - Q.LastCastAttemptT > 350 || !Menu.Item("waitQ", true).GetValue<bool>();
         }
 
         protected override void Obj_AI_Base_OnProcessSpellCast(Obj_AI_Base unit, GameObjectProcessSpellCastEventArgs args)
@@ -630,7 +630,7 @@
 
         protected override void ObjAiHeroOnOnIssueOrder(Obj_AI_Base sender, GameObjectIssueOrderEventArgs args)
         {
-            if (args.Order == GameObjectOrder.AttackUnit && menu.Item("disableaa").GetValue<bool>() && Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+            if (args.Order == GameObjectOrder.AttackUnit && Menu.Item("disableaa").GetValue<bool>() && Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
                 args.Process = false;
             }
@@ -667,10 +667,10 @@
                     LastHit();
                     break;
                 case Orbwalking.OrbwalkingMode.None:
-                    if (menu.Item("FarmT", true).GetValue<KeyBind>().Active)
+                    if (Menu.Item("FarmT", true).GetValue<KeyBind>().Active)
                         Harass();
 
-                    if (menu.Item("autoWz", true).GetValue<bool>())
+                    if (Menu.Item("autoWz", true).GetValue<bool>())
                         AutoW();
                     break;
                 case Orbwalking.OrbwalkingMode.Freeze:
@@ -678,7 +678,7 @@
                 case Orbwalking.OrbwalkingMode.CustomMode:
                     break;
                 case Orbwalking.OrbwalkingMode.Flee:
-                    if (menu.Item("Wardjump", true).GetValue<KeyBind>().Active)
+                    if (Menu.Item("Wardjump", true).GetValue<KeyBind>().Active)
                     {
                         OrbwalkManager.Orbwalk(null, Game.CursorPos);
                         WardJumper.WardJump();
@@ -693,17 +693,17 @@
         {
             foreach (var spell in SpellList)
             {
-                var menuItem = menu.Item(spell.Slot + "Range", true).GetValue<Circle>();
+                var menuItem = Menu.Item(spell.Slot + "Range", true).GetValue<Circle>();
                 if (menuItem.Active)
                     Render.Circle.DrawCircle(Player.Position, spell.Range, (spell.IsReady()) ? Color.Cyan : Color.DarkRed);
             }
 
-            if (menu.Item("Draw_Mode", true).GetValue<Circle>().Active)
+            if (Menu.Item("Draw_Mode", true).GetValue<Circle>().Active)
             {
                 var wts = Drawing.WorldToScreen(Player.Position);
 
                 Drawing.DrawText(wts[0], wts[1], Color.White,
-                    menu.Item("KS_With_E", true).GetValue<KeyBind>().Active ? "Ks E Active" : "Ks E Off");
+                    Menu.Item("KS_With_E", true).GetValue<KeyBind>().Active ? "Ks E Active" : "Ks E Off");
             }
         }
 

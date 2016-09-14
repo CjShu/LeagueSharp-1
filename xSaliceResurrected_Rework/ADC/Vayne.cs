@@ -42,7 +42,7 @@ namespace xSaliceResurrected.ADC
                 key.AddItem(
                     new MenuItem("ManualE", "Semi-Manual Condemn").SetValue(new KeyBind('E', KeyBindType.Press)));
                 //add to menu
-                menu.AddSubMenu(key);
+                Menu.AddSubMenu(key);
             }
 
             var spellMenu = new Menu("Spell Config", "SpellMenu");
@@ -79,7 +79,7 @@ namespace xSaliceResurrected.ADC
                     spellMenu.AddSubMenu(eMenu);
                 }
 
-                menu.AddSubMenu(spellMenu);
+                Menu.AddSubMenu(spellMenu);
             }
 
             var combo = new Menu("Combo", "Combo");
@@ -87,7 +87,7 @@ namespace xSaliceResurrected.ADC
                 combo.AddItem(new MenuItem("UseQCombo", "Use Q", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseECombo", "Use E", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseRCombo", "Use R", true).SetValue(false));
-                menu.AddSubMenu(combo);
+                Menu.AddSubMenu(combo);
             }
 
             var harass = new Menu("Harass", "Harass");
@@ -96,7 +96,7 @@ namespace xSaliceResurrected.ADC
                 harass.AddItem(new MenuItem("UseEHarass", "Use E", true).SetValue(false));
                 ManaManager.AddManaManagertoMenu(harass, "Harass", 30);
                 //add to menu
-                menu.AddSubMenu(harass);
+                Menu.AddSubMenu(harass);
             }
 
             var farm = new Menu("LaneClear", "LaneClear");
@@ -104,14 +104,14 @@ namespace xSaliceResurrected.ADC
                 farm.AddItem(new MenuItem("UseQFarm", "Use Q", true).SetValue(true));
                 ManaManager.AddManaManagertoMenu(farm, "LaneClear", 30);
                 //add to menu
-                menu.AddSubMenu(farm);
+                Menu.AddSubMenu(farm);
             }
 
             var miscMenu = new Menu("Misc", "Misc");
             {
                 miscMenu.AddItem(new MenuItem("UseInt", "Use E to Interrupt", true).SetValue(true));
                 //add to menu
-                menu.AddSubMenu(miscMenu);
+                Menu.AddSubMenu(miscMenu);
             }
 
             var drawMenu = new Menu("Drawing", "Drawing");
@@ -140,7 +140,7 @@ namespace xSaliceResurrected.ADC
                         DamageIndicator.FillColor = eventArgs.GetNewValue<Circle>().Color;
                     };
 
-                menu.AddSubMenu(drawMenu);
+                Menu.AddSubMenu(drawMenu);
             }
 
             var customMenu = new Menu("Custom Perma Show", "Custom Perma Show");
@@ -153,7 +153,7 @@ namespace xSaliceResurrected.ADC
                 customMenu.AddItem(myCust.AddToMenu("Harass(T) Active: ", "FarmT"));
                 customMenu.AddItem(myCust.AddToMenu("JungleClear Active: ", "JungleClearActiveT"));
                 customMenu.AddItem(myCust.AddToMenu("Laneclear Active: ", "LaneClear"));
-                menu.AddSubMenu(customMenu);
+                Menu.AddSubMenu(customMenu);
             }
         }
 
@@ -201,7 +201,7 @@ namespace xSaliceResurrected.ADC
             var goodCandidates = from p in myTumbleRangeCircle
                                  select new Vector2(p.X, p.Y).To3D() into v3
                                  let dist = v3.Distance(targetPosition)
-                                 where dist > menu.Item("QMinDist", true).GetValue<Slider>().Value && dist < 500
+                                 where dist > Menu.Item("QMinDist", true).GetValue<Slider>().Value && dist < 500
                                  select v3;
 
             return goodCandidates.OrderByDescending(candidate => candidate.Distance(cursorPos)).FirstOrDefault();
@@ -219,7 +219,7 @@ namespace xSaliceResurrected.ADC
             var goodCandidates = from p in myTumbleRangeCircle
                 select new Vector2(p.X, p.Y).To3D() into v3
                 let dist = v3.Distance(targetPosition)
-                where dist > menu.Item("QMinDist", true).GetValue<Slider>().Value && dist < 500
+                where dist > Menu.Item("QMinDist", true).GetValue<Slider>().Value && dist < 500
                 select v3;
 
             return goodCandidates.OrderBy(candidate => candidate.Distance(Game.CursorPos)).FirstOrDefault();
@@ -238,7 +238,7 @@ namespace xSaliceResurrected.ADC
         {
             return
                 !ObjectManager.Get<Obj_AI_Hero>()
-                    .Any(e => e.IsEnemy && e.Distance(position) < menu.Item("QMinDist", true).GetValue<Slider>().Value);
+                    .Any(e => e.IsEnemy && e.Distance(position) < Menu.Item("QMinDist", true).GetValue<Slider>().Value);
         }
         private Obj_AI_Hero GetEnemyWith2W()
         {
@@ -275,8 +275,8 @@ namespace xSaliceResurrected.ADC
             //values for pred calc pP = player position; p = enemy position; pD = push distance
             var pP = ObjectManager.Player.ServerPosition;
             var p = hero.ServerPosition;
-            var pD = menu.Item("EPushDist", true).GetValue<Slider>().Value;
-            var mode = menu.Item("EMode", true).GetValue<StringList>().SelectedValue;
+            var pD = Menu.Item("EPushDist", true).GetValue<Slider>().Value;
+            var mode = Menu.Item("EMode", true).GetValue<StringList>().SelectedValue;
 
 
             if (mode == "PRADASMART" && (IsCollisionable(p.Extend(pP, -pD)) || IsCollisionable(p.Extend(pP, -pD / 2f)) ||
@@ -307,7 +307,7 @@ namespace xSaliceResurrected.ADC
                 }
                 else
                 {
-                    var hitchance = menu.Item("EHitchance", true).GetValue<Slider>().Value;
+                    var hitchance = Menu.Item("EHitchance", true).GetValue<Slider>().Value;
                     var angle = 0.20 * hitchance;
                     const float travelDistance = 0.5f;
                     var alpha = new Vector2((float)(p.X + travelDistance * Math.Cos(Math.PI / 180 * angle)),
@@ -333,7 +333,7 @@ namespace xSaliceResurrected.ADC
                     (hero.IsWindingUp))
                     return true;
 
-                var hitchance = menu.Item("EHitchance", true).GetValue<Slider>().Value;
+                var hitchance = Menu.Item("EHitchance", true).GetValue<Slider>().Value;
                 var angle = 0.20 * hitchance;
                 const float travelDistance = 0.5f;
                 var alpha = new Vector2((float)(p.X + travelDistance * Math.Cos(Math.PI / 180 * angle)),
@@ -356,7 +356,7 @@ namespace xSaliceResurrected.ADC
                     (hero.IsWindingUp))
                     return true;
 
-                var hitchance = menu.Item("EHitchance", true).GetValue<Slider>().Value;
+                var hitchance = Menu.Item("EHitchance", true).GetValue<Slider>().Value;
                 var angle = 0.20 * hitchance;
                 const float travelDistance = 0.5f;
                 var alpha = new Vector2((float)(p.X + travelDistance * Math.Cos(Math.PI / 180 * angle)),
@@ -482,24 +482,24 @@ namespace xSaliceResurrected.ADC
 
         protected override void AfterAttack(AttackableUnit unit, AttackableUnit target)
         {
-            if (target is Obj_AI_Hero && (menu.Item("UseQCombo", true).GetValue<bool>() &&
-                 menu.Item("Orbwalk", true).GetValue<KeyBind>().Active))
+            if (target is Obj_AI_Hero && (Menu.Item("UseQCombo", true).GetValue<bool>() &&
+                 Menu.Item("Orbwalk", true).GetValue<KeyBind>().Active))
             {
                 if (Q.IsReady())
                 {
                     Q.Cast(GetSafeTumblePos((Obj_AI_Hero) target));
                 }
             }
-            if ((menu.Item("Farm", true).GetValue<KeyBind>().Active && menu.Item("UseQHarass", true).GetValue<bool>()))
+            if ((Menu.Item("Farm", true).GetValue<KeyBind>().Active && Menu.Item("UseQHarass", true).GetValue<bool>()))
             {
                 var tg = target as Obj_AI_Hero;
                 if (Q.IsReady() && target is Obj_AI_Hero)
                 {
-                    var qMin = menu.Item("Q_Min_Stack", true).GetValue<Slider>().Value;
+                    var qMin = Menu.Item("Q_Min_Stack", true).GetValue<Slider>().Value;
                     if (qMin <= GetWBuffCount(tg) && IsSafeTumblePos(ObjectManager.Player.Position.Extend(tg.ServerPosition, 300)))
                         Q.Cast(tg.ServerPosition);
                 }
-                if (E.IsReady() && menu.Item("UseEHarass", true).GetValue<bool>() && target is Obj_AI_Hero && GetWBuffCount(tg) == 2)
+                if (E.IsReady() && Menu.Item("UseEHarass", true).GetValue<bool>() && target is Obj_AI_Hero && GetWBuffCount(tg) == 2)
                 {
                     E.Cast(tg);
                 }
@@ -519,7 +519,7 @@ namespace xSaliceResurrected.ADC
             if (!ManaManager.HasMana("LaneClear"))
                 return;
 
-            var useQ = menu.Item("UseQFarm", true).GetValue<bool>();
+            var useQ = Menu.Item("UseQFarm", true).GetValue<bool>();
             var cursorPos = Game.CursorPos;
 
             if (useQ && IsSafeTumblePos(cursorPos) && MinionManager.GetMinions(580, MinionTypes.All, MinionTeam.Enemy).Any(m => m.Health < ObjectManager.Player.GetAutoAttackDamage(m) && m.Health > 13))
@@ -532,9 +532,9 @@ namespace xSaliceResurrected.ADC
         {
             //check if player is dead
             if (Player.IsDead) return;
-            if (menu.Item("LaneClear", true).GetValue<KeyBind>().Active)
+            if (Menu.Item("LaneClear", true).GetValue<KeyBind>().Active)
                 Farm();
-            if (menu.Item("JungleClearActiveT", true).GetValue<KeyBind>().Active &&
+            if (Menu.Item("JungleClearActiveT", true).GetValue<KeyBind>().Active &&
                 Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
                 JungleClear();
             if (E.IsReady())
@@ -548,7 +548,7 @@ namespace xSaliceResurrected.ADC
 
         protected override void Interrupter_OnPosibleToInterrupt(Obj_AI_Hero unit, Interrupter2.InterruptableTargetEventArgs spell)
         {
-            if (!menu.Item("UseInt", true).GetValue<bool>()) return;
+            if (!Menu.Item("UseInt", true).GetValue<bool>()) return;
 
             if (Player.Distance(unit.Position) < E.Range && spell.DangerLevel >= Interrupter2.DangerLevel.High)
             {
@@ -559,7 +559,7 @@ namespace xSaliceResurrected.ADC
 
         protected override void AntiGapcloser_OnEnemyGapcloser(ActiveGapcloser gapcloser)
         {
-            if (menu.Item("antigc" + gapcloser.Sender.ChampionName, true)
+            if (Menu.Item("antigc" + gapcloser.Sender.ChampionName, true)
                 .GetValue<bool>())
             {
                 if (ObjectManager.Player.Distance(gapcloser.End) < 425)

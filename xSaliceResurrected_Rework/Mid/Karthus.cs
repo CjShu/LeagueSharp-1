@@ -50,7 +50,7 @@ namespace xSaliceResurrected.Mid
                 keys.AddItem(new MenuItem("wTar", "Cast W On Selected", true).SetValue(new KeyBind("W".ToCharArray()[0], KeyBindType.Press)));
                 keys.AddItem(new MenuItem("LastHitQ", "Last Hith Q", true).SetValue(new KeyBind("A".ToCharArray()[0], KeyBindType.Press)));
                 keys.AddItem(new MenuItem("LaneClear", "Farm!", true).SetValue(new KeyBind("X".ToCharArray()[0], KeyBindType.Press)));
-                menu.AddSubMenu(keys);
+                Menu.AddSubMenu(keys);
             }
 
             //Spell Menu
@@ -88,7 +88,7 @@ namespace xSaliceResurrected.Mid
                     spells.AddSubMenu(rMenu);
                 }
 
-                menu.AddSubMenu(spells);
+                Menu.AddSubMenu(spells);
             }
 
             //Combo menu:
@@ -97,7 +97,7 @@ namespace xSaliceResurrected.Mid
                 combo.AddItem(new MenuItem("UseQCombo", "Use Q", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseWCombo", "Use W", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseECombo", "Use E", true).SetValue(true));
-                menu.AddSubMenu(combo);
+                Menu.AddSubMenu(combo);
             }
 
             //Harass menu:
@@ -107,7 +107,7 @@ namespace xSaliceResurrected.Mid
                 harass.AddItem(new MenuItem("UseWHarass", "Use W", true).SetValue(false));
                 harass.AddItem(new MenuItem("UseEHarass", "Use E", true).SetValue(true));
                 ManaManager.AddManaManagertoMenu(harass, "Harass", 30);
-                menu.AddSubMenu(harass);
+                Menu.AddSubMenu(harass);
             }
 
             //Farming menu:
@@ -116,7 +116,7 @@ namespace xSaliceResurrected.Mid
                 farm.AddItem(new MenuItem("UseQFarm", "Use Q", true).SetValue(false));
                 farm.AddItem(new MenuItem("UseEFarm", "Use E", true).SetValue(false));
                 ManaManager.AddManaManagertoMenu(harass, "Farm", 30);
-                menu.AddSubMenu(farm);
+                Menu.AddSubMenu(farm);
             }
 
             //Misc Menu:
@@ -125,7 +125,7 @@ namespace xSaliceResurrected.Mid
                 misc.AddSubMenu(AoeSpellManager.AddHitChanceMenuCombo(true, false, false, false));
                 misc.AddItem(new MenuItem("UseGap", "Use W for GapCloser", true).SetValue(true));
                 misc.AddItem(new MenuItem("smartKS", "Use Smart KS System", true).SetValue(true));
-                menu.AddSubMenu(misc);
+                Menu.AddSubMenu(misc);
             }
 
             //Drawings menu:
@@ -155,7 +155,7 @@ namespace xSaliceResurrected.Mid
                         DamageIndicator.Fill = eventArgs.GetNewValue<Circle>().Active;
                         DamageIndicator.FillColor = eventArgs.GetNewValue<Circle>().Color;
                     };
-                menu.AddSubMenu(drawMenu);
+                Menu.AddSubMenu(drawMenu);
             }
 
             var customMenu = new Menu("Custom Perma Show", "Custom Perma Show");
@@ -168,7 +168,7 @@ namespace xSaliceResurrected.Mid
                 customMenu.AddItem(myCust.AddToMenu("Laneclear Active: ", "LaneClear"));
                 customMenu.AddItem(myCust.AddToMenu("W Target Active: ", "wTar"));
                 customMenu.AddItem(myCust.AddToMenu("Lasthit Q Active: ", "LastHitQ"));
-                menu.AddSubMenu(customMenu);
+                Menu.AddSubMenu(customMenu);
             }
         }
 
@@ -195,14 +195,14 @@ namespace xSaliceResurrected.Mid
 
         private void Combo()
         {
-            UseSpells(menu.Item("UseQCombo", true).GetValue<bool>(), menu.Item("UseWCombo", true).GetValue<bool>(),
-                menu.Item("UseECombo", true).GetValue<bool>(), "Combo");
+            UseSpells(Menu.Item("UseQCombo", true).GetValue<bool>(), Menu.Item("UseWCombo", true).GetValue<bool>(),
+                Menu.Item("UseECombo", true).GetValue<bool>(), "Combo");
         }
 
         private void Harass()
         {
-            UseSpells(menu.Item("UseQHarass", true).GetValue<bool>(), menu.Item("UseWHarass", true).GetValue<bool>(),
-                menu.Item("UseEHarass", true).GetValue<bool>(), "Harass");
+            UseSpells(Menu.Item("UseQHarass", true).GetValue<bool>(), Menu.Item("UseWHarass", true).GetValue<bool>(),
+                Menu.Item("UseEHarass", true).GetValue<bool>(), "Harass");
         }
 
         private void UseSpells(bool useQ, bool useW, bool useE, string source)
@@ -308,7 +308,7 @@ namespace xSaliceResurrected.Mid
             {
                 if (GetUltDmg(enemy) > enemy.Health - 30)
                 {
-                    if (menu.Item("rPing", true).GetValue<bool>() && Utils.TickCount - _lastNotification > 5000)
+                    if (Menu.Item("rPing", true).GetValue<bool>() && Utils.TickCount - _lastNotification > 5000)
                     {
                         if (Utils.TickCount - _lastNotification > 0)
                         {
@@ -336,8 +336,8 @@ namespace xSaliceResurrected.Mid
 
         private bool HasManaForE(string source)
         {
-            var eManaCombo = menu.Item("eManaCombo", true).GetValue<Slider>().Value;
-            var eManaHarass = menu.Item("eManaHarass", true).GetValue<Slider>().Value;
+            var eManaCombo = Menu.Item("eManaCombo", true).GetValue<Slider>().Value;
+            var eManaHarass = Menu.Item("eManaHarass", true).GetValue<Slider>().Value;
 
             if (source == "Combo" && Player.ManaPercent > eManaCombo)
                 return true;
@@ -350,8 +350,8 @@ namespace xSaliceResurrected.Mid
 
         private void AutoQ()
         {
-            var qDashing = menu.Item("qImmo", true).GetValue<bool>();
-            var qImmo = menu.Item("qDash", true).GetValue<bool>();
+            var qDashing = Menu.Item("qImmo", true).GetValue<bool>();
+            var qImmo = Menu.Item("qDash", true).GetValue<bool>();
 
             if (!Q.IsReady())
                 return;
@@ -400,7 +400,7 @@ namespace xSaliceResurrected.Mid
 
         private void SmartKs()
         {
-            if (!menu.Item("smartKS", true).GetValue<bool>())
+            if (!Menu.Item("smartKS", true).GetValue<bool>())
                 return;
 
             foreach (Obj_AI_Hero target in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsValidTarget(Q.Range) && !x.HasBuffOfType(BuffType.Invulnerability)).OrderByDescending(GetComboDamage))
@@ -434,7 +434,7 @@ namespace xSaliceResurrected.Mid
 
         private void CheckEState()
         {
-            if (ESpell.ToggleState == 1 || Utils.TickCount - _lastE < menu.Item("EDelay", true).GetValue<Slider>().Value)
+            if (ESpell.ToggleState == 1 || Utils.TickCount - _lastE < Menu.Item("EDelay", true).GetValue<Slider>().Value)
                 return;
 
             var target = ObjectManager.Get<Obj_AI_Hero>().Count(x => x.IsValidTarget(E.Range));
@@ -444,7 +444,7 @@ namespace xSaliceResurrected.Mid
                 return;
 
             //check if around minion
-            if (menu.Item("LaneClear", true).GetValue<KeyBind>().Active)
+            if (Menu.Item("LaneClear", true).GetValue<KeyBind>().Active)
             {
                 var allMinionsE = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, E.Range,
                 MinionTypes.All, MinionTeam.NotAlly);
@@ -453,7 +453,7 @@ namespace xSaliceResurrected.Mid
                     return;
             }
 
-            if (Utils.TickCount - (_lastE + 250) < menu.Item("EDelay", true).GetValue<Slider>().Value)
+            if (Utils.TickCount - (_lastE + 250) < Menu.Item("EDelay", true).GetValue<Slider>().Value)
                 E.Cast();
 
             if (E.IsReady() && ESpell.ToggleState != 1)
@@ -474,30 +474,30 @@ namespace xSaliceResurrected.Mid
 
             CheckEState();
 
-            if (menu.Item("wTower", true).GetValue<bool>())
+            if (Menu.Item("wTower", true).GetValue<bool>())
                 CheckUnderTower();
 
-            if (menu.Item("Orbwalk", true).GetValue<KeyBind>().Active)
+            if (Menu.Item("Orbwalk", true).GetValue<KeyBind>().Active)
             {
                 Combo();
             }
             else
             {
 
-                if (menu.Item("LastHitQ", true).GetValue<KeyBind>().Active)
+                if (Menu.Item("LastHitQ", true).GetValue<KeyBind>().Active)
                     LastHitQ();
 
-                if (menu.Item("LaneClear", true).GetValue<KeyBind>().Active)
+                if (Menu.Item("LaneClear", true).GetValue<KeyBind>().Active)
                     Farm();
 
-                if (menu.Item("Farm", true).GetValue<KeyBind>().Active)
+                if (Menu.Item("Farm", true).GetValue<KeyBind>().Active)
                     Harass();
 
-                if (menu.Item("FarmT", true).GetValue<KeyBind>().Active)
+                if (Menu.Item("FarmT", true).GetValue<KeyBind>().Active)
                     Harass();
             }
 
-            if (menu.Item("wTar", true).GetValue<KeyBind>().Active)
+            if (Menu.Item("wTar", true).GetValue<KeyBind>().Active)
             {
                 Obj_AI_Hero target = null;
 
@@ -550,8 +550,8 @@ namespace xSaliceResurrected.Mid
             List<Obj_AI_Base> allMinionsE = MinionManager.GetMinions(Player.ServerPosition, E.Range,
                 MinionTypes.All, MinionTeam.NotAlly);
 
-            var useQ = menu.Item("UseQFarm", true).GetValue<bool>();
-            var useE = menu.Item("UseEFarm", true).GetValue<bool>();
+            var useQ = Menu.Item("UseQFarm", true).GetValue<bool>();
+            var useE = Menu.Item("UseEFarm", true).GetValue<bool>();
 
             if (useQ && Q.IsReady())
             {
@@ -571,19 +571,19 @@ namespace xSaliceResurrected.Mid
         {
             foreach (Spell spell in SpellList)
             {
-                var menuItem = menu.Item(spell.Slot + "Range", true).GetValue<Circle>();
+                var menuItem = Menu.Item(spell.Slot + "Range", true).GetValue<Circle>();
                 if (menuItem.Active)
                     Render.Circle.DrawCircle(Player.Position, spell.Range, menuItem.Color);
             }
 
-            if (R.IsReady() && menu.Item("drawUlt", true).GetValue<bool>())
+            if (R.IsReady() && Menu.Item("drawUlt", true).GetValue<bool>())
                 DrawEnemyKillable();
         }
 
 
         protected override void AntiGapcloser_OnEnemyGapcloser(ActiveGapcloser gapcloser)
         {
-            if (!menu.Item("UseGap", true).GetValue<bool>()) return;
+            if (!Menu.Item("UseGap", true).GetValue<bool>()) return;
 
             if (W.IsReady() && gapcloser.Sender.IsValidTarget(W.Range))
                 W.Cast(gapcloser.Sender);

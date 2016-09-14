@@ -56,7 +56,7 @@ namespace xSaliceResurrected.Mid
                 key.AddItem(new MenuItem("LastHitQQ", "Last hit with Q", true).SetValue(new KeyBind("A".ToCharArray()[0], KeyBindType.Press)));
                 key.AddItem(new MenuItem("Flee", "RUN FOR YOUR LIFE!", true).SetValue(new KeyBind("Z".ToCharArray()[0], KeyBindType.Press)));
                 //add to menu
-                menu.AddSubMenu(key);
+                Menu.AddSubMenu(key);
             }
 
             //Spell Menu
@@ -96,7 +96,7 @@ namespace xSaliceResurrected.Mid
 
                     spellMenu.AddSubMenu(rMenu);
                 }
-                menu.AddSubMenu(spellMenu);
+                Menu.AddSubMenu(spellMenu);
             }
 
             //Combo menu:
@@ -107,7 +107,7 @@ namespace xSaliceResurrected.Mid
                 combo.AddItem(new MenuItem("UseECombo", "Use E", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseRCombo", "Use R", true).SetValue(true));
                 combo.AddItem(new MenuItem("autoRCombo", "Use R if hit", true).SetValue(new Slider(2, 1, 5)));
-                menu.AddSubMenu(combo);
+                Menu.AddSubMenu(combo);
             }
             //Harass menu:
             var harass = new Menu("Harass", "Harass");
@@ -116,7 +116,7 @@ namespace xSaliceResurrected.Mid
                 harass.AddItem(new MenuItem("UseWHarass", "Use W", true).SetValue(false));
                 harass.AddItem(new MenuItem("UseEHarass", "Use E", true).SetValue(true));
                 ManaManager.AddManaManagertoMenu(harass, "Harass", 30);
-                menu.AddSubMenu(harass);
+                Menu.AddSubMenu(harass);
             }
             //Farming menu:
             var farm = new Menu("Farm", "Farm");
@@ -125,7 +125,7 @@ namespace xSaliceResurrected.Mid
                 farm.AddItem(new MenuItem("UseWFarm", "Use W", true).SetValue(false));
                 farm.AddItem(new MenuItem("qFarm", "Only Q/W if > minion", true).SetValue(new Slider(3, 0, 5)));
                 ManaManager.AddManaManagertoMenu(farm, "Farm", 50);
-                menu.AddSubMenu(farm);
+                Menu.AddSubMenu(farm);
             }
 
             //intiator list:
@@ -141,7 +141,7 @@ namespace xSaliceResurrected.Mid
                         }
                     }
                 }
-                menu.AddSubMenu(initator);
+                Menu.AddSubMenu(initator);
             }
 
             //Misc Menu:
@@ -180,7 +180,7 @@ namespace xSaliceResurrected.Mid
                     };
 
                 //add to menu
-                menu.AddSubMenu(drawing);
+                Menu.AddSubMenu(drawing);
             }
 
             var customMenu = new Menu("Custom Perma Show", "Custom Perma Show");
@@ -195,7 +195,7 @@ namespace xSaliceResurrected.Mid
                 customMenu.AddItem(myCust.AddToMenu("LastHit Active: ", "LastHitQQ"));
                 customMenu.AddItem(myCust.AddToMenu("Escape Active: ", "Flee"));
                 customMenu.AddItem(myCust.AddToMenu("R Multi Only: ", "killR"));
-                menu.AddSubMenu(customMenu);
+                Menu.AddSubMenu(customMenu);
             }
         }
 
@@ -223,13 +223,13 @@ namespace xSaliceResurrected.Mid
         private void Combo()
         {
             //Orbwalker.SetAttacks(!(Q.IsReady()));
-            UseSpells(menu.Item("UseQCombo", true).GetValue<bool>(), menu.Item("UseWCombo", true).GetValue<bool>(),
-                menu.Item("UseECombo", true).GetValue<bool>(), menu.Item("UseRCombo", true).GetValue<bool>(), "Combo");
+            UseSpells(Menu.Item("UseQCombo", true).GetValue<bool>(), Menu.Item("UseWCombo", true).GetValue<bool>(),
+                Menu.Item("UseECombo", true).GetValue<bool>(), Menu.Item("UseRCombo", true).GetValue<bool>(), "Combo");
         }
         private void Harass()
         {
-            UseSpells(menu.Item("UseQHarass", true).GetValue<bool>(), menu.Item("UseWHarass", true).GetValue<bool>(),
-                menu.Item("UseEHarass", true).GetValue<bool>(), false, "Harass");
+            UseSpells(Menu.Item("UseQHarass", true).GetValue<bool>(), Menu.Item("UseWHarass", true).GetValue<bool>(),
+                Menu.Item("UseEHarass", true).GetValue<bool>(), false, "Harass");
         }
 
         private void UseSpells(bool useQ, bool useW, bool useE, bool useR, String source)
@@ -277,14 +277,14 @@ namespace xSaliceResurrected.Mid
 
             if (useR && target != null && R.IsReady())
             {
-                if (menu.Item("intR" + target.CharData.BaseSkinName, true) != null)
+                if (Menu.Item("intR" + target.CharData.BaseSkinName, true) != null)
                 {
                     foreach (
                         Obj_AI_Hero enemy in
                             ObjectManager.Get<Obj_AI_Hero>()
                                 .Where(x => Player.Distance(x.Position) < 1500 && x.IsValidTarget() && x.IsEnemy && !x.IsDead))
                     {
-                        if (!enemy.IsDead && menu.Item("intR" + enemy.CharData.BaseSkinName, true).GetValue<bool>())
+                        if (!enemy.IsDead && Menu.Item("intR" + enemy.CharData.BaseSkinName, true).GetValue<bool>())
                         {
                             CastR(enemy, true);
                             return;
@@ -292,9 +292,9 @@ namespace xSaliceResurrected.Mid
                     }
                 }
 
-                if (!(menu.Item("killR", true).GetValue<KeyBind>().Active)) //check if multi
+                if (!(Menu.Item("killR", true).GetValue<KeyBind>().Active)) //check if multi
                 {
-                    if (menu.Item("overK", true).GetValue<bool>() &&
+                    if (Menu.Item("overK", true).GetValue<bool>() &&
                         (Player.GetSpellDamage(target, SpellSlot.Q) + Player.GetSpellDamage(target, SpellSlot.W)) >= target.Health)
                     {
                         return;
@@ -328,7 +328,7 @@ namespace xSaliceResurrected.Mid
             {
                 if (checkAdditional)
                 {
-                    var add = menu.Item("AdditonalTargets", true).GetValue<Slider>().Value + 1;
+                    var add = Menu.Item("AdditonalTargets", true).GetValue<Slider>().Value + 1;
 
                     if (CountR() >= add)
                         R.Cast();
@@ -344,7 +344,7 @@ namespace xSaliceResurrected.Mid
         {
             if (_isBallMoving) return;
 
-            if (menu.Item("saveEMana", true).GetValue<bool>() && Player.Mana - ESpell.ManaCost < QSpell.ManaCost + WSpell.ManaCost)
+            if (Menu.Item("saveEMana", true).GetValue<bool>() && Player.Mana - ESpell.ManaCost < QSpell.ManaCost + WSpell.ManaCost)
                 return;
 
             Obj_AI_Hero etarget = Player;
@@ -363,7 +363,7 @@ namespace xSaliceResurrected.Mid
                                     .Where(x => x.IsAlly && Player.Distance(x.ServerPosition) <= E.Range && !x.IsMe))
                         { 
                             //dmg enemy with E
-                            if (menu.Item("UseEDmg", true).GetValue<bool>())
+                            if (Menu.Item("UseEDmg", true).GetValue<bool>())
                             {
                                 PredictionOutput prediction3 = Util.GetP(Player.ServerPosition, E, target, true);
                                 Object[] obj = Util.VectorPointProjectionOnLineSegment(Player.ServerPosition.To2D(),
@@ -398,7 +398,7 @@ namespace xSaliceResurrected.Mid
                     break;
                 case 1:
                     //dmg enemy with E
-                    if (menu.Item("UseEDmg", true).GetValue<bool>())
+                    if (Menu.Item("UseEDmg", true).GetValue<bool>())
                     {
                         PredictionOutput prediction = Util.GetP(_currentBallPosition, E, target, true);
                         Object[] obj = Util.VectorPointProjectionOnLineSegment(_currentBallPosition.To2D(),
@@ -435,7 +435,7 @@ namespace xSaliceResurrected.Mid
                                 .Where(x => x.IsAlly && Player.Distance(x.ServerPosition) <= E.Range && !x.IsMe))
                     {
                         //dmg enemy with E
-                        if (menu.Item("UseEDmg", true).GetValue<bool>())
+                        if (Menu.Item("UseEDmg", true).GetValue<bool>())
                         {
                             PredictionOutput prediction2 = Util.GetP(_currentBallPosition, E, target, true);
                             Object[] obj = Util.VectorPointProjectionOnLineSegment(_currentBallPosition.To2D(),
@@ -489,7 +489,7 @@ namespace xSaliceResurrected.Mid
             if (!W.IsReady() || _isBallMoving)
                 return;
 
-            int minHit = menu.Item("autoW", true).GetValue<Slider>().Value;
+            int minHit = Menu.Item("autoW", true).GetValue<Slider>().Value;
 
             int hit = (from x in ObjectManager.Get<Obj_AI_Hero>().Where(champ => champ.IsValidTarget(1500) && champ.IsVisible && !champ.IsZombie)
                        select Util.GetPCircle(_currentBallPosition, W, x, true)).Count(prediction => W.IsReady() && prediction.UnitPosition.Distance(_currentBallPosition) < W.Width);
@@ -503,7 +503,7 @@ namespace xSaliceResurrected.Mid
             if (!R.IsReady() || _isBallMoving)
                 return;
 
-            int minHit = menu.Item("autoRCombo", true).GetValue<Slider>().Value;
+            int minHit = Menu.Item("autoRCombo", true).GetValue<Slider>().Value;
 
             int hit = (from x in ObjectManager.Get<Obj_AI_Hero>().Where(champ => champ.IsValidTarget(1500) && champ.IsVisible && !champ.IsZombie)
                        select Util.GetPCircle(_currentBallPosition, R, x, true)).Count(prediction => R.IsReady() && prediction.UnitPosition.Distance(_currentBallPosition) < R.Width);
@@ -517,7 +517,7 @@ namespace xSaliceResurrected.Mid
             if (!R.IsReady() || _isBallMoving)
                 return;
 
-            int minHit = menu.Item("autoR", true).GetValue<Slider>().Value;
+            int minHit = Menu.Item("autoR", true).GetValue<Slider>().Value;
 
             int hit = (from x in ObjectManager.Get<Obj_AI_Hero>().Where(champ => champ.IsValidTarget(1500) && champ.IsVisible && !champ.IsZombie)
                        select Util.GetPCircle(_currentBallPosition, R, x, true)).Count(prediction => R.IsReady() && prediction.UnitPosition.Distance(_currentBallPosition) < R.Width);
@@ -571,9 +571,9 @@ namespace xSaliceResurrected.Mid
             List<Obj_AI_Base> allMinionsW = MinionManager.GetMinions(ObjectManager.Player.ServerPosition,
                 Q.Range + Q.Width);
 
-            var useQ = menu.Item("UseQFarm", true).GetValue<bool>();
-            var useW = menu.Item("UseWFarm", true).GetValue<bool>();
-            int min = menu.Item("qFarm", true).GetValue<Slider>().Value;
+            var useQ = Menu.Item("UseQFarm", true).GetValue<bool>();
+            var useW = Menu.Item("UseWFarm", true).GetValue<bool>();
+            int min = Menu.Item("qFarm", true).GetValue<Slider>().Value;
 
             if (useQ && Q.IsReady())
             {
@@ -614,27 +614,27 @@ namespace xSaliceResurrected.Mid
 
             CheckRMecGlobal();
 
-            if (menu.Item("Flee", true).GetValue<KeyBind>().Active)
+            if (Menu.Item("Flee", true).GetValue<KeyBind>().Active)
             {
                 Escape();
             }
-            else if (menu.Item("Orbwalk", true).GetValue<KeyBind>().Active)
+            else if (Menu.Item("Orbwalk", true).GetValue<KeyBind>().Active)
             {
                 CheckRMec();
                 Combo();
             }
             else
             {
-                if (menu.Item("Farm", true).GetValue<KeyBind>().Active ||
-                    menu.Item("FarmT", true).GetValue<KeyBind>().Active)
+                if (Menu.Item("Farm", true).GetValue<KeyBind>().Active ||
+                    Menu.Item("FarmT", true).GetValue<KeyBind>().Active)
                     Harass();
 
-                if (menu.Item("LaneClear", true).GetValue<KeyBind>().Active)
+                if (Menu.Item("LaneClear", true).GetValue<KeyBind>().Active)
                 {
                     Farm();
                 }
 
-                if (menu.Item("LastHitQQ", true).GetValue<KeyBind>().Active)
+                if (Menu.Item("LastHitQQ", true).GetValue<KeyBind>().Active)
                 {
                     LastHit();
                 }
@@ -671,7 +671,7 @@ namespace xSaliceResurrected.Mid
         {
             foreach (Spell spell in SpellList)
             {
-                var menuItem = menu.Item(spell.Slot + "Range", true).GetValue<Circle>();
+                var menuItem = Menu.Item(spell.Slot + "Range", true).GetValue<Circle>();
                 if ((spell.Slot == SpellSlot.R && menuItem.Active) || (spell.Slot == SpellSlot.W && menuItem.Active))
                 {
                     if (_ballStatus == 0)
@@ -689,7 +689,7 @@ namespace xSaliceResurrected.Mid
         protected override void Obj_AI_Base_OnProcessSpellCast(Obj_AI_Base unit, GameObjectProcessSpellCastEventArgs args)
         {
             //Shield Ally
-            if (!menu.Item("saveEMana", true).GetValue<bool>() || Player.Mana - ESpell.ManaCost >= QSpell.ManaCost + WSpell.ManaCost)
+            if (!Menu.Item("saveEMana", true).GetValue<bool>() || Player.Mana - ESpell.ManaCost >= QSpell.ManaCost + WSpell.ManaCost)
             {
                 if (unit.IsEnemy && unit.Type == GameObjectType.obj_AI_Hero && E.IsReady())
                 {
@@ -701,11 +701,11 @@ namespace xSaliceResurrected.Mid
                                         Player.Distance(x.Position) < E.Range && Player.Distance(unit.Position) < 1500 &&
                                         x.IsAlly && !x.IsDead).OrderBy(x => x.Distance(args.End)))
                     {
-                        if (menu.Item("shield" + ally.CharData.BaseSkinName, true) != null)
+                        if (Menu.Item("shield" + ally.CharData.BaseSkinName, true) != null)
                         {
-                            if (menu.Item("shield" + ally.CharData.BaseSkinName, true).GetValue<bool>())
+                            if (Menu.Item("shield" + ally.CharData.BaseSkinName, true).GetValue<bool>())
                             {
-                                int hp = menu.Item("eAllyIfHP", true).GetValue<Slider>().Value;
+                                int hp = Menu.Item("eAllyIfHP", true).GetValue<Slider>().Value;
 
                                 if (ally.Distance(args.End) < 500 && ally.HealthPercent <= hp)
                                 {
@@ -723,7 +723,7 @@ namespace xSaliceResurrected.Mid
             //intiator
             if (unit.IsAlly)
             {
-                if (Initiator.InitatorList.Where(spell => args.SData.Name == spell.SDataName).Where(spell => menu.Item(spell.SpellName, true).GetValue<bool>()).Any(spell => E.IsReady() && Player.Distance(unit.Position) < E.Range))
+                if (Initiator.InitatorList.Where(spell => args.SData.Name == spell.SDataName).Where(spell => Menu.Item(spell.SpellName, true).GetValue<bool>()).Any(spell => E.IsReady() && Player.Distance(unit.Position) < E.Range))
                 {
                     E.CastOnUnit(unit);
                     _isBallMoving = true;
@@ -751,7 +751,7 @@ namespace xSaliceResurrected.Mid
 
         protected override void Interrupter_OnPosibleToInterrupt(Obj_AI_Hero unit, Interrupter2.InterruptableTargetEventArgs spell)
         {
-            if (!menu.Item("UseInt", true).GetValue<bool>() || _isBallMoving) return;
+            if (!Menu.Item("UseInt", true).GetValue<bool>() || _isBallMoving) return;
 
             if (Player.Distance(unit.Position) < R.Width)
             {
@@ -771,7 +771,7 @@ namespace xSaliceResurrected.Mid
             if (_isBallMoving)
                 args.Process = false;
 
-            if (CountR() == 0 && menu.Item("blockR", true).GetValue<bool>())
+            if (CountR() == 0 && Menu.Item("blockR", true).GetValue<bool>())
             {
                 //Block packet if enemies hit is 0
                 args.Process = false;

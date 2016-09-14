@@ -1,12 +1,11 @@
-﻿using LeagueSharp;
-using LeagueSharp.Common;
-using System;
-using System.Reflection;
-using xSaliceResurrected.Base;
-using xSaliceResurrected.Managers;
-
-namespace xSaliceResurrected
+﻿namespace xSaliceResurrected
 {
+    using LeagueSharp;
+    using LeagueSharp.Common;
+    using System;
+    using Base;
+    using Managers;
+
     public class Champion : SpellBase
     {
         protected readonly Obj_AI_Hero Player = ObjectManager.Player;
@@ -44,37 +43,31 @@ namespace xSaliceResurrected
                 GameOnLoad();
         }
 
-        //Orbwalker instance
         public static Orbwalking.Orbwalker Orbwalker;
-
-        //Menu
-        public static Menu menu;
-        private static readonly Menu OrbwalkerMenu = new Menu("Orbwalker", "Orbwalker");
+        public static Menu Menu;
 
         private void GameOnLoad()
         {
             Game.PrintChat("<font color = \"#FFB6C1\">xSalice's Ressurected AIO</font> by <font color = \"#00FFFF\">xSalice</font>, imsosharp HotFix, NightMoon Rework!");
             Game.PrintChat("---------------------------------");
-            Game.PrintChat("Change Log: Syndra Change(just little), Default All SkillSlot Hitchance is VeryHigh, Fix Azir Q and Update Q Logic");
+            Game.PrintChat("Change Log: Azir -> 2 Insec Mode, LaneClear JungleClear Fix, Lucian -> Fix LaneClear Q, Anivia -> Rewrite Combo and Harass Logic!");
 
-            menu = new Menu("xSalice's " + Player.ChampionName, Player.ChampionName, true);
+            Menu = new Menu("xSalice's " + Player.ChampionName, Player.ChampionName, true);
 
-            //Orbwalker submenu
-            menu.AddSubMenu(OrbwalkerMenu);
-            Orbwalker = new Orbwalking.Orbwalker(OrbwalkerMenu);
+            Menu.AddSubMenu(new Menu("Orbwalker", "Orbwalker"));
+            Orbwalker = new Orbwalking.Orbwalker(Menu.SubMenu("Orbwalker"));
 
-            //Item Menu
             var itemMenu = new Menu("Activator", "Items");
             ItemManager.AddToMenu(itemMenu);
-            menu.AddSubMenu(itemMenu);
+            Menu.AddSubMenu(itemMenu);
 
-            menu.AddToMainMenu();
+            Menu.AddToMainMenu();
             var pluginLoader = new PluginLoader();
         }
 
+        #region 
         private void Drawing_OnDrawEvent(EventArgs args)
         {
-            //check if player is dead
             if (Player.IsDead) return;
 
             Drawing_OnDraw(args);
@@ -82,7 +75,7 @@ namespace xSaliceResurrected
 
         protected virtual void Drawing_OnDraw(EventArgs args)
         {
-            //for champs to use
+      
         }
 
         private void Obj_AI_Base_OnDoCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
@@ -102,7 +95,7 @@ namespace xSaliceResurrected
 
         protected virtual void AntiGapcloser_OnEnemyGapcloser(ActiveGapcloser gapcloser)
         {
-            //for champs to use
+       
         }
 
         private void Interrupter_OnPosibleToInterruptEvent(Obj_AI_Hero unit, Interrupter2.InterruptableTargetEventArgs spell)
@@ -112,17 +105,11 @@ namespace xSaliceResurrected
 
         protected virtual void Interrupter_OnPosibleToInterrupt(Obj_AI_Hero unit, Interrupter2.InterruptableTargetEventArgs spell)
         {
-            //for champs to use
+
         }
 
         private void Game_OnGameUpdateEvent(EventArgs args)
         {
-            /*
-            if (LagManager.Enabled && Player.ChampionName.ToLower() != "azir" && Player.ChampionName.ToLower() != "lucian")
-                if (!LagManager.ReadyState)
-                    return;*/
-
-            //check if player is dead
             if (Player.IsDead && Player.ChampionName.ToLower() != "karthus") return;
 
             Game_OnGameUpdate(args);
@@ -130,7 +117,6 @@ namespace xSaliceResurrected
 
         protected virtual void Game_OnGameUpdate(EventArgs args)
         {
-            //for champs to use
 
         }
 
@@ -141,7 +127,6 @@ namespace xSaliceResurrected
 
         protected virtual void GameObject_OnCreate(GameObject sender, EventArgs args)
         {
-            //for champs to use
 
         }
 
@@ -152,7 +137,7 @@ namespace xSaliceResurrected
 
         protected virtual void GameObject_OnDelete(GameObject sender, EventArgs args)
         {
-            //for champs to use
+
         }
 
         private void Obj_AI_Base_OnProcessSpellCastEvent(Obj_AI_Base unit, GameObjectProcessSpellCastEventArgs args)
@@ -162,17 +147,7 @@ namespace xSaliceResurrected
 
         protected virtual void Obj_AI_Base_OnProcessSpellCast(Obj_AI_Base unit, GameObjectProcessSpellCastEventArgs args)
         {
-            //for champ use
 
-            /*
-            if (unit.IsMe)
-            {
-                Console.WriteLine(args.SData.Name);
-                Console.WriteLine(args.SData.MissileSpeed);
-                Console.WriteLine(args.SData.LineWidth);
-                Console.WriteLine(args.SData.CastRadius);
-                Console.WriteLine(args.SData.SpellCastTime);
-            }*/
         }
 
         private void AfterAttackEvent(AttackableUnit unit, AttackableUnit target)
@@ -182,7 +157,7 @@ namespace xSaliceResurrected
 
         protected virtual void AfterAttack(AttackableUnit unit, AttackableUnit target)
         {
-            //for champ use
+
         }
 
         private void BeforeAttackEvent(Orbwalking.BeforeAttackEventArgs args)
@@ -192,8 +167,9 @@ namespace xSaliceResurrected
 
         protected virtual void BeforeAttack(Orbwalking.BeforeAttackEventArgs args)
         {
-            //for champ use
+           
         }
+
         protected virtual void OnAttack(AttackableUnit unit, AttackableUnit target)
         {
             
@@ -206,7 +182,7 @@ namespace xSaliceResurrected
 
         protected virtual void ObjAiHeroOnOnIssueOrder(Obj_AI_Base sender, GameObjectIssueOrderEventArgs args)
         {
-            //for champ use
+           
         }
 
         private void Spellbook_OnUpdateChargedSpellEvent(Spellbook sender, SpellbookUpdateChargedSpellEventArgs args)
@@ -216,44 +192,33 @@ namespace xSaliceResurrected
 
         protected virtual void Spellbook_OnUpdateChargedSpell(Spellbook sender, SpellbookUpdateChargedSpellEventArgs args)
         {
-            //for champ use
+            
         }
 
         protected virtual void SpellbookOnOnCastSpell(Spellbook sender, SpellbookCastSpellEventArgs args)
         {
-            //for Champion used
+            
         }
 
         protected virtual void SpellbookOnOnStopCast(Spellbook sender, SpellbookStopCastEventArgs args)
         {
-            //for Champion used
+          
         }
 
-       protected virtual void ObjAiBaseOnOnBuffAdd(Obj_AI_Base sender, Obj_AI_BaseBuffAddEventArgs args)
+        protected virtual void ObjAiBaseOnOnBuffAdd(Obj_AI_Base sender, Obj_AI_BaseBuffAddEventArgs args)
         {
-            //for Champion used
-           /*
-           if (sender.IsMe)
-           {
-               Console.WriteLine(args.Buff.Name);
-           }*/
+
         }
 
         protected virtual void ObjAiBaseOnOnBuffRemove(Obj_AI_Base sender, Obj_AI_BaseBuffRemoveEventArgs args)
         {
-            //for Champion used
 
-            /*
-            if (sender.IsMe)
-            {
-                Console.WriteLine(args.Buff.Name);
-            }*/
         }
 
         protected virtual void ObjAiHeroOnOnDamage(AttackableUnit sender, AttackableUnitDamageEventArgs args)
         {
-            //for champ use
-        }
 
+        }
+        #endregion
     }
 }

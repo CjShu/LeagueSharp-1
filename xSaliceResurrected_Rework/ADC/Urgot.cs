@@ -42,7 +42,7 @@ namespace xSaliceResurrected.ADC
                 key.AddItem(new MenuItem("FarmT", "Harass (toggle)!", true).SetValue(new KeyBind("N".ToCharArray()[0], KeyBindType.Toggle)));
                 key.AddItem(new MenuItem("LaneClear", "Farm!", true).SetValue(new KeyBind("V".ToCharArray()[0], KeyBindType.Press)));
                 //add to menu
-                menu.AddSubMenu(key);
+                Menu.AddSubMenu(key);
             }
 
             var spellMenu = new Menu("SpellMenu", "SpellMenu");
@@ -74,7 +74,7 @@ namespace xSaliceResurrected.ADC
 
                     spellMenu.AddSubMenu(rMenu);
                 }
-                menu.AddSubMenu(spellMenu);
+                Menu.AddSubMenu(spellMenu);
             }
 
             var combo = new Menu("Combo", "Combo");
@@ -83,7 +83,7 @@ namespace xSaliceResurrected.ADC
                 combo.AddItem(new MenuItem("UseWCombo", "Use W", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseECombo", "Use E", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseRCombo", "Use R", true).SetValue(true));
-                menu.AddSubMenu(combo);
+                Menu.AddSubMenu(combo);
             }
 
             var harass = new Menu("Harass", "Harass");
@@ -92,7 +92,7 @@ namespace xSaliceResurrected.ADC
                 harass.AddItem(new MenuItem("UseWHarass", "Use W", true).SetValue(false));
                 harass.AddItem(new MenuItem("UseEHarass", "Use E", true).SetValue(true));
                 ManaManager.AddManaManagertoMenu(harass, "Harass", 50);
-                menu.AddSubMenu(harass);
+                Menu.AddSubMenu(harass);
             }
 
             var farm = new Menu("LaneClear", "LaneClear");
@@ -100,7 +100,7 @@ namespace xSaliceResurrected.ADC
                 farm.AddItem(new MenuItem("UseQFarm", "Use Q", true).SetValue(true));
                 farm.AddItem(new MenuItem("UseEFarm", "Use E", true).SetValue(false));
                 ManaManager.AddManaManagertoMenu(farm, "LaneClear", 50);
-                menu.AddSubMenu(farm);
+                Menu.AddSubMenu(farm);
             }
 
             var miscMenu = new Menu("Misc", "Misc");
@@ -110,7 +110,7 @@ namespace xSaliceResurrected.ADC
                 miscMenu.AddItem(new MenuItem("smartKS", "Smart KS", true).SetValue(true));
 
                 //add to menu
-                menu.AddSubMenu(miscMenu);
+                Menu.AddSubMenu(miscMenu);
             }
 
             var drawMenu = new Menu("Drawing", "Drawing");
@@ -141,7 +141,7 @@ namespace xSaliceResurrected.ADC
                         DamageIndicator.FillColor = eventArgs.GetNewValue<Circle>().Color;
                     };
 
-                menu.AddSubMenu(drawMenu);
+                Menu.AddSubMenu(drawMenu);
             }
 
             var customMenu = new Menu("Custom Perma Show", "Custom Perma Show");
@@ -153,7 +153,7 @@ namespace xSaliceResurrected.ADC
                 customMenu.AddItem(myCust.AddToMenu("Harass Active: ", "Farm"));
                 customMenu.AddItem(myCust.AddToMenu("Harass(T) Active: ", "FarmT"));
                 customMenu.AddItem(myCust.AddToMenu("Laneclear Active: ", "LaneClear"));
-                menu.AddSubMenu(customMenu);
+                Menu.AddSubMenu(customMenu);
             }
         }
 
@@ -174,14 +174,14 @@ namespace xSaliceResurrected.ADC
 
         private void Combo()
         {
-            UseSpells(menu.Item("UseQCombo", true).GetValue<bool>(), menu.Item("UseWCombo", true).GetValue<bool>(), 
-                menu.Item("UseECombo", true).GetValue<bool>(), menu.Item("UseRCombo", true).GetValue<bool>(), "Combo");
+            UseSpells(Menu.Item("UseQCombo", true).GetValue<bool>(), Menu.Item("UseWCombo", true).GetValue<bool>(), 
+                Menu.Item("UseECombo", true).GetValue<bool>(), Menu.Item("UseRCombo", true).GetValue<bool>(), "Combo");
         }
 
         private void Harass()
         {
-            UseSpells(menu.Item("UseQHarass", true).GetValue<bool>(), menu.Item("UseWHarass", true).GetValue<bool>(),
-                menu.Item("UseEHarass", true).GetValue<bool>(), false, "Harass");
+            UseSpells(Menu.Item("UseQHarass", true).GetValue<bool>(), Menu.Item("UseWHarass", true).GetValue<bool>(),
+                Menu.Item("UseEHarass", true).GetValue<bool>(), false, "Harass");
         }
 
         private void UseSpells(bool useQ, bool useW, bool useE, bool useR, string source)
@@ -214,7 +214,7 @@ namespace xSaliceResurrected.ADC
                 SpellCastManager.CastBasicSkillShot(E, E.Range, TargetSelector.DamageType.Physical, HitChance.VeryHigh);
             if (useQ && Q.IsReady())
             {
-                if (Player.ServerPosition.Distance(target.ServerPosition) > E.Range || !E.IsReady() || !menu.Item("ForceE", true).GetValue<bool>())
+                if (Player.ServerPosition.Distance(target.ServerPosition) > E.Range || !E.IsReady() || !Menu.Item("ForceE", true).GetValue<bool>())
                     Cast_Q(target, source);
             }
         }
@@ -248,14 +248,14 @@ namespace xSaliceResurrected.ADC
         {
             var target = (Obj_AI_Base)mytarget;
 
-            if (!menu.Item("Orbwalk", true).GetValue<KeyBind>().Active || !unit.IsMe || !(target is Obj_AI_Hero))
+            if (!Menu.Item("Orbwalk", true).GetValue<KeyBind>().Active || !unit.IsMe || !(target is Obj_AI_Hero))
                 return;
 
-            if (menu.Item("UseWCombo", true).GetValue<bool>())
+            if (Menu.Item("UseWCombo", true).GetValue<bool>())
                 W.Cast();
-            if (menu.Item("UseECombo", true).GetValue<bool>() && E.IsReady())
+            if (Menu.Item("UseECombo", true).GetValue<bool>() && E.IsReady())
                 E.Cast(target);
-            if (menu.Item("UseQCombo", true).GetValue<bool>() && Q.IsReady())
+            if (Menu.Item("UseQCombo", true).GetValue<bool>() && Q.IsReady())
                     Q.Cast(target);
         }
 
@@ -264,8 +264,8 @@ namespace xSaliceResurrected.ADC
             if (!ManaManager.HasMana("LaneClear"))
                 return;
 
-            var useQ = menu.Item("UseQFarm", true).GetValue<bool>();
-            var useE = menu.Item("UseEFarm", true).GetValue<bool>();
+            var useQ = Menu.Item("UseQFarm", true).GetValue<bool>();
+            var useE = Menu.Item("UseEFarm", true).GetValue<bool>();
 
             var minion = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
 
@@ -289,18 +289,18 @@ namespace xSaliceResurrected.ADC
             else if (R.Instance.Level == 3)
                 R.Range = 850;
 
-            var safeNet = menu.Item("R_Safe_Net", true).GetValue<Slider>().Value;
+            var safeNet = Menu.Item("R_Safe_Net", true).GetValue<Slider>().Value;
 
             foreach (var target in HeroManager.Enemies.Where(x => x.IsValidTarget(R.Range)).OrderByDescending(GetComboDamage))
             {
-                if (menu.Item("Dont_R" + target.CharData.BaseSkinName, true) != null)
+                if (Menu.Item("Dont_R" + target.CharData.BaseSkinName, true) != null)
                 {
-                    if (!menu.Item("Dont_R" + target.CharData.BaseSkinName, true).GetValue<bool>())
+                    if (!Menu.Item("Dont_R" + target.CharData.BaseSkinName, true).GetValue<bool>())
                     {
                         if (!(target.CountEnemiesInRange(1000) >= safeNet))
                         {
                             //if killable
-                            if (menu.Item("R_On_Killable", true).GetValue<bool>())
+                            if (Menu.Item("R_On_Killable", true).GetValue<bool>())
                             {
                                 if (GetComboDamage(target) > target.Health && Player.Distance(target.Position) < R.Range)
                                 {
@@ -310,7 +310,7 @@ namespace xSaliceResurrected.ADC
                             }
 
                             //if player is under turret
-                            if (menu.Item("R_If_UnderTurret", true).GetValue<bool>())
+                            if (Menu.Item("R_If_UnderTurret", true).GetValue<bool>())
                             {
                                 if (Util.UnderAllyTurret() && Player.ServerPosition.Distance(target.ServerPosition) > 300f)
                                 {
@@ -326,13 +326,13 @@ namespace xSaliceResurrected.ADC
 
         private void Cast_W(Obj_AI_Hero target)
         {
-            if (menu.Item("W_Always", true).GetValue<bool>() && Player.ServerPosition.Distance(target.ServerPosition) < Q.Range)
+            if (Menu.Item("W_Always", true).GetValue<bool>() && Player.ServerPosition.Distance(target.ServerPosition) < Q.Range)
                 W.Cast();
 
             if (target.HasBuff("urgotcorrosivedebuff"))
                 W.Cast();
 
-            var hp = menu.Item("W_If_HP", true).GetValue<Slider>().Value;
+            var hp = Menu.Item("W_If_HP", true).GetValue<Slider>().Value;
 
             if (Player.HealthPercent <= hp)
                 W.Cast();
@@ -375,7 +375,7 @@ namespace xSaliceResurrected.ADC
             if (Player.IsChannelingImportantSpell())
                 return;
 
-            if (menu.Item("Q_Poison", true).GetValue<bool>() && _poisonTargets.Count > 0)
+            if (Menu.Item("Q_Poison", true).GetValue<bool>() && _poisonTargets.Count > 0)
             {
                 var target = _poisonTargets.OrderByDescending(GetComboDamage).FirstOrDefault();
 
@@ -383,44 +383,44 @@ namespace xSaliceResurrected.ADC
                     Q2.Cast(target);
             }
 
-            if (menu.Item("smartKS", true).GetValue<bool>())
+            if (Menu.Item("smartKS", true).GetValue<bool>())
                 CheckKs();
 
-            if (menu.Item("Orbwalk", true).GetValue<KeyBind>().Active)
+            if (Menu.Item("Orbwalk", true).GetValue<KeyBind>().Active)
             {
                 Combo();
             }
             else
             {
-                if (menu.Item("LaneClear", true).GetValue<KeyBind>().Active)
+                if (Menu.Item("LaneClear", true).GetValue<KeyBind>().Active)
                     Farm();
 
-                if (menu.Item("Farm", true).GetValue<KeyBind>().Active)
+                if (Menu.Item("Farm", true).GetValue<KeyBind>().Active)
                     Harass();
 
-                if (menu.Item("FarmT", true).GetValue<KeyBind>().Active)
+                if (Menu.Item("FarmT", true).GetValue<KeyBind>().Active)
                     Harass();
             }
         }
 
         protected override void Drawing_OnDraw(EventArgs args)
         {
-            if (menu.Item("Draw_Disabled", true).GetValue<bool>())
+            if (Menu.Item("Draw_Disabled", true).GetValue<bool>())
                 return;
 
-            if (menu.Item("Draw_Q", true).GetValue<bool>())
+            if (Menu.Item("Draw_Q", true).GetValue<bool>())
                 if (Q.Level > 0)
                     Render.Circle.DrawCircle(Player.Position, Q.Range, Q.IsReady() ? Color.Green : Color.Red);
 
-            if (menu.Item("Draw_W", true).GetValue<bool>())
+            if (Menu.Item("Draw_W", true).GetValue<bool>())
                 if (W.Level > 0)
                     Render.Circle.DrawCircle(Player.Position, W.Range, W.IsReady() ? Color.Green : Color.Red);
 
-            if (menu.Item("Draw_E", true).GetValue<bool>())
+            if (Menu.Item("Draw_E", true).GetValue<bool>())
                 if (E.Level > 0)
                     Render.Circle.DrawCircle(Player.Position, E.Range, E.IsReady() ? Color.Green : Color.Red);
 
-            if (menu.Item("Draw_R", true).GetValue<bool>())
+            if (Menu.Item("Draw_R", true).GetValue<bool>())
                 if (R.Level > 0)
                     Render.Circle.DrawCircle(Player.Position,R.Range, R.IsReady() ? Color.Green : Color.Red);
         }

@@ -123,7 +123,7 @@ namespace xSaliceResurrected.Utilities
 
         public static Obj_AI_Hero GetTargetFocus(float range)
         {
-            var focusSelected = Champion.menu.Item("selected", true).GetValue<bool>();
+            var focusSelected = Champion.Menu.Item("selected", true).GetValue<bool>();
 
             if (TargetSelector.GetSelectedTarget() != null)
                 if (focusSelected && TargetSelector.GetSelectedTarget().Distance(Player.ServerPosition) < range + 100 && TargetSelector.GetSelectedTarget().Type == GameObjectType.obj_AI_Hero)

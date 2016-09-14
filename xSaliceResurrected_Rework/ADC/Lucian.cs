@@ -38,7 +38,7 @@
                 combo.AddItem(new MenuItem("UseECombo", "Use E", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseRCombo", "Use R", true).SetValue(true));
                 //add to menu
-                menu.AddSubMenu(combo);
+                Menu.AddSubMenu(combo);
             }
 
             var harass = new Menu("Harass", "Harass");
@@ -48,7 +48,7 @@
                 harass.AddItem(new MenuItem("UseWHarass", "Use W", true).SetValue(false));
                 ManaManager.AddManaManagertoMenu(harass, "Harass", 30);
                 //add to menu
-                menu.AddSubMenu(harass);
+                Menu.AddSubMenu(harass);
             }
 
             var farm = new Menu("LaneClear", "LaneClear");
@@ -57,7 +57,7 @@
                 farm.AddItem(new MenuItem("UseWFarm", "Use W", true).SetValue(true));
                 ManaManager.AddManaManagertoMenu(farm, "LaneClear", 30);
                 //add to menu
-                menu.AddSubMenu(farm);
+                Menu.AddSubMenu(farm);
             }
 
             var jungle = new Menu("JungleClear", "JungleClear");
@@ -67,7 +67,7 @@
                 jungle.AddItem(new MenuItem("UseEJungle", "Use E", true).SetValue(true));
                 ManaManager.AddManaManagertoMenu(jungle, "JungleClear", 30);
                 //add to menu
-                menu.AddSubMenu(jungle);
+                Menu.AddSubMenu(jungle);
             }
 
             var misc = new Menu("Misc", "Misc");
@@ -80,7 +80,7 @@
                 misc.AddItem(new MenuItem("ECheck", "Check Wall/ Building", true).SetValue(true));
                 misc.AddItem(new MenuItem("SafeCheck", "Safe Check", true).SetValue(true));
                 //add to menu
-                menu.AddSubMenu(misc);
+                Menu.AddSubMenu(misc);
             }
 
             var drawMenu = new Menu("Drawing", "Drawing");
@@ -113,7 +113,7 @@
                         DamageIndicator.FillColor = eventArgs.GetNewValue<Circle>().Color;
                     };
                 //add to menu
-                menu.AddSubMenu(drawMenu);
+                Menu.AddSubMenu(drawMenu);
             }
 
             var customMenu = new Menu("Custom Perma Show", "Custom Perma Show");
@@ -124,13 +124,13 @@
                 customMenu.AddItem(myCust.AddToMenu("Combo Active: ", "Orbwalk"));
                 customMenu.AddItem(myCust.AddToMenu("Harass Active: ", "Farm"));
                 customMenu.AddItem(myCust.AddToMenu("Laneclear Active: ", "LaneClear"));
-                menu.AddSubMenu(customMenu);
+                Menu.AddSubMenu(customMenu);
             }
         }
 
         protected override void AntiGapcloser_OnEnemyGapcloser(ActiveGapcloser gapcloser)
         {
-            if (menu.Item("Anti", true).GetValue<bool>() && E.IsReady())
+            if (Menu.Item("Anti", true).GetValue<bool>() && E.IsReady())
             {
                 if (gapcloser.End.Distance(Player.Position) <= 200 || gapcloser.Sender.Distance(Player) < 250)
                 {
@@ -149,15 +149,15 @@
 
                     if (target != null)
                     {
-                        if (menu.Item("UseECombo", true).GetValue<bool>() && E.IsReady())
+                        if (Menu.Item("UseECombo", true).GetValue<bool>() && E.IsReady())
                         {
                             Cast_E(target);
                         }
-                        else if (menu.Item("UseQCombo", true).GetValue<bool>() && Q.IsReady())
+                        else if (Menu.Item("UseQCombo", true).GetValue<bool>() && Q.IsReady())
                         {
                             Q.Cast(target, true);
                         }
-                        else if (menu.Item("UseWCombo", true).GetValue<bool>() && W.IsReady())
+                        else if (Menu.Item("UseWCombo", true).GetValue<bool>() && W.IsReady())
                         {
                             W.Cast(target.Position, true);
                         }
@@ -176,17 +176,17 @@
                     {
                         var mob = mobs.FirstOrDefault();
 
-                        if (menu.Item("UseEJungle", true).GetValue<bool>() && E.IsReady())
+                        if (Menu.Item("UseEJungle", true).GetValue<bool>() && E.IsReady())
                         {
                             var ex = Player.Position.Extend(Game.CursorPos, 150);
 
                             E.Cast(ex, true);
                         }
-                        else if (menu.Item("UseQJungle", true).GetValue<bool>() && Q.IsReady())
+                        else if (Menu.Item("UseQJungle", true).GetValue<bool>() && Q.IsReady())
                         {
                             Q.Cast(mob, true);
                         }
-                        else if (menu.Item("UseWJungle", true).GetValue<bool>() && W.IsReady())
+                        else if (Menu.Item("UseWJungle", true).GetValue<bool>() && W.IsReady())
                         {
                             W.Cast(mob, true);
                         }
@@ -251,7 +251,7 @@
                 ItemManager.UseTargetted = true;
             }
 
-            if (menu.Item("UseQExtendCombo", true).GetValue<bool>() && Q.IsReady())
+            if (Menu.Item("UseQExtendCombo", true).GetValue<bool>() && Q.IsReady())
             {
                 var target = TargetSelector.GetTarget(QExtend.Range, TargetSelector.DamageType.Physical);
 
@@ -260,7 +260,7 @@
                     var pred = QExtend.GetPrediction(target, true);
                     var collisions = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
 
-                    if (!collisions.Any() || (!target.IsMoving && menu.Item("MovementCheck", true).GetValue<bool>()))
+                    if (!collisions.Any() || (!target.IsMoving && Menu.Item("MovementCheck", true).GetValue<bool>()))
                         return;
 
                     foreach (var minion in collisions)
@@ -275,13 +275,13 @@
                 }
             }
 
-            if (menu.Item("UseRCombo", true).GetValue<bool>() && R.IsReady())
+            if (Menu.Item("UseRCombo", true).GetValue<bool>() && R.IsReady())
             {
                 var target = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Physical);
 
                 if (target.IsValidTarget(R.Range) && !target.IsZombie && !target.IsDead &&
                     R.GetDamage(target)*GetShots() > target.Health &&
-                    target.Distance(Player) > Orbwalking.GetAttackRange(Player) + 100)
+                    target.Distance(Player) > Orbwalking.GetAttackRange(Player) + 150)
                 {
                     R.Cast(target);
                 }
@@ -295,7 +295,7 @@
                 return;
             }
 
-            if (menu.Item("UseQHarass", true).GetValue<bool>() && Q.IsReady())
+            if (Menu.Item("UseQHarass", true).GetValue<bool>() && Q.IsReady())
             {
                 var target = TargetSelector.GetTarget(QExtend.Range, TargetSelector.DamageType.Physical);
 
@@ -305,12 +305,12 @@
                     {
                         Q.Cast(target);
                     }
-                    else if (target.IsValidTarget(QExtend.Range) && menu.Item("UseQExtendHarass", true).GetValue<bool>())
+                    else if (target.IsValidTarget(QExtend.Range) && Menu.Item("UseQExtendHarass", true).GetValue<bool>())
                     {
                         var pred = QExtend.GetPrediction(target, true);
                         var collisions = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
 
-                        if (!collisions.Any() || (!target.IsMoving && menu.Item("MovementCheck", true).GetValue<bool>()))
+                        if (!collisions.Any() || (!target.IsMoving && Menu.Item("MovementCheck", true).GetValue<bool>()))
                             return;
 
                         foreach (var minion in collisions)
@@ -326,7 +326,7 @@
                 }
             }
 
-            if (menu.Item("UseWHarass", true).GetValue<bool>() && W.IsReady())
+            if (Menu.Item("UseWHarass", true).GetValue<bool>() && W.IsReady())
             {
                 SpellCastManager.CastBasicSkillShot(W, W.Range, TargetSelector.DamageType.Magical, HitChance.VeryHigh);
             }
@@ -340,20 +340,20 @@
             var castpos = Player.ServerPosition.Extend(Game.CursorPos, 220);
             var maxepos = Player.ServerPosition.Extend(Game.CursorPos, E.Range);
 
-            if (castpos.UnderTurret(true) && menu.Item("underE", true).GetValue<bool>())
+            if (castpos.UnderTurret(true) && Menu.Item("underE", true).GetValue<bool>())
             {
                 return;
             }
 
             if ((NavMesh.GetCollisionFlags(castpos).HasFlag(CollisionFlags.Wall) ||
                 NavMesh.GetCollisionFlags(castpos).HasFlag(CollisionFlags.Building)) &&
-                menu.Item("ECheck", true).GetValue<bool>())
+                Menu.Item("ECheck", true).GetValue<bool>())
             {
                 return;
             }
 
             if (castpos.CountEnemiesInRange(500) >= 3 && castpos.CountAlliesInRange(400) < 3 &&
-                menu.Item("SafeCheck", true).GetValue<bool>())
+                Menu.Item("SafeCheck", true).GetValue<bool>())
             {
                 return;
             }
@@ -361,23 +361,23 @@
             if (Orbwalker.InAutoAttackRange(target) &&
                 target.ServerPosition.Distance(castpos) < Orbwalking.GetAttackRange(Player))
             {
-                E.Cast(castpos);
+                E.Cast(castpos, true);
             }
             else if (!Orbwalker.InAutoAttackRange(target) && target.ServerPosition.Distance(castpos) > Orbwalking.GetAttackRange(Player))
             {
-                E.Cast(castpos);
+                E.Cast(castpos, true);
             }
             else if (!Orbwalker.InAutoAttackRange(target) &&
                      target.ServerPosition.Distance(castpos) > Orbwalking.GetAttackRange(Player) &&
                      target.ServerPosition.Distance(maxepos) < Orbwalking.GetAttackRange(Player))
             {
-                E.Cast(maxepos);
+                E.Cast(maxepos, true);
             }
         }
 
         private void SmartKs()
         {
-            if (!menu.Item("smartKS", true).GetValue<bool>())
+            if (!Menu.Item("smartKS", true).GetValue<bool>())
                 return;
 
             foreach (var target in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsValidTarget(QExtend.Range) && !x.IsDead && !x.HasBuffOfType(BuffType.Invulnerability)))
@@ -394,7 +394,7 @@
                         var pred = QExtend.GetPrediction(target, true);
                         var collisions = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
 
-                        if (!collisions.Any() || (!target.IsMoving && menu.Item("MovementCheck", true).GetValue<bool>()))
+                        if (!collisions.Any() || (!target.IsMoving && Menu.Item("MovementCheck", true).GetValue<bool>()))
                             return;
 
                         foreach (var minion in collisions)
@@ -425,17 +425,27 @@
             if (!ManaManager.HasMana("LaneClear"))
                 return;
 
-            var useQ = menu.Item("UseQFarm", true).GetValue<bool>();
-            var useW = menu.Item("UseWFarm", true).GetValue<bool>();
+            var useQ = Menu.Item("UseQFarm", true).GetValue<bool>();
+            var useW = Menu.Item("UseWFarm", true).GetValue<bool>();
 
             if (useQ && Utils.TickCount - CastSpellTime >= 400)
             {
-                var allMinions = MinionManager.GetMinions(ObjectManager.Player.Position, Q.Range);
-                var minion = allMinions.FirstOrDefault(minionn => minionn.Distance(Player.Position) <= Q.Range && HealthPrediction.LaneClearHealthPrediction(minionn, 500) > 0);
-                if (minion == null)
-                    return;
+                var allMinions = MinionManager.GetMinions(Player.Position, Q.Range);
 
-                Q.Cast(minion);
+                if (allMinions.Any())
+                {
+                    var minion = allMinions.FirstOrDefault();
+
+                    if (minion != null)
+                    {
+                        var qExminions = MinionManager.GetMinions(Player.Position, 900);
+
+                        if (QExtend.CountHits(allMinions, Player.Position.Extend(minion.Position, 900)) >= 2)
+                        {
+                            Q.CastOnUnit(minion);
+                        }
+                    }
+                }
             }
             if (useW && Utils.TickCount - CastSpellTime >= 400)
             {
@@ -493,26 +503,26 @@
 
         protected override void Drawing_OnDraw(EventArgs args)
         {
-            if (menu.Item("Draw_Disabled", true).GetValue<bool>())
+            if (Menu.Item("Draw_Disabled", true).GetValue<bool>())
                 return;
 
-            if (menu.Item("Draw_Q", true).GetValue<bool>())
+            if (Menu.Item("Draw_Q", true).GetValue<bool>())
                 if (Q.Level > 0)
                     Render.Circle.DrawCircle(Player.Position, Q.Range, Q.IsReady() ? Color.Green : Color.Red);
 
-            if (menu.Item("Draw_Q_Extended", true).GetValue<bool>())
+            if (Menu.Item("Draw_Q_Extended", true).GetValue<bool>())
                 if (Q.Level > 0)
                     Render.Circle.DrawCircle(Player.Position, QExtend.Range, Q.IsReady() ? Color.Green : Color.Red);
 
-            if (menu.Item("Draw_W", true).GetValue<bool>())
+            if (Menu.Item("Draw_W", true).GetValue<bool>())
                 if (W.Level > 0)
                     Render.Circle.DrawCircle(Player.Position, W.Range, W.IsReady() ? Color.Green : Color.Red);
 
-            if (menu.Item("Draw_E", true).GetValue<bool>())
+            if (Menu.Item("Draw_E", true).GetValue<bool>())
                 if (E.Level > 0)
                     Render.Circle.DrawCircle(Player.Position, E.Range, E.IsReady() ? Color.Green : Color.Red);
 
-            if (menu.Item("Draw_R", true).GetValue<bool>())
+            if (Menu.Item("Draw_R", true).GetValue<bool>())
                 if (R.Level > 0)
                     Render.Circle.DrawCircle(Player.Position, R.Range, R.IsReady() ? Color.Green : Color.Red);
         }

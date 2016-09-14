@@ -17,7 +17,7 @@
 
         public static bool HasMana(string source)
         {
-            return ObjectManager.Player.ManaPercent > Champion.menu.Item(source + "_Manamanager", true).GetValue<Slider>().Value;
+            return ObjectManager.Player.ManaPercent > Champion.Menu.Item(source + "_Manamanager", true).GetValue<Slider>().Value;
         }
     }
 }

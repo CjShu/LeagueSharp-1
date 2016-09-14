@@ -39,7 +39,7 @@
                 key.AddItem(new MenuItem("Misc_QE_Mouse2", "QE to Mouse", true).SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Press)));
                 key.AddItem(new MenuItem("forceR", "Force R to best Target", true).SetValue(new KeyBind("R".ToCharArray()[0], KeyBindType.Press)));
                 //add to menu
-                menu.AddSubMenu(key);
+                Menu.AddSubMenu(key);
             }
 
             var combo = new Menu("Combo", "Combo");
@@ -49,7 +49,7 @@
                 combo.AddItem(new MenuItem("UseWCombo", "Use W", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseECombo", "Use E", true).SetValue(true));
                 combo.AddItem(new MenuItem("UseRCombo", "Use R", true).SetValue(true));
-                menu.AddSubMenu(combo);
+                Menu.AddSubMenu(combo);
             }
 
             var harass = new Menu("Harass", "Harass");
@@ -60,7 +60,7 @@
                 harass.AddItem(new MenuItem("UseEHarass", "Use E", true).SetValue(true));
                 ManaManager.AddManaManagertoMenu(harass, "Harass", 30);
                 //add to menu
-                menu.AddSubMenu(harass);
+                Menu.AddSubMenu(harass);
             }
 
             var farm = new Menu("LaneClear", "LaneClear");
@@ -70,7 +70,7 @@
                 farm.AddItem(new MenuItem("UseEFarm", "Use E", true).SetValue(true));
                 ManaManager.AddManaManagertoMenu(farm, "LaneClear", 30);
                 //add to menu
-                menu.AddSubMenu(farm);
+                Menu.AddSubMenu(farm);
             }
 
             var rMenu = new Menu("RMenu", "RMenu");
@@ -84,7 +84,7 @@
                     rMenu.SubMenu("Dont_R").AddItem(new MenuItem("Dont_R" + enemy.CharData.BaseSkinName, enemy.ChampionName, true).SetValue(false));
                 }
 
-                menu.AddSubMenu(rMenu);
+                Menu.AddSubMenu(rMenu);
             }
 
             var miscMenu = new Menu("Misc", "Misc");
@@ -95,7 +95,7 @@
                 miscMenu.AddItem(new MenuItem("E_Gap_Closer", "Use E On Gap Closer", true).SetValue(true));
                 miscMenu.AddItem(new MenuItem("QE_Interrupt", "Use QE to Interrupt", true).SetValue(true));
                 miscMenu.AddItem(new MenuItem("smartKS", "Use Smart KS System", true).SetValue(true));
-                menu.AddSubMenu(miscMenu);
+                Menu.AddSubMenu(miscMenu);
             }
 
             var drawMenu = new Menu("Drawing", "Drawing");
@@ -129,7 +129,7 @@
                         DamageIndicator.FillColor = eventArgs.GetNewValue<Circle>().Color;
                     };
 
-                menu.AddSubMenu(drawMenu);
+                Menu.AddSubMenu(drawMenu);
             }
 
 
@@ -144,7 +144,7 @@
                 customMenu.AddItem(myCust.AddToMenu("QE Nearest Active: ", "Misc_QE_Mouse"));
                 customMenu.AddItem(myCust.AddToMenu("QE Mouse Active: ", "Misc_QE_Mouse2"));
                 customMenu.AddItem(myCust.AddToMenu("Force R Active: ", "forceR"));
-                menu.AddSubMenu(customMenu);
+                Menu.AddSubMenu(customMenu);
             }
         }
 
@@ -199,27 +199,27 @@
                 ItemManager.UseTargetted = true;
             }
 
-            if (menu.Item("UseRCombo", true).GetValue<bool>())
+            if (Menu.Item("UseRCombo", true).GetValue<bool>())
             {
                 Cast_R();
             }
 
-            if (menu.Item("UseQECombo", true).GetValue<bool>())
+            if (Menu.Item("UseQECombo", true).GetValue<bool>())
             {
                 Cast_QE();
             }
 
-            if (menu.Item("UseQCombo", true).GetValue<bool>())
+            if (Menu.Item("UseQCombo", true).GetValue<bool>())
             {
                 SpellCastManager.CastBasicSkillShot(Q, Q.Range, TargetSelector.DamageType.Magical, HitChance.VeryHigh);
             }
 
-            if (menu.Item("UseECombo", true).GetValue<bool>())
+            if (Menu.Item("UseECombo", true).GetValue<bool>())
             {
                 Cast_E();
             }
 
-            if (menu.Item("UseWCombo", true).GetValue<bool>())
+            if (Menu.Item("UseWCombo", true).GetValue<bool>())
             {
                 Cast_W(true);
             }
@@ -230,22 +230,22 @@
             if (!ManaManager.HasMana("Harass"))
                 return;
 
-            if (menu.Item("UseQEHarass", true).GetValue<bool>())
+            if (Menu.Item("UseQEHarass", true).GetValue<bool>())
             {
                 Cast_QE();
             }
 
-            if (menu.Item("UseQHarass", true).GetValue<bool>())
+            if (Menu.Item("UseQHarass", true).GetValue<bool>())
             {
                 SpellCastManager.CastBasicSkillShot(Q, Q.Range, TargetSelector.DamageType.Magical, HitChance.VeryHigh);
             }
 
-            if (menu.Item("UseEHarass", true).GetValue<bool>())
+            if (Menu.Item("UseEHarass", true).GetValue<bool>())
             {
                 Cast_E();
             }
 
-            if (menu.Item("UseWHarass", true).GetValue<bool>())
+            if (Menu.Item("UseWHarass", true).GetValue<bool>())
             {
                 Cast_W(true);
             }
@@ -256,9 +256,9 @@
             if (!ManaManager.HasMana("LaneClear"))
                 return;
 
-            var useQ = menu.Item("UseQFarm", true).GetValue<bool>();
-            var useW = menu.Item("UseWFarm", true).GetValue<bool>();
-            var useE = menu.Item("UseEFarm", true).GetValue<bool>();
+            var useQ = Menu.Item("UseQFarm", true).GetValue<bool>();
+            var useW = Menu.Item("UseWFarm", true).GetValue<bool>();
+            var useE = Menu.Item("UseEFarm", true).GetValue<bool>();
 
             if (useQ)
                 SpellCastManager.CastBasicFarm(Q);
@@ -272,7 +272,7 @@
 
         private void SmartKs()
         {
-            if (!menu.Item("smartKS", true).GetValue<bool>())
+            if (!Menu.Item("smartKS", true).GetValue<bool>())
                 return;
 
             foreach (var target in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsValidTarget(SpellManager.QE.Range) && x.IsEnemy && !x.IsDead).OrderByDescending(GetComboDamage))
@@ -421,13 +421,13 @@
             if (rTarget.HasBuffOfType(BuffType.Invulnerability))
                 return;
 
-            if (menu.Item("Dont_R" + rTarget.ChampionName, true) == null)
+            if (Menu.Item("Dont_R" + rTarget.ChampionName, true) == null)
                 return;
 
-            if (menu.Item("Dont_R" + rTarget.ChampionName, true).GetValue<bool>())
+            if (Menu.Item("Dont_R" + rTarget.ChampionName, true).GetValue<bool>())
                 return;
 
-            if (menu.Item("R_Overkill_Check", true).GetValue<bool>())
+            if (Menu.Item("R_Overkill_Check", true).GetValue<bool>())
             {
                 if (Player.GetSpellDamage(rTarget, SpellSlot.Q) - 25 > rTarget.Health)
                 {
@@ -491,7 +491,7 @@
         {
             var qTarget = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
 
-            if (!menu.Item("Q_Auto_Immobile", true).GetValue<bool>() || qTarget == null)
+            if (!Menu.Item("Q_Auto_Immobile", true).GetValue<bool>() || qTarget == null)
                 return;
 
             if (Q.GetPrediction(qTarget).Hitchance == HitChance.Immobile)
@@ -505,12 +505,12 @@
             if (E.IsReady())
                 E.Width = E.Level == 5 ? 45f : (float)(45 * 0.5);
 
-            if (menu.Item("Misc_QE_Mouse", true).GetValue<KeyBind>().Active)
+            if (Menu.Item("Misc_QE_Mouse", true).GetValue<KeyBind>().Active)
             {
                 Cast_QE();
             }
 
-            if (menu.Item("Misc_QE_Mouse2", true).GetValue<KeyBind>().Active)
+            if (Menu.Item("Misc_QE_Mouse2", true).GetValue<KeyBind>().Active)
             {
                 var startPos = Player.ServerPosition + Vector3.Normalize(Game.CursorPos - Player.ServerPosition) * (E.Range - 100);
                 Q.Cast(startPos);
@@ -520,7 +520,7 @@
 
             SmartKs();
 
-            if (menu.Item("forceR", true).GetValue<KeyBind>().Active)
+            if (Menu.Item("forceR", true).GetValue<KeyBind>().Active)
             {
                 var target = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Magical);
 
@@ -528,7 +528,7 @@
                     R.Cast(target);
             }
 
-            if (menu.Item("FarmT", true).GetValue<KeyBind>().Active)
+            if (Menu.Item("FarmT", true).GetValue<KeyBind>().Active)
                 Harass();
 
             QImmobile();
@@ -561,26 +561,26 @@
 
         protected override void Drawing_OnDraw(EventArgs args)
         {
-            if (menu.Item("Draw_Disabled", true).GetValue<bool>())
+            if (Menu.Item("Draw_Disabled", true).GetValue<bool>())
                 return;
 
-            if (menu.Item("Draw_Q", true).GetValue<bool>())
+            if (Menu.Item("Draw_Q", true).GetValue<bool>())
                 if (Q.Level > 0)
                     Render.Circle.DrawCircle(Player.Position, Q.Range, Q.IsReady() ? Color.Green : Color.Red);
 
-            if (menu.Item("Draw_QE", true).GetValue<bool>())
+            if (Menu.Item("Draw_QE", true).GetValue<bool>())
                 if (Q.Level > 0 && E.Level > 0)
                     Render.Circle.DrawCircle(Player.Position, SpellManager.QE.Range, Q.IsReady() && E.IsReady() ? Color.Green : Color.Red);
 
-            if (menu.Item("Draw_W", true).GetValue<bool>())
+            if (Menu.Item("Draw_W", true).GetValue<bool>())
                 if (W.Level > 0)
                     Render.Circle.DrawCircle(Player.Position, W.Range, W.IsReady() ? Color.Green : Color.Red);
 
-            if (menu.Item("Draw_E", true).GetValue<bool>())
+            if (Menu.Item("Draw_E", true).GetValue<bool>())
                 if (E.Level > 0)
                     Render.Circle.DrawCircle(Player.Position, E.Range, E.IsReady() ? Color.Green : Color.Red);
 
-            if (menu.Item("Draw_R", true).GetValue<bool>())
+            if (Menu.Item("Draw_R", true).GetValue<bool>())
                 if (R.Level > 0)
                     Render.Circle.DrawCircle(Player.Position, R.Range, R.IsReady() ? Color.Green : Color.Red);
 
@@ -588,7 +588,7 @@
                 Render.Circle.DrawCircle(Get_Current_Orb().Position, W.Width, Color.Green);
 
             //draw EQ
-            if (menu.Item("Draw_QE_Line", true).GetValue<bool>())
+            if (Menu.Item("Draw_QE_Line", true).GetValue<bool>())
             {
                 var qeTarget = TargetSelector.GetTarget(SpellManager.QE.Range, TargetSelector.DamageType.Magical);
 
@@ -641,7 +641,7 @@
                 }
             }
 
-            if (menu.Item("Draw_R_Killable", true).GetValue<bool>() && R.IsReady())
+            if (Menu.Item("Draw_R_Killable", true).GetValue<bool>() && R.IsReady())
             {
                 foreach (var wts in from unit in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsValidTarget(2000) && !x.IsDead && x.IsEnemy).OrderByDescending(GetComboDamage)
                                     let health = unit.Health + unit.HPRegenRate + 10
@@ -660,7 +660,7 @@
 
         private Obj_AI_Minion Get_Nearest_orb()
         {
-            if (!menu.Item("W_Only_Orb", true).GetValue<bool>())
+            if (!Menu.Item("W_Only_Orb", true).GetValue<bool>())
             {
                 var minion = ObjectManager.Get<Obj_AI_Minion>().FirstOrDefault(x => x.IsValidTarget(W.Range));
 
@@ -706,7 +706,7 @@
 
         protected override void AntiGapcloser_OnEnemyGapcloser(ActiveGapcloser gapcloser)
         {
-            if (!menu.Item("E_Gap_Closer", true).GetValue<bool>())
+            if (!Menu.Item("E_Gap_Closer", true).GetValue<bool>())
                 return;
 
             if (!E.IsReady() || !gapcloser.Sender.IsValidTarget(E.Range))
@@ -731,7 +731,7 @@
             if (spell.DangerLevel < Interrupter2.DangerLevel.Medium || unit.IsAlly)
                 return;
 
-            if (menu.Item("QE_Interrupt", true).GetValue<bool>() && unit.IsValidTarget(SpellManager.QE.Range))
+            if (Menu.Item("QE_Interrupt", true).GetValue<bool>() && unit.IsValidTarget(SpellManager.QE.Range))
                 Cast_QE(unit);
         }
     }
