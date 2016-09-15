@@ -294,8 +294,8 @@
                 if (Menu.Item("HaraassQLH", true).GetValue<bool>())
                 {
                     var minions = MinionManager.GetMinions(Q.Range)
-                        .Where(x => HealthPrediction.LaneClearHealthPrediction(x, 1200) < GetQDamage(x) &&
-                         HealthPrediction.LaneClearHealthPrediction(x, 1200) > 0);
+                        .Where(x => HealthPrediction.GetHealthPrediction(x, 950) * 0.9 < GetQDamage(x) &&
+                         HealthPrediction.GetHealthPrediction(x, 950) * 0.9 > 0);
 
                     if (minions.Any())
                     {
@@ -303,7 +303,7 @@
 
                         if (Utils.TickCount - CastSpellFarmTime > 1500)
                         {
-                            Q.CastTo(min, true);
+                            Q.Cast(min, true);
                         }
                     }
                 }
@@ -367,7 +367,7 @@
 
                 if (Menu.Item("LaneClearQ", true).GetValue<bool>() && Q.IsReady() && minion != null && minion.IsValidTarget(Q.Range))
                 {
-                    Q.CastTo(minion, true);
+                    Q.Cast(minion, true);
                 }
 
                 if (Menu.Item("LaneClearE", true).GetValue<bool>() && E.IsReady() &&
@@ -428,8 +428,8 @@
                 if (Menu.Item("LastHitQ", true).GetValue<bool>() && Q.IsReady())
                 {
                     var minions = MinionManager.GetMinions(Q.Range)
-                        .Where(x => HealthPrediction.LaneClearHealthPrediction(x, 1200) < GetQDamage(x) &&
-                        HealthPrediction.LaneClearHealthPrediction(x, 1200) > 0);
+                        .Where(x => HealthPrediction.GetHealthPrediction(x, 950) * 0.9 < GetQDamage(x) &&
+                        HealthPrediction.GetHealthPrediction(x, 950) * 0.9 > 0);
 
                     if (minions.Any())
                     {
