@@ -1,0 +1,17 @@
+D:\Sharp\GitHub\NewAssembly\LeagueSharp\xSaliceResurrected_Rework\bin\Debug\xSaliceResurrected.exe.config
+D:\Sharp\GitHub\NewAssembly\LeagueSharp\xSaliceResurrected_Rework\bin\Debug\xSaliceResurrected.exe
+D:\Sharp\GitHub\NewAssembly\LeagueSharp\xSaliceResurrected_Rework\bin\Debug\xSaliceResurrected.pdb
+D:\Sharp\GitHub\NewAssembly\LeagueSharp\xSaliceResurrected_Rework\bin\Debug\clipper_library.dll
+D:\Sharp\GitHub\NewAssembly\LeagueSharp\xSaliceResurrected_Rework\bin\Debug\LeagueSharp.Common.dll
+D:\Sharp\GitHub\NewAssembly\LeagueSharp\xSaliceResurrected_Rework\bin\Debug\LeagueSharp.dll
+D:\Sharp\GitHub\NewAssembly\LeagueSharp\xSaliceResurrected_Rework\bin\Debug\SharpDX.Direct3D9.dll
+D:\Sharp\GitHub\NewAssembly\LeagueSharp\xSaliceResurrected_Rework\bin\Debug\SharpDX.dll
+D:\Sharp\GitHub\NewAssembly\LeagueSharp\xSaliceResurrected_Rework\bin\Debug\LeagueSharp.Data.dll
+D:\Sharp\GitHub\NewAssembly\LeagueSharp\xSaliceResurrected_Rework\bin\Debug\Newtonsoft.Json.dll
+D:\Sharp\GitHub\NewAssembly\LeagueSharp\xSaliceResurrected_Rework\bin\Debug\clipper_library.pdb
+D:\Sharp\GitHub\NewAssembly\LeagueSharp\xSaliceResurrected_Rework\bin\Debug\LeagueSharp.Common.pdb
+D:\Sharp\GitHub\NewAssembly\LeagueSharp\xSaliceResurrected_Rework\bin\Debug\LeagueSharp.Data.pdb
+D:\Sharp\GitHub\NewAssembly\LeagueSharp\xSaliceResurrected_Rework\obj\x86\Debug\xSaliceResurrected.Properties.Resources.resources
+D:\Sharp\GitHub\NewAssembly\LeagueSharp\xSaliceResurrected_Rework\obj\x86\Debug\xSaliceResurrected_Rework.csproj.GenerateResource.Cache
+D:\Sharp\GitHub\NewAssembly\LeagueSharp\xSaliceResurrected_Rework\obj\x86\Debug\xSaliceResurrected.exe
+D:\Sharp\GitHub\NewAssembly\LeagueSharp\xSaliceResurrected_Rework\obj\x86\Debug\xSaliceResurrected.pdb

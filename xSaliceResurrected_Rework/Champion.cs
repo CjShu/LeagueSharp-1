@@ -25,7 +25,7 @@
             Spellbook.OnUpdateChargedSpell += Spellbook_OnUpdateChargedSpellEvent;
             Spellbook.OnCastSpell += SpellbookOnOnCastSpell;
             Spellbook.OnStopCast += SpellbookOnOnStopCast;
-
+            
             Orbwalking.AfterAttack += AfterAttackEvent;
             Orbwalking.BeforeAttack += BeforeAttackEvent;
             Orbwalking.OnAttack += OnAttack;
@@ -50,7 +50,7 @@
         {
             Game.PrintChat("<font color = \"#FFB6C1\">xSalice's Ressurected AIO</font> by <font color = \"#00FFFF\">xSalice</font>, imsosharp HotFix, NightMoon Rework!");
             Game.PrintChat("---------------------------------");
-            Game.PrintChat("Change Log: Azir -> 2 Insec Mode, LaneClear JungleClear Fix, Lucian -> Fix LaneClear Q, Anivia -> Rewrite Combo and Harass Logic!");
+            Game.PrintChat("Change Log: Fix Azir All Question!");
 
             Menu = new Menu("xSalice's " + Player.ChampionName, Player.ChampionName, true);
 

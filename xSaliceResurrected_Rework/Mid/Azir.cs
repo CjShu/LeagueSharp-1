@@ -121,12 +121,20 @@
             }
 
             //farm menu
-            var farm = new Menu("Farm", "Farm");
+            var farm = new Menu("LaneClear", "LaneClear");
             {
                 farm.AddItem(new MenuItem("UseQFarm", "Use Q", true).SetValue(false));
                 farm.AddItem(new MenuItem("qFarm", "Only Q if > minion", true).SetValue(new Slider(3, 0, 5)));
                 ManaManager.AddManaManagertoMenu(farm, "Farm", 50);
                 Menu.AddSubMenu(farm);
+            }
+
+            var Jungle = new Menu("JungleClear", "JungleClear");
+            {
+                Jungle.AddItem(new MenuItem("UseQJungle", "Use Q", true).SetValue(true));
+                Jungle.AddItem(new MenuItem("UseWJungle", "Use W", true).SetValue(true));
+                ManaManager.AddManaManagertoMenu(Jungle, "Jungle", 50);
+                Menu.AddSubMenu(Jungle);
             }
 
             //Misc Menu:
@@ -515,12 +523,19 @@
 
         private void CastW(Obj_AI_Base target)
         {
-            if (target == null || Player.Distance(Prediction.GetPrediction(target, W.Delay).UnitPosition, true) < 800 * 800)
+            if (target == null)
                 return;
 
-            if (Q.IsReady() || QSpell.State == SpellState.Surpressed)
+            if (W.Instance.Ammo > 0)
             {
-                W.Cast(Prediction.GetPrediction(target, W.Delay).CastPosition, true);
+                if (target.IsValidTarget(W.Range) && Orbwalking.AzirSoliders.Count(x => x.Distance(target) < 250) < 0)
+                {
+                    W.Cast(Player.Position.Extend(target.Position, W.Range), true);
+                }
+                else if (target.IsValidTarget(W.Range + 200))
+                {
+                    W.Cast(target.Position, true);
+                }
             }
         }
 
@@ -669,12 +684,11 @@
             if (!ManaManager.HasMana("Farm"))
                 return;
 
-            var allMinionsQ = MinionManager.GetMinions(Player.ServerPosition, Q.Range + Q.Width, MinionTypes.All, MinionTeam.NotAlly);
-            var allMinionsW = MinionManager.GetMinions(Player.ServerPosition, W.Range, MinionTypes.All, MinionTeam.NotAlly);
+            var allMinionsQ = MinionManager.GetMinions(Player.ServerPosition, Q.Range + Q.Width);
+            var allMinionsW = MinionManager.GetMinions(Player.ServerPosition, W.Range);
 
             var useQ = Menu.Item("UseQFarm", true).GetValue<bool>();
             var min = Menu.Item("qFarm", true).GetValue<Slider>().Value;
-
 
             if (useQ && (Q.IsReady() || QSpell.State == SpellState.Surpressed))
             {
@@ -746,6 +760,12 @@
 
             SmartKs();
 
+            if (Menu.Item("FarmT", true).GetValue<KeyBind>().Active)
+                Harass();
+
+            if (Menu.Item("wAtk", true).GetValue<bool>())
+                AutoAtk();
+
             switch (Orbwalker.ActiveMode)
             {
                 case Orbwalking.OrbwalkingMode.Combo:
@@ -756,6 +776,7 @@
                     break;
                 case Orbwalking.OrbwalkingMode.LaneClear:
                     Farm();
+                    JungleClear();
                     break;
                 case Orbwalking.OrbwalkingMode.Flee:
                     Escape();
@@ -795,15 +816,44 @@
                         OrbwalkManager.Orbwalk(null, Game.CursorPos);
                         CastQe(soldierTarget, "Null");
                     }
-
-                    if (Menu.Item("FarmT", true).GetValue<KeyBind>().Active)
-                        Harass();
-
-                    if (Menu.Item("wAtk", true).GetValue<bool>())
-                        AutoAtk();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void JungleClear()
+        {
+            if (!ManaManager.HasMana("Jungle"))
+                return;
+
+            var JungleQ = MinionManager.GetMinions(Player.Position, 1100, MinionTypes.All, MinionTeam.Neutral,
+                MinionOrderTypes.MaxHealth);
+
+            var useQ = Menu.Item("UseQJungle", true).GetValue<bool>();
+            var useW = Menu.Item("UseWJungle", true).GetValue<bool>();
+
+            if (JungleQ.Any())
+            {
+                var o = JungleQ.FirstOrDefault();
+
+                if (o == null)
+                    return;
+
+                if (soldierCount() > 0)
+                {
+                    if (useQ && Q.IsReady())
+                    {
+                        Q.Cast(o.Position);
+                    }
+                }
+                else
+                {
+                    if (useW && W.IsReady() &&  JungleQ.Count(x => x.Distance(Player) <= W.Range) > 0)
+                    {
+                        W.Cast(o.Position);
+                    }
+                }
             }
         }
 
