@@ -294,17 +294,15 @@
                 if (Menu.Item("HaraassQLH", true).GetValue<bool>())
                 {
                     var minions = MinionManager.GetMinions(Q.Range)
-                        .Where(x => HealthPrediction.GetHealthPrediction(x, 950) * 0.9 < GetQDamage(x) &&
+                        .Where(x => x.MaxHealth > 5 &&
+                        HealthPrediction.GetHealthPrediction(x, 950) * 0.9 < Me.GetSpellDamage(x, SpellSlot.Q) &&
                          HealthPrediction.GetHealthPrediction(x, 950) * 0.9 > 0);
 
                     if (minions.Any())
                     {
                         var min = minions.FirstOrDefault();
 
-                        if (Utils.TickCount - CastSpellFarmTime > 1500)
-                        {
-                            Q.Cast(min, true);
-                        }
+                        Q.Cast(min, true);
                     }
                 }
 
@@ -428,8 +426,9 @@
                 if (Menu.Item("LastHitQ", true).GetValue<bool>() && Q.IsReady())
                 {
                     var minions = MinionManager.GetMinions(Q.Range)
-                        .Where(x => HealthPrediction.GetHealthPrediction(x, 950) * 0.9 < GetQDamage(x) &&
-                        HealthPrediction.GetHealthPrediction(x, 950) * 0.9 > 0);
+                        .Where(x => x.MaxHealth > 5 &&
+                        HealthPrediction.GetHealthPrediction(x, 950) * 0.9 < Me.GetSpellDamage(x, SpellSlot.Q) &&
+                         HealthPrediction.GetHealthPrediction(x, 950) * 0.9 > 0);
 
                     if (minions.Any())
                     {
