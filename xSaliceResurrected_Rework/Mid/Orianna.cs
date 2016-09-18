@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using LeagueSharp;
-using LeagueSharp.Common;
-using SharpDX;
-using xSaliceResurrected.Managers;
-using xSaliceResurrected.Persistence;
-using xSaliceResurrected.Utilities;
-using Color = System.Drawing.Color;
-
-namespace xSaliceResurrected.Mid
+﻿namespace xSaliceResurrected.Mid
 {
-    class Orianna : Champion
+    using System;
+    using System.Linq;
+    using LeagueSharp;
+    using LeagueSharp.Common;
+    using SharpDX;
+    using Managers;
+    using Persistence;
+    using Utilities;
+    using Color = System.Drawing.Color;
+
+    internal class Orianna : Champion
     {
         //ball manager
         private bool _isBallMoving;
@@ -21,13 +20,6 @@ namespace xSaliceResurrected.Mid
 
         public Orianna()
         {
-            SetupSpells();
-            LoadMenu();
-        }
-
-        private void SetupSpells()
-        {
-            //intalize spell
             SpellManager.Q = new Spell(SpellSlot.Q, 825);
             SpellManager.W = new Spell(SpellSlot.W);
             SpellManager.E = new Spell(SpellSlot.E, 1100);
@@ -42,20 +34,10 @@ namespace xSaliceResurrected.Mid
             SpellManager.SpellList.Add(W);
             SpellManager.SpellList.Add(E);
             SpellManager.SpellList.Add(R);
-        }
 
-        private void LoadMenu()
-        {
-            //Keys
             var key = new Menu("Keys", "Keys");
             {
-                key.AddItem(new MenuItem("Orbwalk", "Combo!", true).SetValue(new KeyBind(32, KeyBindType.Press)));
-                key.AddItem(new MenuItem("Farm", "Harass!", true).SetValue(new KeyBind("C".ToCharArray()[0], KeyBindType.Press)));
                 key.AddItem(new MenuItem("FarmT", "Harass (toggle)!", true).SetValue(new KeyBind("N".ToCharArray()[0], KeyBindType.Toggle)));
-                key.AddItem(new MenuItem("LaneClear", "Farm!", true).SetValue(new KeyBind("V".ToCharArray()[0], KeyBindType.Press)));
-                key.AddItem(new MenuItem("LastHitQQ", "Last hit with Q", true).SetValue(new KeyBind("A".ToCharArray()[0], KeyBindType.Press)));
-                key.AddItem(new MenuItem("Flee", "RUN FOR YOUR LIFE!", true).SetValue(new KeyBind("Z".ToCharArray()[0], KeyBindType.Press)));
-                //add to menu
                 Menu.AddSubMenu(key);
             }
 
@@ -168,12 +150,12 @@ namespace xSaliceResurrected.Mid
                 DamageIndicator.Fill = drawFill.GetValue<Circle>().Active;
                 DamageIndicator.FillColor = drawFill.GetValue<Circle>().Color;
                 drawComboDamageMenu.ValueChanged +=
-                    delegate(object sender, OnValueChangeEventArgs eventArgs)
+                    delegate (object sender, OnValueChangeEventArgs eventArgs)
                     {
                         DamageIndicator.Enabled = eventArgs.GetNewValue<bool>();
                     };
                 drawFill.ValueChanged +=
-                    delegate(object sender, OnValueChangeEventArgs eventArgs)
+                    delegate (object sender, OnValueChangeEventArgs eventArgs)
                     {
                         DamageIndicator.Fill = eventArgs.GetNewValue<Circle>().Active;
                         DamageIndicator.FillColor = eventArgs.GetNewValue<Circle>().Color;
@@ -192,7 +174,7 @@ namespace xSaliceResurrected.Mid
                 customMenu.AddItem(myCust.AddToMenu("Harass Active: ", "Farm"));
                 customMenu.AddItem(myCust.AddToMenu("Harass(T) Active: ", "FarmT"));
                 customMenu.AddItem(myCust.AddToMenu("Laneclear Active: ", "LaneClear"));
-                customMenu.AddItem(myCust.AddToMenu("LastHit Active: ", "LastHitQQ"));
+                customMenu.AddItem(myCust.AddToMenu("LastHit Active: ", "LastHit"));
                 customMenu.AddItem(myCust.AddToMenu("Escape Active: ", "Flee"));
                 customMenu.AddItem(myCust.AddToMenu("R Multi Only: ", "killR"));
                 Menu.AddSubMenu(customMenu);
@@ -201,7 +183,7 @@ namespace xSaliceResurrected.Mid
 
         private float GetComboDamage(Obj_AI_Base enemy)
         {
-            double damage = 0d;
+            var damage = 0d;
 
             //if (Q.IsReady())
             damage += Player.GetSpellDamage(enemy, SpellSlot.Q) * 1.5;
@@ -238,7 +220,7 @@ namespace xSaliceResurrected.Mid
                 return;
 
             var range = E.IsReady() ? E.Range : Q.Range;
-            Obj_AI_Hero target = TargetSelector.GetTarget(range, TargetSelector.DamageType.Magical);
+            var target = TargetSelector.GetTarget(range, TargetSelector.DamageType.Magical);
 
             if (useQ && Q.IsReady())
             {
@@ -280,7 +262,7 @@ namespace xSaliceResurrected.Mid
                 if (Menu.Item("intR" + target.CharData.BaseSkinName, true) != null)
                 {
                     foreach (
-                        Obj_AI_Hero enemy in
+                        var enemy in
                             ObjectManager.Get<Obj_AI_Hero>()
                                 .Where(x => Player.Distance(x.Position) < 1500 && x.IsValidTarget() && x.IsEnemy && !x.IsDead))
                     {
@@ -295,7 +277,7 @@ namespace xSaliceResurrected.Mid
                 if (!(Menu.Item("killR", true).GetValue<KeyBind>().Active)) //check if multi
                 {
                     if (Menu.Item("overK", true).GetValue<bool>() &&
-                        (Player.GetSpellDamage(target, SpellSlot.Q) + Player.GetSpellDamage(target, SpellSlot.W)) >= target.Health)
+                        Player.GetSpellDamage(target, SpellSlot.Q) + Player.GetSpellDamage(target, SpellSlot.W) >= target.Health)
                     {
                         return;
                     }
@@ -309,7 +291,7 @@ namespace xSaliceResurrected.Mid
         {
             if (_isBallMoving) return;
 
-            PredictionOutput prediction = Util.GetPCircle(_currentBallPosition, W, target, true);
+            var prediction = Util.GetPCircle(_currentBallPosition, W, target, true);
 
             if (W.IsReady() && prediction.UnitPosition.Distance(_currentBallPosition) < W.Width)
             {
@@ -322,7 +304,7 @@ namespace xSaliceResurrected.Mid
         {
             if (_isBallMoving) return;
 
-            PredictionOutput prediction = Util.GetPCircle(_currentBallPosition, R, target, true);
+            var prediction = Util.GetPCircle(_currentBallPosition, R, target, true);
 
             if (R.IsReady() && prediction.UnitPosition.Distance(_currentBallPosition) <= R.Width)
             {
@@ -347,15 +329,15 @@ namespace xSaliceResurrected.Mid
             if (Menu.Item("saveEMana", true).GetValue<bool>() && Player.Mana - ESpell.ManaCost < QSpell.ManaCost + WSpell.ManaCost)
                 return;
 
-            Obj_AI_Hero etarget = Player;
+            var etarget = Player;
 
             switch (_ballStatus)
             {
                 case 0:
                     if (target != null)
                     {
-                        float travelTime = target.Distance(Player.ServerPosition) / Q.Speed;
-                        float minTravelTime = 10000f;
+                        var travelTime = target.Distance(Player.ServerPosition) / Q.Speed;
+                        var minTravelTime = 10000f;
 
                         foreach (
                             Obj_AI_Hero ally in
@@ -365,8 +347,8 @@ namespace xSaliceResurrected.Mid
                             //dmg enemy with E
                             if (Menu.Item("UseEDmg", true).GetValue<bool>())
                             {
-                                PredictionOutput prediction3 = Util.GetP(Player.ServerPosition, E, target, true);
-                                Object[] obj = Util.VectorPointProjectionOnLineSegment(Player.ServerPosition.To2D(),
+                                var prediction3 = Util.GetP(Player.ServerPosition, E, target, true);
+                                var obj = Util.VectorPointProjectionOnLineSegment(Player.ServerPosition.To2D(),
                                     ally.ServerPosition.To2D(), prediction3.UnitPosition.To2D());
                                 var isOnseg = (bool)obj[2];
                                 var pointLine = (Vector2)obj[1];
@@ -380,7 +362,7 @@ namespace xSaliceResurrected.Mid
                                 }
                             }
 
-                            float allyRange = target.Distance(ally.ServerPosition) / Q.Speed +
+                            var allyRange = target.Distance(ally.ServerPosition) / Q.Speed +
                                                 ally.Distance(Player.ServerPosition) / E.Speed;
                             if (allyRange < minTravelTime)
                             {
@@ -400,8 +382,8 @@ namespace xSaliceResurrected.Mid
                     //dmg enemy with E
                     if (Menu.Item("UseEDmg", true).GetValue<bool>())
                     {
-                        PredictionOutput prediction = Util.GetP(_currentBallPosition, E, target, true);
-                        Object[] obj = Util.VectorPointProjectionOnLineSegment(_currentBallPosition.To2D(),
+                        var prediction = Util.GetP(_currentBallPosition, E, target, true);
+                        var obj = Util.VectorPointProjectionOnLineSegment(_currentBallPosition.To2D(),
                             Player.ServerPosition.To2D(), prediction.UnitPosition.To2D());
                         var isOnseg = (bool)obj[2];
                         var pointLine = (Vector2)obj[1];
@@ -414,8 +396,8 @@ namespace xSaliceResurrected.Mid
                         }
                     }
 
-                    float travelTime2 = target.Distance(_currentBallPosition) / Q.Speed;
-                    float minTravelTime2 = target.Distance(Player.ServerPosition) / Q.Speed +
+                    var travelTime2 = target.Distance(_currentBallPosition) / Q.Speed;
+                    var minTravelTime2 = target.Distance(Player.ServerPosition) / Q.Speed +
                                             Player.Distance(_currentBallPosition) / E.Speed;
 
                     if (minTravelTime2 < travelTime2 && target.Distance(Player.ServerPosition) <= Q.Range + Q.Width &&
@@ -426,19 +408,19 @@ namespace xSaliceResurrected.Mid
 
                     break;
                 case 2:
-                    float travelTime3 = target.Distance(_currentBallPosition) / Q.Speed;
-                    float minTravelTime3 = 10000f;
+                    var travelTime3 = target.Distance(_currentBallPosition) / Q.Speed;
+                    var minTravelTime3 = 10000f;
 
                     foreach (
-                        Obj_AI_Hero ally in
+                        var ally in
                             ObjectManager.Get<Obj_AI_Hero>()
                                 .Where(x => x.IsAlly && Player.Distance(x.ServerPosition) <= E.Range && !x.IsMe))
                     {
                         //dmg enemy with E
                         if (Menu.Item("UseEDmg", true).GetValue<bool>())
                         {
-                            PredictionOutput prediction2 = Util.GetP(_currentBallPosition, E, target, true);
-                            Object[] obj = Util.VectorPointProjectionOnLineSegment(_currentBallPosition.To2D(),
+                            var prediction2 = Util.GetP(_currentBallPosition, E, target, true);
+                            var obj = Util.VectorPointProjectionOnLineSegment(_currentBallPosition.To2D(),
                                 ally.ServerPosition.To2D(), prediction2.UnitPosition.To2D());
                             var isOnseg = (bool)obj[2];
                             var pointLine = (Vector2)obj[1];
@@ -446,13 +428,12 @@ namespace xSaliceResurrected.Mid
                             if (E.IsReady() && isOnseg &&
                                 prediction2.UnitPosition.Distance(pointLine.To3D()) < E.Width)
                             {
-                                Console.WriteLine("Dmg 3");
                                 E.CastOnUnit(ally);
                                 return;
                             }
                         }
 
-                        float allyRange2 = target.Distance(ally.ServerPosition) / Q.Speed +
+                        var allyRange2 = target.Distance(ally.ServerPosition) / Q.Speed +
                                             ally.Distance(_currentBallPosition) / E.Speed;
 
                         if (allyRange2 < minTravelTime3)
@@ -476,7 +457,7 @@ namespace xSaliceResurrected.Mid
         {
             if (_isBallMoving || !target.IsValidTarget(Q.Range)) return;
 
-            PredictionOutput prediction = Util.GetP(_currentBallPosition, Q, target,  true);
+            var prediction = Util.GetP(_currentBallPosition, Q, target,  true);
 
             if (Q.IsReady() && prediction.Hitchance >= HitChance.VeryHigh && Player.Distance(target.Position) <= Q.Range)
             {
@@ -489,9 +470,9 @@ namespace xSaliceResurrected.Mid
             if (!W.IsReady() || _isBallMoving)
                 return;
 
-            int minHit = Menu.Item("autoW", true).GetValue<Slider>().Value;
+            var minHit = Menu.Item("autoW", true).GetValue<Slider>().Value;
 
-            int hit = (from x in ObjectManager.Get<Obj_AI_Hero>().Where(champ => champ.IsValidTarget(1500) && champ.IsVisible && !champ.IsZombie)
+            var hit = (from x in ObjectManager.Get<Obj_AI_Hero>().Where(champ => champ.IsValidTarget(1500) && champ.IsVisible && !champ.IsZombie)
                        select Util.GetPCircle(_currentBallPosition, W, x, true)).Count(prediction => W.IsReady() && prediction.UnitPosition.Distance(_currentBallPosition) < W.Width);
 
             if (hit >= minHit && W.IsReady())
@@ -503,9 +484,9 @@ namespace xSaliceResurrected.Mid
             if (!R.IsReady() || _isBallMoving)
                 return;
 
-            int minHit = Menu.Item("autoRCombo", true).GetValue<Slider>().Value;
+            var minHit = Menu.Item("autoRCombo", true).GetValue<Slider>().Value;
 
-            int hit = (from x in ObjectManager.Get<Obj_AI_Hero>().Where(champ => champ.IsValidTarget(1500) && champ.IsVisible && !champ.IsZombie)
+            var hit = (from x in ObjectManager.Get<Obj_AI_Hero>().Where(champ => champ.IsValidTarget(1500) && champ.IsVisible && !champ.IsZombie)
                        select Util.GetPCircle(_currentBallPosition, R, x, true)).Count(prediction => R.IsReady() && prediction.UnitPosition.Distance(_currentBallPosition) < R.Width);
 
             if (hit >= minHit && R.IsReady())
@@ -517,9 +498,9 @@ namespace xSaliceResurrected.Mid
             if (!R.IsReady() || _isBallMoving)
                 return;
 
-            int minHit = Menu.Item("autoR", true).GetValue<Slider>().Value;
+            var minHit = Menu.Item("autoR", true).GetValue<Slider>().Value;
 
-            int hit = (from x in ObjectManager.Get<Obj_AI_Hero>().Where(champ => champ.IsValidTarget(1500) && champ.IsVisible && !champ.IsZombie)
+            var hit = (from x in ObjectManager.Get<Obj_AI_Hero>().Where(champ => champ.IsValidTarget(1500) && champ.IsVisible && !champ.IsZombie)
                        select Util.GetPCircle(_currentBallPosition, R, x, true)).Count(prediction => R.IsReady() && prediction.UnitPosition.Distance(_currentBallPosition) < R.Width);
 
 
@@ -540,17 +521,17 @@ namespace xSaliceResurrected.Mid
         {
             if (!OrbwalkManager.CanMove(40)) return;
 
-            List<Obj_AI_Base> allMinions = MinionManager.GetMinions(Player.ServerPosition, Q.Range);
+            var allMinions = MinionManager.GetMinions(Player.ServerPosition, Q.Range);
 
             if (Q.IsReady())
             {
-                foreach (Obj_AI_Base minion in allMinions)
+                foreach (var minion in allMinions)
                 {
                     if (minion.IsValidTarget() &&
                         HealthPrediction.GetHealthPrediction(minion, (int)(Player.Distance(minion.Position) * 1000 / 1400)) <
                         Player.GetSpellDamage(minion, SpellSlot.Q) - 10)
                     {
-                        PredictionOutput prediction = Util.GetP(_currentBallPosition, Q, minion, true);
+                        var prediction = Util.GetP(_currentBallPosition, Q, minion, true);
 
                         if (prediction.Hitchance >= HitChance.High && Q.IsReady())
                             Q.Cast(prediction.CastPosition);
@@ -566,26 +547,26 @@ namespace xSaliceResurrected.Mid
             if (!ManaManager.HasMana("Farm"))
                 return;
 
-            List<Obj_AI_Base> allMinionsQ = MinionManager.GetMinions(ObjectManager.Player.ServerPosition,
+            var allMinionsQ = MinionManager.GetMinions(ObjectManager.Player.ServerPosition,
                 Q.Range + Q.Width);
-            List<Obj_AI_Base> allMinionsW = MinionManager.GetMinions(ObjectManager.Player.ServerPosition,
+            var allMinionsW = MinionManager.GetMinions(ObjectManager.Player.ServerPosition,
                 Q.Range + Q.Width);
 
             var useQ = Menu.Item("UseQFarm", true).GetValue<bool>();
             var useW = Menu.Item("UseWFarm", true).GetValue<bool>();
-            int min = Menu.Item("qFarm", true).GetValue<Slider>().Value;
+            var min = Menu.Item("qFarm", true).GetValue<Slider>().Value;
 
             if (useQ && Q.IsReady())
             {
                 Q.From = _currentBallPosition;
 
-                MinionManager.FarmLocation pred = Q.GetCircularFarmLocation(allMinionsQ, Q.Width + 15);
+                var pred = Q.GetCircularFarmLocation(allMinionsQ, Q.Width + 15);
 
                 if (pred.MinionsHit >= min)
                     Q.Cast(pred.Position);
             }
 
-            int hit = 0;
+            var hit = 0;
             if (useW && W.IsReady())
             {
                 hit += allMinionsW.Count(enemy => enemy.Distance(_currentBallPosition) < W.Width);
@@ -611,36 +592,38 @@ namespace xSaliceResurrected.Mid
             if (Player.IsDead) return;
 
             OnGainBuff();
-
             CheckRMecGlobal();
-
-            if (Menu.Item("Flee", true).GetValue<KeyBind>().Active)
-            {
-                Escape();
-            }
-            else if (Menu.Item("Orbwalk", true).GetValue<KeyBind>().Active)
-            {
-                CheckRMec();
-                Combo();
-            }
-            else
-            {
-                if (Menu.Item("Farm", true).GetValue<KeyBind>().Active ||
-                    Menu.Item("FarmT", true).GetValue<KeyBind>().Active)
-                    Harass();
-
-                if (Menu.Item("LaneClear", true).GetValue<KeyBind>().Active)
-                {
-                    Farm();
-                }
-
-                if (Menu.Item("LastHitQQ", true).GetValue<KeyBind>().Active)
-                {
-                    LastHit();
-                }
-            }
-
             CheckWMec();
+
+            if (Menu.Item("FarmT", true).GetValue<KeyBind>().Active)
+                Harass();
+
+            switch (Orbwalker.ActiveMode)
+            {
+                case xSaliceResurrected.Orbwalking.OrbwalkingMode.Combo:
+                    CheckRMec();
+                    Combo();
+                    break;
+                case xSaliceResurrected.Orbwalking.OrbwalkingMode.Mixed:
+                    break;
+                case xSaliceResurrected.Orbwalking.OrbwalkingMode.LastHit:
+                    LastHit();
+                    break;
+                case xSaliceResurrected.Orbwalking.OrbwalkingMode.LaneClear:
+                    Farm();
+                    break;
+                case xSaliceResurrected.Orbwalking.OrbwalkingMode.Freeze:
+                    break;
+                case xSaliceResurrected.Orbwalking.OrbwalkingMode.CustomMode:
+                    break;
+                case xSaliceResurrected.Orbwalking.OrbwalkingMode.None:
+                    break;
+                case xSaliceResurrected.Orbwalking.OrbwalkingMode.Flee:
+                    Escape();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         private void OnGainBuff()
@@ -669,7 +652,7 @@ namespace xSaliceResurrected.Mid
 
         protected override void Drawing_OnDraw(EventArgs args)
         {
-            foreach (Spell spell in SpellList)
+            foreach (var spell in SpellList)
             {
                 var menuItem = Menu.Item(spell.Slot + "Range", true).GetValue<Circle>();
                 if ((spell.Slot == SpellSlot.R && menuItem.Active) || (spell.Slot == SpellSlot.W && menuItem.Active))
@@ -694,7 +677,7 @@ namespace xSaliceResurrected.Mid
                 if (unit.IsEnemy && unit.Type == GameObjectType.obj_AI_Hero && E.IsReady())
                 {
                     foreach (
-                        Obj_AI_Hero ally in
+                        var ally in
                             ObjectManager.Get<Obj_AI_Hero>()
                                 .Where(
                                     x =>
@@ -733,7 +716,7 @@ namespace xSaliceResurrected.Mid
 
             if (!unit.IsMe) return;
 
-            SpellSlot castedSlot = ObjectManager.Player.GetSpellSlot(args.SData.Name);
+            var castedSlot = ObjectManager.Player.GetSpellSlot(args.SData.Name);
 
             if (castedSlot == SpellSlot.Q)
             {

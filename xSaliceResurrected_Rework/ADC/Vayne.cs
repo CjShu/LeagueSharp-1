@@ -1,44 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using LeagueSharp;
-using LeagueSharp.Common;
-using SharpDX;
-using xSaliceResurrected.Managers;
-using xSaliceResurrected.Utilities;
-using Color = System.Drawing.Color;
-using Geometry = xSaliceResurrected.Utilities.Geometry;
-
-namespace xSaliceResurrected.ADC
+﻿namespace xSaliceResurrected.ADC
 {
-    class Vayne : Champion
+    using System;
+    using System.Linq;
+    using LeagueSharp;
+    using LeagueSharp.Common;
+    using SharpDX;
+    using Managers;
+    using Utilities;
+    using Color = System.Drawing.Color;
+    using Geometry = Utilities.Geometry;
+
+    internal class Vayne : Champion
     {
         public Vayne()
         {
-            SetSpells();
-            LoadMenu();
-        }
-
-        private void SetSpells()
-        {
             SpellManager.Q = new Spell(SpellSlot.Q, 300);
-
             SpellManager.W = new Spell(SpellSlot.W);
-
             SpellManager.E = new Spell(SpellSlot.E, 550);
-
             SpellManager.R = new Spell(SpellSlot.R);
-        }
 
-        private void LoadMenu()
-        {
             var key = new Menu("Keys", "Key");
             {
-                key.AddItem(new MenuItem("Orbwalk", "Combo!", true).SetValue(new KeyBind(32, KeyBindType.Press)));
-                key.AddItem(new MenuItem("Farm", "Harass!", true).SetValue(new KeyBind("C".ToCharArray()[0], KeyBindType.Press)));
                 key.AddItem(new MenuItem("FarmT", "Harass (toggle)!", true).SetValue(new KeyBind("N".ToCharArray()[0], KeyBindType.Toggle, true)));
-                key.AddItem(new MenuItem("LaneClear", "Farm!", true).SetValue(new KeyBind("V".ToCharArray()[0], KeyBindType.Press)));
-                key.AddItem(new MenuItem("JungleClearActiveT", "Jungle Clear (toggle)", true).SetValue(new KeyBind("J".ToCharArray()[0], KeyBindType.Toggle, true)));
                 key.AddItem(
                     new MenuItem("ManualE", "Semi-Manual Condemn").SetValue(new KeyBind('E', KeyBindType.Press)));
                 //add to menu
@@ -129,12 +112,12 @@ namespace xSaliceResurrected.ADC
                 DamageIndicator.Fill = drawFill.GetValue<Circle>().Active;
                 DamageIndicator.FillColor = drawFill.GetValue<Circle>().Color;
                 drawComboDamageMenu.ValueChanged +=
-                    delegate(object sender, OnValueChangeEventArgs eventArgs)
+                    delegate (object sender, OnValueChangeEventArgs eventArgs)
                     {
                         DamageIndicator.Enabled = eventArgs.GetNewValue<bool>();
                     };
                 drawFill.ValueChanged +=
-                    delegate(object sender, OnValueChangeEventArgs eventArgs)
+                    delegate (object sender, OnValueChangeEventArgs eventArgs)
                     {
                         DamageIndicator.Fill = eventArgs.GetNewValue<Circle>().Active;
                         DamageIndicator.FillColor = eventArgs.GetNewValue<Circle>().Color;
@@ -151,7 +134,6 @@ namespace xSaliceResurrected.ADC
                 customMenu.AddItem(myCust.AddToMenu("Combo Active: ", "Orbwalk"));
                 customMenu.AddItem(myCust.AddToMenu("Harass Active: ", "Farm"));
                 customMenu.AddItem(myCust.AddToMenu("Harass(T) Active: ", "FarmT"));
-                customMenu.AddItem(myCust.AddToMenu("JungleClear Active: ", "JungleClearActiveT"));
                 customMenu.AddItem(myCust.AddToMenu("Laneclear Active: ", "LaneClear"));
                 Menu.AddSubMenu(customMenu);
             }
@@ -159,7 +141,7 @@ namespace xSaliceResurrected.ADC
 
         private float GetComboDamage(Obj_AI_Base target)
         {
-            double comboDamage = 0;
+            var comboDamage = 0d;
 
             if (Q.IsReady())
                 comboDamage += Player.GetSpellDamage(target, SpellSlot.Q);
@@ -168,6 +150,7 @@ namespace xSaliceResurrected.ADC
 
             return (float)(comboDamage + W.GetDamage(target) + Player.GetAutoAttackDamage(target) * 3);
         }
+
         private void JungleClear()
         {
             var mob =
@@ -238,24 +221,26 @@ namespace xSaliceResurrected.ADC
         {
             return
                 !ObjectManager.Get<Obj_AI_Hero>()
-                    .Any(e => e.IsEnemy && e.Distance(position) < Menu.Item("QMinDist", true).GetValue<Slider>().Value);
+                .Any(e => e.IsEnemy && e.Distance(position) < Menu.Item("QMinDist", true).GetValue<Slider>().Value);
         }
+
         private Obj_AI_Hero GetEnemyWith2W()
         {
             return ObjectManager.Get<Obj_AI_Hero>().FirstOrDefault(h => GetWBuffCount(h) == 2);
         }
+
         private int GetWBuffCount(Obj_AI_Hero target)
         {
             var wBuff = target.Buffs.FirstOrDefault(b => b.Name == "vaynesilvereddebuff");
-            return wBuff != null ? wBuff.Count : 0;
+            return wBuff?.Count ?? 0;
         }
 
         private bool IsCollisionable(Vector3 pos)
         {
-
             return NavMesh.GetCollisionFlags(pos).HasFlag(CollisionFlags.Wall) ||
                 (NavMesh.GetCollisionFlags(pos).HasFlag(CollisionFlags.Building));
         }
+
         public bool UltActive()
         {
             return ObjectManager.Player.Buffs.Any(b => b.Name.ToLower().Contains("vayneinquisition"));
@@ -283,7 +268,7 @@ namespace xSaliceResurrected.ADC
                  IsCollisionable(p.Extend(pP, -pD / 3f))))
             {
                 if (!hero.CanMove ||
-                    (hero.IsWindingUp))
+                    hero.IsWindingUp)
                     return true;
 
                 var enemiesCount = ObjectManager.Player.CountEnemiesInRange(1200);
@@ -305,24 +290,22 @@ namespace xSaliceResurrected.ADC
                     }
                     return false;
                 }
-                else
-                {
-                    var hitchance = Menu.Item("EHitchance", true).GetValue<Slider>().Value;
-                    var angle = 0.20 * hitchance;
-                    const float travelDistance = 0.5f;
-                    var alpha = new Vector2((float)(p.X + travelDistance * Math.Cos(Math.PI / 180 * angle)),
-                        (float)(p.X + travelDistance * Math.Sin(Math.PI / 180 * angle)));
-                    var beta = new Vector2((float)(p.X - travelDistance * Math.Cos(Math.PI / 180 * angle)),
-                        (float)(p.X - travelDistance * Math.Sin(Math.PI / 180 * angle)));
 
-                    for (var i = 15; i < pD; i += 100)
-                    {
-                        if (IsCollisionable(pP.To2D().Extend(alpha,
+                var hitchance = Menu.Item("EHitchance", true).GetValue<Slider>().Value;
+                var angle = 0.20 * hitchance;
+                const float travelDistance = 0.5f;
+                var alpha = new Vector2((float)(p.X + travelDistance * Math.Cos(Math.PI / 180 * angle)),
+                    (float)(p.X + travelDistance * Math.Sin(Math.PI / 180 * angle)));
+                var beta = new Vector2((float)(p.X - travelDistance * Math.Cos(Math.PI / 180 * angle)),
+                    (float)(p.X - travelDistance * Math.Sin(Math.PI / 180 * angle)));
+
+                for (var i = 15; i < pD; i += 100)
+                {
+                    if (IsCollisionable(pP.To2D().Extend(alpha,
                                 i)
                             .To3D()) && IsCollisionable(pP.To2D().Extend(beta, i).To3D())) return true;
-                    }
-                    return false;
                 }
+                return false;
             }
 
             if (mode == "PRADAPERFECT" &&
@@ -350,129 +333,120 @@ namespace xSaliceResurrected.ADC
                 return false;
             }
 
-            if (mode == "OLDPRADA")
+            switch (mode)
             {
-                if (!hero.CanMove ||
-                    (hero.IsWindingUp))
-                    return true;
-
-                var hitchance = Menu.Item("EHitchance", true).GetValue<Slider>().Value;
-                var angle = 0.20 * hitchance;
-                const float travelDistance = 0.5f;
-                var alpha = new Vector2((float)(p.X + travelDistance * Math.Cos(Math.PI / 180 * angle)),
-                    (float)(p.X + travelDistance * Math.Sin(Math.PI / 180 * angle)));
-                var beta = new Vector2((float)(p.X - travelDistance * Math.Cos(Math.PI / 180 * angle)),
-                    (float)(p.X - travelDistance * Math.Sin(Math.PI / 180 * angle)));
-
-                for (var i = 15; i < pD; i += 100)
-                {
-                    if (IsCollisionable(pP.To2D().Extend(alpha,
-                            i)
-                        .To3D()) || IsCollisionable(pP.To2D().Extend(beta, i).To3D())) return true;
-                }
-                return false;
-            }
-
-            if (mode == "MARKSMAN")
-            {
-                var prediction = E.GetPrediction(hero);
-                return NavMesh.GetCollisionFlags(
-                    prediction.UnitPosition.To2D()
-                        .Extend(
-                            pP.To2D(),
-                            -pD)
-                        .To3D()).HasFlag(CollisionFlags.Wall) ||
-                       NavMesh.GetCollisionFlags(
-                           prediction.UnitPosition.To2D()
-                               .Extend(
-                                   pP.To2D(),
-                                   -pD / 2f)
-                               .To3D()).HasFlag(CollisionFlags.Wall);
-            }
-
-            if (mode == "SHARPSHOOTER")
-            {
-                var prediction = E.GetPrediction(hero);
-                for (var i = 15; i < pD; i += 100)
-                {
-                    var posCF = NavMesh.GetCollisionFlags(
-                        prediction.UnitPosition.To2D()
-                            .Extend(
-                                pP.To2D(),
-                                -i)
-                            .To3D());
-                    if (posCF.HasFlag(CollisionFlags.Wall) || posCF.HasFlag(CollisionFlags.Building))
-                    {
+                case "OLDPRADA":
+                    if (!hero.CanMove ||
+                        (hero.IsWindingUp))
                         return true;
-                    }
-                }
-                return false;
-            }
 
-            if (mode == "GOSU")
-            {
-                var prediction = E.GetPrediction(hero);
-                for (var i = 15; i < pD; i += 75)
-                {
-                    var posCF = NavMesh.GetCollisionFlags(
-                        prediction.UnitPosition.To2D()
-                            .Extend(
-                                pP.To2D(),
-                                -i)
-                            .To3D());
-                    if (posCF.HasFlag(CollisionFlags.Wall) || posCF.HasFlag(CollisionFlags.Building))
+                    var hitchance = Menu.Item("EHitchance", true).GetValue<Slider>().Value;
+                    var angle = 0.20 * hitchance;
+                    const float travelDistance = 0.5f;
+                    var alpha = new Vector2((float)(p.X + travelDistance * Math.Cos(Math.PI / 180 * angle)),
+                        (float)(p.X + travelDistance * Math.Sin(Math.PI / 180 * angle)));
+                    var beta = new Vector2((float)(p.X - travelDistance * Math.Cos(Math.PI / 180 * angle)),
+                        (float)(p.X - travelDistance * Math.Sin(Math.PI / 180 * angle)));
+
+                    for (var i = 15; i < pD; i += 100)
                     {
-                        return true;
+                        if (IsCollisionable(pP.To2D().Extend(alpha,
+                                    i)
+                                .To3D()) || IsCollisionable(pP.To2D().Extend(beta, i).To3D())) return true;
                     }
-                }
-                return false;
-            }
-
-            if (mode == "VHR")
-            {
-                var prediction = E.GetPrediction(hero);
-                for (var i = 15; i < pD; i += (int)hero.BoundingRadius) //:frosty:
+                    return false;
+                case "MARKSMAN":
                 {
-                    var posCF = NavMesh.GetCollisionFlags(
-                        prediction.UnitPosition.To2D()
-                            .Extend(
-                                pP.To2D(),
-                                -i)
-                            .To3D());
-                    if (posCF.HasFlag(CollisionFlags.Wall) || posCF.HasFlag(CollisionFlags.Building))
-                    {
-                        return true;
-                    }
+                    var prediction = E.GetPrediction(hero);
+                    return NavMesh.GetCollisionFlags(
+                               prediction.UnitPosition.To2D()
+                                   .Extend(
+                                       pP.To2D(),
+                                       -pD)
+                                   .To3D()).HasFlag(CollisionFlags.Wall) ||
+                           NavMesh.GetCollisionFlags(
+                               prediction.UnitPosition.To2D()
+                                   .Extend(
+                                       pP.To2D(),
+                                       -pD / 2f)
+                                   .To3D()).HasFlag(CollisionFlags.Wall);
                 }
-                return false;
-            }
-
-            if (mode == "PRADALEGACY")
-            {
-                var prediction = E.GetPrediction(hero);
-                for (var i = 15; i < pD; i += 75)
+                case "SHARPSHOOTER":
                 {
-                    var posCF = NavMesh.GetCollisionFlags(
-                        prediction.UnitPosition.To2D()
-                            .Extend(
-                                pP.To2D(),
-                                -i)
-                            .To3D());
-                    if (posCF.HasFlag(CollisionFlags.Wall) || posCF.HasFlag(CollisionFlags.Building))
+                    var prediction = E.GetPrediction(hero);
+                    for (var i = 15; i < pD; i += 100)
                     {
-                        return true;
+                        var posCF = NavMesh.GetCollisionFlags(
+                            prediction.UnitPosition.To2D()
+                                .Extend(
+                                    pP.To2D(),
+                                    -i)
+                                .To3D());
+                        if (posCF.HasFlag(CollisionFlags.Wall) || posCF.HasFlag(CollisionFlags.Building))
+                        {
+                            return true;
+                        }
                     }
+                    return false;
                 }
-                return false;
+                case "GOSU":
+                {
+                    var prediction = E.GetPrediction(hero);
+                    for (var i = 15; i < pD; i += 75)
+                    {
+                        var posCF = NavMesh.GetCollisionFlags(
+                            prediction.UnitPosition.To2D()
+                                .Extend(
+                                    pP.To2D(),
+                                    -i)
+                                .To3D());
+                        if (posCF.HasFlag(CollisionFlags.Wall) || posCF.HasFlag(CollisionFlags.Building))
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+                case "VHR":
+                {
+                    var prediction = E.GetPrediction(hero);
+                    for (var i = 15; i < pD; i += (int)hero.BoundingRadius) //:frosty:
+                    {
+                        var posCF = NavMesh.GetCollisionFlags(
+                            prediction.UnitPosition.To2D()
+                                .Extend(
+                                    pP.To2D(),
+                                    -i)
+                                .To3D());
+                        if (posCF.HasFlag(CollisionFlags.Wall) || posCF.HasFlag(CollisionFlags.Building))
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+                case "PRADALEGACY":
+                {
+                    var prediction = E.GetPrediction(hero);
+                    for (var i = 15; i < pD; i += 75)
+                    {
+                        var posCF = NavMesh.GetCollisionFlags(
+                            prediction.UnitPosition.To2D()
+                                .Extend(
+                                    pP.To2D(),
+                                    -i)
+                                .To3D());
+                        if (posCF.HasFlag(CollisionFlags.Wall) || posCF.HasFlag(CollisionFlags.Building))
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
             }
 
-            if (mode == "FASTEST" && IsCollisionable(p.Extend(pP, -pD)) || IsCollisionable(p.Extend(pP, -pD / 2f)) ||
-                                     IsCollisionable(p.Extend(pP, -pD / 3f)))
-            {
-                return true;
-            }
-
-            return false;
+            return mode == "FASTEST" && IsCollisionable(p.Extend(pP, -pD)) || IsCollisionable(p.Extend(pP, -pD / 2f)) ||
+                   IsCollisionable(p.Extend(pP, -pD / 3f));
         }
 
         private Obj_AI_Hero GetCondemnableTarget()
@@ -482,33 +456,58 @@ namespace xSaliceResurrected.ADC
 
         protected override void AfterAttack(AttackableUnit unit, AttackableUnit target)
         {
-            if (target is Obj_AI_Hero && (Menu.Item("UseQCombo", true).GetValue<bool>() &&
-                 Menu.Item("Orbwalk", true).GetValue<KeyBind>().Active))
+            switch (Orbwalker.ActiveMode)
             {
-                if (Q.IsReady())
-                {
-                    Q.Cast(GetSafeTumblePos((Obj_AI_Hero) target));
-                }
-            }
-            if ((Menu.Item("Farm", true).GetValue<KeyBind>().Active && Menu.Item("UseQHarass", true).GetValue<bool>()))
-            {
-                var tg = target as Obj_AI_Hero;
-                if (Q.IsReady() && target is Obj_AI_Hero)
-                {
-                    var qMin = Menu.Item("Q_Min_Stack", true).GetValue<Slider>().Value;
-                    if (qMin <= GetWBuffCount(tg) && IsSafeTumblePos(ObjectManager.Player.Position.Extend(tg.ServerPosition, 300)))
-                        Q.Cast(tg.ServerPosition);
-                }
-                if (E.IsReady() && Menu.Item("UseEHarass", true).GetValue<bool>() && target is Obj_AI_Hero && GetWBuffCount(tg) == 2)
-                {
-                    E.Cast(tg);
-                }
+                case xSaliceResurrected.Orbwalking.OrbwalkingMode.Combo:
+                    var hero = target as Obj_AI_Hero;
+
+                    if (hero != null && Menu.Item("UseQCombo", true).GetValue<bool>())
+                    {
+                        if (Q.IsReady())
+                        {
+                            Q.Cast(GetSafeTumblePos(hero));
+                        }
+                    }
+                    break;
+                case xSaliceResurrected.Orbwalking.OrbwalkingMode.Mixed:
+                    if (Menu.Item("UseQHarass", true).GetValue<bool>())
+                    {
+                        var tg = target as Obj_AI_Hero;
+                        if (Q.IsReady() && target is Obj_AI_Hero)
+                        {
+                            var qMin = Menu.Item("Q_Min_Stack", true).GetValue<Slider>().Value;
+                            if (qMin <= GetWBuffCount(tg) && IsSafeTumblePos(ObjectManager.Player.Position.Extend(tg.ServerPosition, 300)))
+                                Q.Cast(tg.ServerPosition);
+                        }
+                        if (E.IsReady() && Menu.Item("UseEHarass", true).GetValue<bool>() && target is Obj_AI_Hero && GetWBuffCount(tg) == 2)
+                        {
+                            E.Cast(tg);
+                        }
+                    }
+                    break;
+                case xSaliceResurrected.Orbwalking.OrbwalkingMode.LastHit:
+                    break;
+                case xSaliceResurrected.Orbwalking.OrbwalkingMode.LaneClear:
+                    break;
+                case xSaliceResurrected.Orbwalking.OrbwalkingMode.Freeze:
+                    break;
+                case xSaliceResurrected.Orbwalking.OrbwalkingMode.CustomMode:
+                    break;
+                case xSaliceResurrected.Orbwalking.OrbwalkingMode.None:
+                    break;
+                case xSaliceResurrected.Orbwalking.OrbwalkingMode.Flee:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
-        protected override void BeforeAttack(Orbwalking.BeforeAttackEventArgs args)
+        protected override void BeforeAttack(xSaliceResurrected.Orbwalking.BeforeAttackEventArgs args)
         {
-            if (ObjectManager.Player.Buffs.Any(b=>b.Name.ToLower().Contains("tumblefade")) && ObjectManager.Get<Obj_AI_Hero>().Any(h => h.IsEnemy && h.IsValidTarget() && h.IsMelee && h.Distance(ObjectManager.Player) < 325))
+            if (ObjectManager.Player.Buffs.Any(b=>b.Name.ToLower().Contains("tumblefade")) && 
+                ObjectManager.Get<Obj_AI_Hero>().
+                Any(h => h.IsEnemy && h.IsValidTarget() && 
+                h.IsMelee && h.Distance(ObjectManager.Player) < 325))
             {
                 args.Process = false;
             }
@@ -522,7 +521,9 @@ namespace xSaliceResurrected.ADC
             var useQ = Menu.Item("UseQFarm", true).GetValue<bool>();
             var cursorPos = Game.CursorPos;
 
-            if (useQ && IsSafeTumblePos(cursorPos) && MinionManager.GetMinions(580, MinionTypes.All, MinionTeam.Enemy).Any(m => m.Health < ObjectManager.Player.GetAutoAttackDamage(m) && m.Health > 13))
+            if (useQ && IsSafeTumblePos(cursorPos) &&
+                MinionManager.GetMinions(580).
+                Any(m => m.Health < ObjectManager.Player.GetAutoAttackDamage(m) && m.Health > 13))
             {
                 Q.Cast(cursorPos);
             }
@@ -532,17 +533,19 @@ namespace xSaliceResurrected.ADC
         {
             //check if player is dead
             if (Player.IsDead) return;
-            if (Menu.Item("LaneClear", true).GetValue<KeyBind>().Active)
-                Farm();
-            if (Menu.Item("JungleClearActiveT", true).GetValue<KeyBind>().Active &&
-                Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
-                JungleClear();
+
             if (E.IsReady())
             {
                 foreach (var en in ObjectManager.Get<Obj_AI_Hero>().Where(h => h.IsEnemy && h.IsValidTarget(550f)))
                 {
                     AttemptSimpleCondemn(en);
                 }
+            }
+
+            if (Orbwalker.ActiveMode == xSaliceResurrected.Orbwalking.OrbwalkingMode.LaneClear)
+            {
+                Farm();
+                JungleClear();
             }
         }
 
@@ -569,5 +572,4 @@ namespace xSaliceResurrected.ADC
             }
         }
     }
-    
 }

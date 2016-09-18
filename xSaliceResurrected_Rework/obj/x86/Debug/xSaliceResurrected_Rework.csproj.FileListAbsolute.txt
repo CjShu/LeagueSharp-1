@@ -15,3 +15,4 @@ D:\Sharp\GitHub\NewAssembly\LeagueSharp\xSaliceResurrected_Rework\obj\x86\Debug\
 D:\Sharp\GitHub\NewAssembly\LeagueSharp\xSaliceResurrected_Rework\obj\x86\Debug\xSaliceResurrected_Rework.csproj.GenerateResource.Cache
 D:\Sharp\GitHub\NewAssembly\LeagueSharp\xSaliceResurrected_Rework\obj\x86\Debug\xSaliceResurrected.exe
 D:\Sharp\GitHub\NewAssembly\LeagueSharp\xSaliceResurrected_Rework\obj\x86\Debug\xSaliceResurrected.pdb
+D:\Sharp\GitHub\NewAssembly\LeagueSharp\xSaliceResurrected_Rework\obj\x86\Debug\xSaliceResurrected_Rework.csprojResolveAssemblyReference.cache

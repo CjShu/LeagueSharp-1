@@ -129,9 +129,9 @@ namespace xSaliceResurrected.Managers
 
                 if (ObjectManager.Player.Distance(tarPred.CastPosition) < spell.Range + 100 && nearByEnemies >= minHit)
                 {
-                    if (Jayce.HammerTime && R.IsReady() && Jayce.CanQcd == 0 && Jayce.CanEcd == 0)
+                    if (Jayce.IsMelee && R.IsReady() && Jayce.Qcd == 0 && Jayce.Ecd == 0)
                         R.Cast();
-                    else if(Jayce.HammerTime)
+                    else if(Jayce.IsMelee)
                         return;
 
                     Console.WriteLine("Hit Combo: " + nearByEnemies);

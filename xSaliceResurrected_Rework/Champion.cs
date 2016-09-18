@@ -48,9 +48,9 @@
 
         private void GameOnLoad()
         {
-            Game.PrintChat("<font color = \"#FFB6C1\">xSalice's Ressurected AIO</font> by <font color = \"#00FFFF\">xSalice</font>, imsosharp HotFix, NightMoon Rework!");
+            Game.PrintChat("<font color = \"#FFB6C1\">xSalice's Ressurected AIO</font> by <font color = \"#00FFFF\">xSalice</font>, imsosharp Fix, NightMoon Rework!");
             Game.PrintChat("---------------------------------");
-            Game.PrintChat("Change Log: Fix Azir All Question!");
+            Game.PrintChat("Change Log: Fix Vayne Orbwalker, Jayce ReWrite the Code and CoolDown Tracker");
 
             Menu = new Menu("xSalice's " + Player.ChampionName, Player.ChampionName, true);
 

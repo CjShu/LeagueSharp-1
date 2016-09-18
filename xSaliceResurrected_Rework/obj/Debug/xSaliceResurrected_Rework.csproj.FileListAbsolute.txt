@@ -1,1 +1,4 @@
 D:\Sharp\GitHub\NewAssembly\LeagueSharp\xSaliceResurrected_Rework\bin\Release\xSaliceResurrected.exe.config
+D:\Sharp\GitHub\NewAssembly\LeagueSharp\xSaliceResurrected_Rework\obj\Debug\xSaliceResurrected_Rework.csprojResolveAssemblyReference.cache
+D:\Sharp\GitHub\NewAssembly\LeagueSharp\xSaliceResurrected_Rework\obj\Debug\xSaliceResurrected.Properties.Resources.resources
+D:\Sharp\GitHub\NewAssembly\LeagueSharp\xSaliceResurrected_Rework\obj\Debug\xSaliceResurrected_Rework.csproj.GenerateResource.Cache
