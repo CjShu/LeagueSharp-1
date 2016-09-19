@@ -1,11 +1,4 @@
-﻿using LeagueSharp;
-using LeagueSharp.Common;
-using SharpDX;
-using System;
-using System.Linq;
-using Color = System.Drawing.Color;
-
-/*
+﻿/*
 Update log:
     First Push (2016-02-17 03.38)
     Fix LaneClear & JungleClear WE Use Question (2016-02-17 04.37)
@@ -31,15 +24,22 @@ Update log:
     Clean Menu, Update QALogic(Faster), Add Quickharass Range Show, Add R1 Status, Add WallJump Logic (2016-03-03 03.41)
     Add R1 Color Draw (2016-03-04 20.53)
     Fix R2 Cast Logic (2016-03-04 23.14)
+    Fix Emote, maybe i dont forgot somethings (2016年9月20日 01:51)
 Next Work:
     Now Perfect ! If you find more bugs plz give me feedback! (if all is working i will make a SDK Riven assembly)
 */
 
 namespace Flowers_Riven
 {
-    class Program
+    using LeagueSharp;
+    using LeagueSharp.Common;
+    using SharpDX;
+    using System;
+    using System.Linq;
+    using Color = System.Drawing.Color;
+
+    internal class Program
     {
-        public static bool DisableAttack;
         public static Spell Q, W, E, R;
         public static SpellSlot Ignite, Flash;
         public static Orbwalking.Orbwalker Orbwalker;
@@ -48,9 +48,9 @@ namespace Flowers_Riven
         public static HpBarDraw DrawHpBar = new HpBarDraw();
         public static int QStack;
         public static bool CastR2, CanFlash;
-        private static Vector3 FleePosition = Vector3.Zero;
-        private static Vector3 TargetPosition = Vector3.Zero;
-        private static int InitTime { get; set; }
+
+        public static Vector3 FleePosition { get; private set; } = Vector3.Zero;
+        public static Vector3 TargetPosition { get; private set; } = Vector3.Zero;
 
         static void Main(string[] args)
         {
@@ -98,14 +98,14 @@ namespace Flowers_Riven
             Menu.SubMenu("nightmoon.W.Menu").AddItem(new MenuItem("KillStealW", "KillSteal: Use Spells", true).SetValue(true));
 
             Menu.AddSubMenu(new Menu("[FL] E Setting", "nightmoon.E.Menu"));
-            Menu.SubMenu("nightmoon.E.Menu").AddItem(new MenuItem("ComboE", "Combo: Use Mode", true).SetValue(new StringList(new string[] { "To Target", "To Mouse", "Off"})));
+            Menu.SubMenu("nightmoon.E.Menu").AddItem(new MenuItem("ComboE", "Combo: Use Mode", true).SetValue(new StringList(new [] { "To Target", "To Mouse", "Off"})));
             Menu.SubMenu("nightmoon.E.Menu").AddItem(new MenuItem("JungleClearE", "Harass: Use Spells", true).SetValue(true));
             Menu.SubMenu("nightmoon.E.Menu").AddItem(new MenuItem("KillStealE", "KillSteal: Use Spells", true).SetValue(true));
 
             Menu.AddSubMenu(new Menu("[FL] Ult Setting", "nightmoon.R.Menu"));
             Menu.SubMenu("nightmoon.R.Menu").AddItem(new MenuItem("ComboR", "Combo: Use R", true).SetValue(true));
             Menu.SubMenu("nightmoon.R.Menu").AddItem(new MenuItem("R1Combo", "Combo: Use R1", true).SetValue(new KeyBind('L', KeyBindType.Toggle, true)));
-            Menu.SubMenu("nightmoon.R.Menu").AddItem(new MenuItem("R2Mode", "Combo: R2 Mode", true).SetValue(new StringList(new string[] { "Killable", "Max Damage", "First Cast" , "Off" }, 1)));
+            Menu.SubMenu("nightmoon.R.Menu").AddItem(new MenuItem("R2Mode", "Combo: R2 Mode", true).SetValue(new StringList(new [] { "Killable", "Max Damage", "First Cast" , "Off" }, 1)));
             Menu.SubMenu("nightmoon.R.Menu").AddItem(new MenuItem("KillStealR", "KillSteal: Use Spells", true).SetValue(true));
 
             Menu.AddSubMenu(new Menu("[FL] Burst Mode", "nightmoon.Burst.Menu"));
@@ -138,7 +138,6 @@ namespace Flowers_Riven
             Game.OnUpdate += OnUpdate;
             AntiGapcloser.OnEnemyGapcloser += OnEnemyGapcloser;
             Interrupter2.OnInterruptableTarget += OnInterruptableTarget;
-            Orbwalking.BeforeAttack += ProcessBool;
             Orbwalking.AfterAttack += JungleClearELogic;
             Obj_AI_Base.OnPlayAnimation += LightQALogic;
             Obj_AI_Base.OnDoCast += ItemCastLogic;
@@ -407,24 +406,28 @@ namespace Flowers_Riven
                         wallCheck = VectorHelper.GetFirstWallPoint(checkPoint, wallPosition);
                         if (wallCheck != null)
                         {
-                            var wallPositionOpposite = (Vector3)VectorHelper.GetFirstWallPoint((Vector3)wallCheck, wallPosition);
+                            var firstWallPoint = VectorHelper.GetFirstWallPoint((Vector3)wallCheck, wallPosition);
 
-                            if (Math.Sqrt(Me.GetPath(wallPositionOpposite).Sum(o => o.To2D().LengthSquared())) - Me.Distance(wallPositionOpposite) > 200)
+                            if (firstWallPoint != null)
                             {
-                                if (Me.Distance(wallPositionOpposite, true) < Math.Pow(300 - Me.BoundingRadius / 2, 5) && QStack == 2)
-                                {
-                                    InitTime = Environment.TickCount;
-                                    TargetPosition = wallPositionOpposite;
+                                var wallPositionOpposite = (Vector3)firstWallPoint;
 
-                                    if(E.IsReady())
+                                if (Math.Sqrt(Me.GetPath(wallPositionOpposite).Sum(o => o.To2D().LengthSquared())) - Me.Distance(wallPositionOpposite) > 200)
+                                {
+                                    if (Me.Distance(wallPositionOpposite, true) < Math.Pow(300 - Me.BoundingRadius / 2, 5) && QStack == 2)
                                     {
-                                        E.Cast(Game.CursorPos);
+                                        TargetPosition = wallPositionOpposite;
+
+                                        if(E.IsReady())
+                                        {
+                                            E.Cast(Game.CursorPos);
+                                        }
+                                        else if (!E.IsReady())
+                                        {
+                                            Q.Cast(Game.CursorPos);
+                                        }
+                                        break;
                                     }
-                                    else if (!E.IsReady())
-                                    {
-                                        Q.Cast(Game.CursorPos);
-                                    }
-                                    break;
                                 }
                             }
                         }
@@ -636,9 +639,8 @@ namespace Flowers_Riven
             var e = HeroManager.Enemies.Where(enemy => enemy.IsValidTarget(W.Range) && !enemy.HasBuffOfType(BuffType.SpellShield));
 
             if (W.IsReady())
-                if (e != null)
-                    if (e.FirstOrDefault().IsValidTarget(W.Range))
-                        W.Cast();
+                if (e.FirstOrDefault().IsValidTarget(W.Range))
+                    W.Cast();
 
             if (E.IsReady() && !Me.IsDashing())
             {
@@ -690,11 +692,12 @@ namespace Flowers_Riven
 
                         if (Mob.FirstOrDefault().IsValidTarget(E.Range))
                         {
-                            if (Mob.FirstOrDefault().HasBuffOfType(BuffType.Stun) && !W.IsReady())
+                            var mob = Mob.FirstOrDefault();
+                            if (mob != null && (mob.HasBuffOfType(BuffType.Stun) && !W.IsReady()))
                             {
                                 E.Cast(Game.CursorPos);
                             }
-                            else if (!Mob.FirstOrDefault().HasBuffOfType(BuffType.Stun))
+                            else if (mob != null && !mob.HasBuffOfType(BuffType.Stun))
                             {
                                 E.Cast(Game.CursorPos);
                             }
@@ -731,17 +734,17 @@ namespace Flowers_Riven
             {
                 var t = HeroManager.Enemies.Where(e => e.IsValidTarget(E.Range + Orbwalking.GetAttackRange(Me)));
 
-                if (ComboE == 0)
+                switch (ComboE)
                 {
-                    var t1 = t.OrderByDescending(e => TargetSelector.GetPriority(e)).FirstOrDefault();
+                    case 0:
+                        var t1 = t.OrderByDescending(TargetSelector.GetPriority).FirstOrDefault();
 
-                    if (t1 != null)
-                        E.Cast(t1.ServerPosition);
-                }
-                else if(ComboE == 1)
-                {
-                    if (t != null)
+                        if (t1 != null)
+                            E.Cast(t1.ServerPosition);
+                        break;
+                    case 1:
                         E.Cast(Game.CursorPos);
+                        break;
                 }
             }
 
@@ -776,7 +779,7 @@ namespace Flowers_Riven
                                     }
                                     break;
                                 case 1:
-                                    if (t.HealthPercent < 25 && t.Health > R.GetDamage(t) + Damage.GetAutoAttackDamage(Me, t) * 2)
+                                    if (t.HealthPercent < 25 && t.Health > R.GetDamage(t) + Me.GetAutoAttackDamage(t) * 2)
                                     {
                                         CastR2 = true;
                                     }
@@ -892,62 +895,37 @@ namespace Flowers_Riven
             if (!sender.IsMe)
                 return;
 
-            if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Flee || Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
+            if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
                 return;
 
             switch (args.Animation)
             {
                 case "Spell1a":
-                    DisableAttack = true;
                     QStack = 1;
-                    Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos + 10);
-                    Utility.DelayAction.Add(250 - Game.Ping, () => { Game.Say("/d"); });
-                    Orbwalking.LastAATick = 0;
-                    if (Dance) { Utility.DelayAction.Add(DanceDelay, () => { Game.Say("/d"); }); }
-                    Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos + 10);
+                    if (Dance) { Utility.DelayAction.Add(DanceDelay, () => { Game.SendEmote(Emote.Dance); }); }
+                    Game.SendEmote(Emote.Dance);
+                    Orbwalking.ResetAutoAttackTimer();
+                    Me.IssueOrder(GameObjectOrder.MoveTo, Me.Position.Extend(Game.CursorPos, -10), false);
                     break;
                 case "Spell1b":
-                    DisableAttack = true;
-                    QStack = 2;
-                    Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos + 10);
-                    Utility.DelayAction.Add(250 - Game.Ping, () => { Game.Say("/d"); });
-                    Orbwalking.LastAATick = 0;
-                    if (Dance) { Utility.DelayAction.Add(DanceDelay, () => { Game.Say("/d"); }); }
-                    Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos + 15);
+                    if (Dance) { Utility.DelayAction.Add(DanceDelay, () => { Game.SendEmote(Emote.Dance); }); }
+                    Game.SendEmote(Emote.Dance);
+                    Orbwalking.ResetAutoAttackTimer();
+                    Me.IssueOrder(GameObjectOrder.MoveTo, Me.Position.Extend(Game.CursorPos, -10), false);
                     break;
                 case "Spell1c":
-                    DisableAttack = true;
-                    QStack = 0;
-                    Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos + 10);
-                    Utility.DelayAction.Add(250 - Game.Ping, () => { Game.Say("/d"); });
-                    Orbwalking.LastAATick = 0;
-                    if (Dance) { Utility.DelayAction.Add(DanceDelay, () => { Game.Say("/d"); }); }
-                    Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos + 10);
+                    if (Dance) { Utility.DelayAction.Add(DanceDelay, () => { Game.SendEmote(Emote.Dance); }); }
+                    Game.SendEmote(Emote.Dance);
+                    Orbwalking.ResetAutoAttackTimer();
+                    Me.IssueOrder(GameObjectOrder.MoveTo, Me.Position.Extend(Game.CursorPos, -10), false);
                     break;
                 case "Spell2":
-                    DisableAttack = true;
-                    Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos + 10);
-                    Utility.DelayAction.Add(250 - Game.Ping, () => { Game.Say("/d"); });
-                    Orbwalking.LastAATick = 0;
-                    if (Dance) { Utility.DelayAction.Add(DanceDelay, () => { Game.Say("/d"); }); }
-                    Me.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos + 10);
                     break;
                 case "Spell3":
-                    DisableAttack = true;
                     break;
                 case "Spell4":
-                    DisableAttack = true;
-                    break;
-                default:
-                    DisableAttack = false;
                     break;
             }
-        }
-
-        private static void ProcessBool(Orbwalking.BeforeAttackEventArgs args)
-        {
-            if (args.Unit.IsMe)
-                args.Process = !DisableAttack;
         }
 
         private static void AfterAAQLogic(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
@@ -998,9 +976,12 @@ namespace Flowers_Riven
                         {
                             var min = MinionManager.GetMinions(E.Range + Me.AttackRange);
 
-                            if (min != null)
-                                if(min.Count > 2)
-                                    Q.Cast(min.FirstOrDefault().Position);
+                            if(min?.Count > 2)
+                            {
+                                var mob = min.FirstOrDefault();
+                                if (mob != null)
+                                    Q.Cast(mob.Position);
+                            }
                         }
 
                         if (JungleClearQ)

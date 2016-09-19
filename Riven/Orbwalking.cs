@@ -172,10 +172,7 @@ namespace Flowers_Riven
         /// <param name="target">The target.</param>
         private static void FireOnAttack(AttackableUnit unit, AttackableUnit target)
         {
-            if (OnAttack != null)
-            {
-                OnAttack(unit, target);
-            }
+            OnAttack?.Invoke(unit, target);
         }
 
         /// <summary>
@@ -209,10 +206,7 @@ namespace Flowers_Riven
         /// <param name="minion">The minion.</param>
         private static void FireOnNonKillableMinion(AttackableUnit minion)
         {
-            if (OnNonKillableMinion != null)
-            {
-                OnNonKillableMinion(minion);
-            }
+            OnNonKillableMinion?.Invoke(minion);
         }
 
         /// <summary>
@@ -284,9 +278,10 @@ namespace Flowers_Riven
                 return false;
             }
             var myRange = GetRealAutoAttackRange(target);
+            var @base = target as Obj_AI_Base;
             return
                 Vector2.DistanceSquared(
-                    target is Obj_AI_Base ? ((Obj_AI_Base)target).ServerPosition.To2D() : target.Position.To2D(),
+                    @base?.ServerPosition.To2D() ?? target.Position.To2D(),
                     Player.ServerPosition.To2D()) <= myRange * myRange;
         }
 
@@ -335,6 +330,7 @@ namespace Flowers_Riven
         ///     Returns true if moving won't cancel the auto-attack.
         /// </summary>
         /// <param name="extraWindup">The extra windup.</param>
+        /// <param name="disableMissileCheck"></param>
         /// <returns><c>true</c> if this instance can move the specified extra windup; otherwise, <c>false</c>.</returns>
         public static bool CanMove(float extraWindup, bool disableMissileCheck = false)
         {
@@ -589,9 +585,11 @@ namespace Flowers_Riven
                     LastMoveCommandT = 0;
                     _autoattackCounter++;
 
-                    if (Spell.Target is Obj_AI_Base)
+                    var @base = Spell.Target as Obj_AI_Base;
+
+                    if (@base != null)
                     {
-                        var target = (Obj_AI_Base)Spell.Target;
+                        var target = @base;
                         if (target.IsValid)
                         {
                             FireOnTargetSwitch(target);
@@ -744,19 +742,13 @@ namespace Flowers_Riven
             ///     Gets the farm delay.
             /// </summary>
             /// <value>The farm delay.</value>
-            private int FarmDelay
-            {
-                get { return _config.Item("FarmDelay").GetValue<Slider>().Value; }
-            }
+            private int FarmDelay => _config.Item("FarmDelay").GetValue<Slider>().Value;
 
             /// <summary>
             ///     Gets a value indicating whether the orbwalker is orbwalking by checking the missiles.
             /// </summary>
             /// <value><c>true</c> if the orbwalker is orbwalking by checking the missiles; otherwise, <c>false</c>.</value>
-            public static bool MissileCheck
-            {
-                get { return _config.Item("MissileCheck").GetValue<bool>(); }
-            }
+            public static bool MissileCheck => _config.Item("MissileCheck").GetValue<bool>();
 
             /// <summary>
             ///     Gets or sets the active mode.
@@ -899,7 +891,7 @@ namespace Flowers_Riven
                         .Any(
                             minion =>
                                 minion.IsValidTarget() && minion.Team != GameObjectTeam.Neutral &&
-                                InAutoAttackRange(minion) && MinionManager.IsMinion(minion, false) &&
+                                InAutoAttackRange(minion) && MinionManager.IsMinion(minion) &&
                                 HealthPrediction.LaneClearHealthPrediction(
                                     minion, (int)(Player.AttackDelay * 1000 * LaneClearWaitTimeMod), FarmDelay) <=
                                 Player.GetAutoAttackDamage(minion));
@@ -911,9 +903,9 @@ namespace Flowers_Riven
                     ObjectManager.Get<Obj_AI_Minion>()
                         .Any(
                             minion =>
-                                (noneKillableMinion != null ? noneKillableMinion.NetworkId != minion.NetworkId : true) &&
+                                (noneKillableMinion == null || noneKillableMinion.NetworkId != minion.NetworkId) &&
                                 minion.IsValidTarget() && minion.Team != GameObjectTeam.Neutral &&
-                                InAutoAttackRange(minion) && MinionManager.IsMinion(minion, false) &&
+                                InAutoAttackRange(minion) && MinionManager.IsMinion(minion) &&
                                 HealthPrediction.LaneClearHealthPrediction(
                                     minion,
                                     (int)
@@ -1103,7 +1095,7 @@ namespace Flowers_Riven
                                 minions.FirstOrDefault(
                                     minion =>
                                         minion is Obj_AI_Minion &&
-                                        HealthPrediction.HasTurretAggro(minion as Obj_AI_Minion));
+                                        HealthPrediction.HasTurretAggro((Obj_AI_Minion) minion));
 
                             if (turretMinion != null)
                             {
@@ -1191,7 +1183,7 @@ namespace Flowers_Riven
                                     minions.Where(
                                         x =>
                                             x.NetworkId != turretMinion.NetworkId && x is Obj_AI_Minion &&
-                                            !HealthPrediction.HasMinionAggro(x as Obj_AI_Minion)))
+                                            !HealthPrediction.HasMinionAggro((Obj_AI_Minion) x)))
                                 {
                                     var playerDamage = (int)Player.GetAutoAttackDamage(minion);
                                     var turretDamage = (int)closestTower.GetAutoAttackDamage(minion, true);
@@ -1204,7 +1196,7 @@ namespace Flowers_Riven
                                 // late game
                                 var lastminion =
                                     minions.LastOrDefault(x => x.NetworkId != turretMinion.NetworkId && x is Obj_AI_Minion &&
-                                            !HealthPrediction.HasMinionAggro(x as Obj_AI_Minion));
+                                            !HealthPrediction.HasMinionAggro((Obj_AI_Minion) x));
                                 if (lastminion != null && minions.Count() >= 2)
                                 {
                                     if (1f / Player.AttackDelay >= 1f &&
@@ -1228,24 +1220,21 @@ namespace Flowers_Riven
                                 // balance other minions
                                 foreach (var minion in
                                     minions.Where(
-                                        x => x is Obj_AI_Minion && !HealthPrediction.HasMinionAggro(x as Obj_AI_Minion))
+                                        x => x is Obj_AI_Minion && !HealthPrediction.HasMinionAggro((Obj_AI_Minion) x))
                                     )
                                 {
-                                    if (closestTower != null)
+                                    var playerDamage = (int)Player.GetAutoAttackDamage(minion);
+                                    var turretDamage = (int)closestTower.GetAutoAttackDamage(minion, true);
+                                    var leftHP = (int)minion.Health % turretDamage;
+                                    if (leftHP > playerDamage)
                                     {
-                                        var playerDamage = (int)Player.GetAutoAttackDamage(minion);
-                                        var turretDamage = (int)closestTower.GetAutoAttackDamage(minion, true);
-                                        var leftHP = (int)minion.Health % turretDamage;
-                                        if (leftHP > playerDamage)
-                                        {
-                                            return minion;
-                                        }
+                                        return minion;
                                     }
                                 }
                                 //late game
                                 var lastminion =
                                     minions
-                                        .LastOrDefault(x => x is Obj_AI_Minion && !HealthPrediction.HasMinionAggro(x as Obj_AI_Minion));
+                                        .LastOrDefault(x => x is Obj_AI_Minion && !HealthPrediction.HasMinionAggro((Obj_AI_Minion) x));
                                 if (lastminion != null && minions.Count() >= 2)
                                 {
                                     if (minions.Count() >= 5 && 1f / Player.AttackDelay >= 1.2)
@@ -1279,7 +1268,7 @@ namespace Flowers_Riven
                             ObjectManager.Get<Obj_AI_Minion>()
                                 .Where(
                                     minion =>
-                                        minion.IsValidTarget() && InAutoAttackRange(minion) && ShouldAttackMinion(minion, false))
+                                        minion.IsValidTarget() && InAutoAttackRange(minion) && ShouldAttackMinion(minion))
                                   let predHealth =
                                       HealthPrediction.LaneClearHealthPrediction(
                                           minion, (int)(Player.AttackDelay * 1000 * LaneClearWaitTimeMod), FarmDelay)
