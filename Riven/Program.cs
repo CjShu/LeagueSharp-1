@@ -41,7 +41,7 @@ namespace Flowers_Riven
     internal class Program
     {
         public static Spell Q, W, E, R;
-        public static SpellSlot Ignite, Flash;
+        public static SpellSlot Ignite = SpellSlot.Unknown, Flash = SpellSlot.Unknown;
         public static Orbwalking.Orbwalker Orbwalker;
         public static Menu Menu;
         public static Obj_AI_Hero Me;
@@ -52,7 +52,7 @@ namespace Flowers_Riven
         public static Vector3 FleePosition { get; private set; } = Vector3.Zero;
         public static Vector3 TargetPosition { get; private set; } = Vector3.Zero;
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             CustomEvents.Game.OnGameLoad += OnLoad;
         }
@@ -62,16 +62,37 @@ namespace Flowers_Riven
             if (ObjectManager.Player.ChampionName != "Riven")
                 return;
 
+            Game.PrintChat("<font color='#2848c9'>Flowers Riven</font> --> <font color='#b756c5'>Load! </font> <font size='30'><font color='#d949d4'>Good Luck!</font></font>");
+
             Me = ObjectManager.Player;
 
+            InitSpell();
+            InitMenu();
+
+            Drawing.OnDraw += OnDraw;
+            Game.OnUpdate += OnUpdate;
+            AntiGapcloser.OnEnemyGapcloser += OnEnemyGapcloser;
+            Interrupter2.OnInterruptableTarget += OnInterruptableTarget;
+            Orbwalking.AfterAttack += JungleClearELogic;
+            Obj_AI_Base.OnPlayAnimation += LightQALogic;
+            Obj_AI_Base.OnDoCast += ItemCastLogic;
+            Obj_AI_Base.OnDoCast += AfterAAQLogic;
+        }
+
+        private static void InitSpell()
+        {
             Q = new Spell(SpellSlot.Q);
             W = new Spell(SpellSlot.W, 270f);
             E = new Spell(SpellSlot.E, 312f);
             R = new Spell(SpellSlot.R, 900f) { MinHitChance = HitChance.High };
             R.SetSkillshot(0.25f, 45f, 1600f, false, SkillshotType.SkillshotCone);
+
             Ignite = Me.GetSpellSlot("SummonerDot");
             Flash = Me.GetSpellSlot("SummonerFlash");
+        }
 
+        private static void InitMenu()
+        {
             Menu = new Menu("Flowers-Riven", "NightMoon", true);
 
             Menu.AddSubMenu(new Menu("[FL] Orbwalking", "nightmoon.Orbwalker.Menu"));
@@ -98,20 +119,22 @@ namespace Flowers_Riven
             Menu.SubMenu("nightmoon.W.Menu").AddItem(new MenuItem("KillStealW", "KillSteal: Use Spells", true).SetValue(true));
 
             Menu.AddSubMenu(new Menu("[FL] E Setting", "nightmoon.E.Menu"));
-            Menu.SubMenu("nightmoon.E.Menu").AddItem(new MenuItem("ComboE", "Combo: Use Mode", true).SetValue(new StringList(new [] { "To Target", "To Mouse", "Off"})));
+            Menu.SubMenu("nightmoon.E.Menu").AddItem(new MenuItem("ComboE", "Combo: Use Mode", true).SetValue(new StringList(new[] { "To Target", "To Mouse", "Off" })));
             Menu.SubMenu("nightmoon.E.Menu").AddItem(new MenuItem("JungleClearE", "Harass: Use Spells", true).SetValue(true));
             Menu.SubMenu("nightmoon.E.Menu").AddItem(new MenuItem("KillStealE", "KillSteal: Use Spells", true).SetValue(true));
 
             Menu.AddSubMenu(new Menu("[FL] Ult Setting", "nightmoon.R.Menu"));
             Menu.SubMenu("nightmoon.R.Menu").AddItem(new MenuItem("ComboR", "Combo: Use R", true).SetValue(true));
             Menu.SubMenu("nightmoon.R.Menu").AddItem(new MenuItem("R1Combo", "Combo: Use R1", true).SetValue(new KeyBind('L', KeyBindType.Toggle, true)));
-            Menu.SubMenu("nightmoon.R.Menu").AddItem(new MenuItem("R2Mode", "Combo: R2 Mode", true).SetValue(new StringList(new [] { "Killable", "Max Damage", "First Cast" , "Off" }, 1)));
+            Menu.SubMenu("nightmoon.R.Menu").AddItem(new MenuItem("R2Mode", "Combo: R2 Mode", true).SetValue(new StringList(new[] { "Killable", "Max Damage", "First Cast", "Off" }, 1)));
             Menu.SubMenu("nightmoon.R.Menu").AddItem(new MenuItem("KillStealR", "KillSteal: Use Spells", true).SetValue(true));
 
             Menu.AddSubMenu(new Menu("[FL] Burst Mode", "nightmoon.Burst.Menu"));
             Menu.SubMenu("nightmoon.Burst.Menu").AddItem(new MenuItem("BurstFlash", "Burst: Use Flash", true).SetValue(true));
             Menu.SubMenu("nightmoon.Burst.Menu").AddItem(new MenuItem("BurstIgnite", "Burst: Use Ignite", true).SetValue(true));
             Menu.SubMenu("nightmoon.Burst.Menu").AddItem(new MenuItem("BurstItem", "Burst: Use Items", true).SetValue(true));
+
+            Evade.Program.InjectEvade();
 
             Menu.AddSubMenu(new Menu("[FL] Support Using", "nightmoon.Item.Menu"));
             Menu.SubMenu("nightmoon.Item.Menu").AddItem(new MenuItem("ComboItem", "Combo: Use Items", true).SetValue(true));
@@ -131,17 +154,6 @@ namespace Flowers_Riven
 
             Menu.AddItem(new MenuItem("Credit", "Credit : NightMoon"));
             Menu.AddToMainMenu();
-
-            Game.PrintChat("<font color='#2848c9'>Flowers Riven</font> --> <font color='#b756c5'>Version : 1.0.0.2</font> <font size='30'><font color='#d949d4'>Good Luck!</font></font>");
-
-            Drawing.OnDraw += OnDraw;
-            Game.OnUpdate += OnUpdate;
-            AntiGapcloser.OnEnemyGapcloser += OnEnemyGapcloser;
-            Interrupter2.OnInterruptableTarget += OnInterruptableTarget;
-            Orbwalking.AfterAttack += JungleClearELogic;
-            Obj_AI_Base.OnPlayAnimation += LightQALogic;
-            Obj_AI_Base.OnDoCast += ItemCastLogic;
-            Obj_AI_Base.OnDoCast += AfterAAQLogic;
         }
 
         #region
@@ -195,13 +207,13 @@ namespace Flowers_Riven
 
             if (BrustMaxRange.Active && Me.Level >= 6 && R.IsReady())
             {
-                if (E.IsReady() && Flash.IsReady())
+                if (E.IsReady() && Flash != SpellSlot.Unknown && Flash.IsReady())
                     Render.Circle.DrawCircle(Me.Position, 465 + E.Range, BrustMaxRange.Color);
             }
 
             if(BrustMinRange.Active && Me.Level >= 6 && R.IsReady())
             {
-                if (E.IsReady() && Flash.IsReady())
+                if (E.IsReady() && Flash != SpellSlot.Unknown && Flash.IsReady())
                     Render.Circle.DrawCircle(Me.Position, E.Range + Me.BoundingRadius, BrustMinRange.Color);
             }
 
@@ -248,10 +260,10 @@ namespace Flowers_Riven
                     if (hero != null)
                     {
                         text = "Lock Target is : " + hero.ChampionName;
-                        text2 = "Can Flash : " + CanFlash.ToString();
+                        text2 = "Can Flash : " + CanFlash;
                     }
 
-                    if (BurstFlash && Flash.IsReady() && e.Distance(Me.ServerPosition) <= 800 && e.Distance(Me.ServerPosition) >= E.Range + Me.AttackRange + 85)
+                    if (BurstFlash && Flash != SpellSlot.Unknown && Flash.IsReady() && e.Distance(Me.ServerPosition) <= 800 && e.Distance(Me.ServerPosition) >= E.Range + Me.AttackRange + 85)
                     {
                         CanFlash = true;
                     }
@@ -602,7 +614,7 @@ namespace Flowers_Riven
                     }
                 }
 
-                if (BurstIgnite)
+                if (BurstIgnite && Ignite != SpellSlot.Unknown)
                 {
                     if (e.HealthPercent < 50)
                     {
@@ -613,7 +625,7 @@ namespace Flowers_Riven
                     }
                 }
 
-                if (BurstFlash)
+                if (BurstFlash && Flash != SpellSlot.Unknown)
                 {
                     if (Flash.IsReady())
                     {
@@ -693,7 +705,7 @@ namespace Flowers_Riven
                         if (Mob.FirstOrDefault().IsValidTarget(E.Range))
                         {
                             var mob = Mob.FirstOrDefault();
-                            if (mob != null && (mob.HasBuffOfType(BuffType.Stun) && !W.IsReady()))
+                            if (mob != null && mob.HasBuffOfType(BuffType.Stun) && !W.IsReady())
                             {
                                 E.Cast(Game.CursorPos);
                             }

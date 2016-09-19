@@ -105,12 +105,13 @@ namespace Flowers_Riven
         public static Vector3 LastMoveCommandPosition = Vector3.Zero;
         private static AttackableUnit _lastTarget;
         private static readonly Obj_AI_Hero Player;
-        private static int _delay;
         private static float _minDistance = 400;
         private static bool _missileLaunched;
         private static readonly string _championName;
         private static readonly Random _random = new Random(DateTime.Now.Millisecond);
-        private static int _autoattackCounter;
+
+        public static int Delay { get; private set; }
+        public static int AutoattackCounter { get; private set; }
 
         /// <summary>
         ///     Initializes static members of the <see cref="Orbwalking" /> class.
@@ -355,7 +356,7 @@ namespace Flowers_Riven
         /// <param name="delay">The delay.</param>
         public static void SetMovementDelay(int delay)
         {
-            _delay = delay;
+            Delay = delay;
         }
 
         /// <summary>
@@ -583,7 +584,7 @@ namespace Flowers_Riven
                     LastAATick = Utils.GameTimeTickCount - Game.Ping / 2;
                     _missileLaunched = false;
                     LastMoveCommandT = 0;
-                    _autoattackCounter++;
+                    AutoattackCounter++;
 
                     var @base = Spell.Target as Obj_AI_Base;
 

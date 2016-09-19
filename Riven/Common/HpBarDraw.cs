@@ -28,10 +28,7 @@
             }
         }
 
-        public Vector2 StartPosition
-        {
-            get { return new Vector2(Unit.HPBarPosition.X + Offset.X, Unit.HPBarPosition.Y + Offset.Y); }
-        }
+        public Vector2 StartPosition => new Vector2(Unit.HPBarPosition.X + Offset.X, Unit.HPBarPosition.Y + Offset.Y);
 
         public HpBarDraw()
         {
@@ -61,20 +58,20 @@
 
         private float GetHpProc(float dmg = 0)
         {
-            float Health = ((Unit.Health - dmg) > 0) ? (Unit.Health - dmg) : 0;
-            return (Health / Unit.MaxHealth);
+            var Health = Unit.Health - dmg > 0 ? Unit.Health - dmg : 0;
+            return Health / Unit.MaxHealth;
         }
 
         private Vector2 GetHpPosAfterDmg(float dmg)
         {
-            float w = GetHpProc(dmg) * Width;
+            var w = GetHpProc(dmg) * Width;
             return new Vector2(StartPosition.X + w, StartPosition.Y);
         }
 
         public void DrawDmg(float dmg, ColorBGRA color)
         {
-            Vector2 hpPosNow = GetHpPosAfterDmg(0);
-            Vector2 hpPosAfter = GetHpPosAfterDmg(dmg);
+            var hpPosNow = GetHpPosAfterDmg(0);
+            var hpPosAfter = GetHpPosAfterDmg(dmg);
 
             FullHPBar(hpPosNow, hpPosAfter, color);
         }
