@@ -1,4 +1,4 @@
-﻿namespace xSaliceResurrected
+﻿namespace xSaliceResurrected_Rework
 {
     using LeagueSharp;
     using LeagueSharp.Common;

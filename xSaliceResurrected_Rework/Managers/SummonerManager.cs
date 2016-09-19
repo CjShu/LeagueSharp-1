@@ -1,10 +1,10 @@
-﻿using LeagueSharp;
-using LeagueSharp.Common;
-using SharpDX;
-
-namespace xSaliceResurrected.Managers
+﻿namespace xSaliceResurrected_Rework.Managers
 {
-    class SummonerManager
+    using LeagueSharp;
+    using LeagueSharp.Common;
+    using SharpDX;
+
+    public class SummonerManager
     {
         private static readonly SpellSlot IgniteSlot = ObjectManager.Player.GetSpellSlot("SummonerDot");
         private static readonly SpellSlot FlashSlot = ObjectManager.Player.GetSpellSlot("SummonerFlash");
@@ -24,6 +24,5 @@ namespace xSaliceResurrected.Managers
         {
             Player.Spellbook.CastSpell(FlashSlot, pos);
         }
-
     }
 }

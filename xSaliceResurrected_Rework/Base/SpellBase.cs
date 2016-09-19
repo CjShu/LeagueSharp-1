@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
-using LeagueSharp;
-using LeagueSharp.Common;
-using xSaliceResurrected.Managers;
-
-namespace xSaliceResurrected.Base
+﻿namespace xSaliceResurrected_Rework.Base
 {
+    using System.Collections.Generic;
+    using LeagueSharp;
+    using LeagueSharp.Common;
+    using Managers;
+
     public abstract class SpellBase
     {
-
         protected static List<Spell> SpellList => SpellManager.SpellList;
 
         protected static Spell P => SpellManager.P;
@@ -29,6 +28,8 @@ namespace xSaliceResurrected.Base
         protected static Spell R => SpellManager.R;
 
         protected static Spell R2 => SpellManager.R2;
+
+        protected static SpellSlot Flash => SpellManager.Flash;
 
         protected static SpellDataInst QSpell => SpellManager.QSpell;
 

@@ -1,5 +1,6 @@
-﻿namespace xSaliceResurrected.Managers
+﻿namespace xSaliceResurrected_Rework.Managers
 {
+    using Base;
     using LeagueSharp;
     using LeagueSharp.Common;
 

@@ -7,8 +7,8 @@
     <ProjectGuid>{1CE21AA9-0E0C-4874-ABE7-A8C53EA7739B}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>xSaliceResurrected</RootNamespace>
-    <AssemblyName>xSaliceResurrected</AssemblyName>
+    <RootNamespace>xSaliceResurrected_Rework</RootNamespace>
+    <AssemblyName>xSaliceResurrected_Rework</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <PreBuildEvent />
@@ -39,40 +39,45 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ADC\Ashe.cs" />
-    <Compile Include="ADC\Corki.cs" />
-    <Compile Include="ADC\Ezreal.cs" />
-    <Compile Include="ADC\Jinx.cs" />
-    <Compile Include="ADC\KogMaw.cs" />
-    <Compile Include="ADC\Lucian.cs" />
-    <Compile Include="ADC\Vayne.cs" />
+    <Compile Include="Pluging\Ashe.cs" />
+    <Compile Include="Pluging\Corki.cs" />
+    <Compile Include="Pluging\Ezreal.cs" />
+    <Compile Include="Pluging\Jinx.cs" />
+    <Compile Include="Pluging\KogMaw.cs" />
+    <Compile Include="Pluging\Lucian.cs" />
+    <Compile Include="Pluging\Vayne.cs" />
     <Compile Include="Managers\Orbwalking.cs" />
-    <Compile Include="Managers\OrbwalkManager.cs" />
-    <Compile Include="Mid\Ahri.cs" />
-    <Compile Include="Mid\Akali.cs" />
-    <Compile Include="Mid\Anivia.cs" />
-    <Compile Include="Mid\Azir.cs" />
-    <Compile Include="Mid\Cassiopeia.cs" />
-    <Compile Include="Mid\Ekko.cs" />
-    <Compile Include="Mid\Jayce.cs" />
-    <Compile Include="ADC\Urgot.cs" />
-    <Compile Include="Mid\Karthus.cs" />
-    <Compile Include="Mid\Orianna.cs" />
-    <Compile Include="Mid\Syndra.cs" />
-    <Compile Include="Mid\Viktor.cs" />
+    <Compile Include="Pluging\Ahri.cs" />
+    <Compile Include="Pluging\Akali.cs" />
+    <Compile Include="Pluging\Anivia.cs" />
+    <Compile Include="Pluging\Azir.cs" />
+    <Compile Include="Pluging\Cassiopeia.cs" />
+    <Compile Include="Pluging\Ekko.cs" />
+    <Compile Include="Pluging\Jayce.cs" />
+    <Compile Include="Pluging\Urgot.cs" />
+    <Compile Include="Pluging\Karthus.cs" />
+    <Compile Include="Pluging\Orianna.cs" />
+    <Compile Include="Pluging\Syndra.cs" />
+    <Compile Include="Pluging\Viktor.cs" />
     <Compile Include="Managers\AOESpellManager.cs" />
     <Compile Include="Managers\ItemManager.cs" />
     <Compile Include="Base\SpellBase.cs" />
-    <Compile Include="Champion.cs" />
-    <Compile Include="Mid\Chogath.cs" />
-    <Compile Include="Mid\Katarina.cs" />
-    <Compile Include="Persistence\Initiator.cs" />
-    <Compile Include="Support\Zyra.cs" />
-    <Compile Include="Top\Irelia.cs" />
-    <Compile Include="Top\Lissandra.cs" />
-    <Compile Include="Top\Rumble.cs" />
-    <Compile Include="Top\Vladimir.cs" />
+    <Compile Include="Base\Champion.cs" />
+    <Compile Include="Pluging\Chogath.cs" />
+    <Compile Include="Pluging\Katarina.cs" />
+    <Compile Include="Utilities\Initiator.cs" />
+    <Compile Include="Pluging\Zyra.cs" />
+    <Compile Include="Pluging\Irelia.cs" />
+    <Compile Include="Pluging\Lissandra.cs" />
+    <Compile Include="Pluging\Rumble.cs" />
+    <Compile Include="Pluging\Vladimir.cs" />
     <Compile Include="Managers\SummonerManager.cs" />
+    <Compile Include="Prediction\PredictionCommon.cs" />
+    <Compile Include="Prediction\CommonPredEx.cs" />
+    <Compile Include="Prediction\OKTWPrediction.cs" />
+    <Compile Include="Prediction\SDKPrediction.cs" />
+    <Compile Include="Prediction\xcsoftPrediction.cs" />
+    <Compile Include="Prediction\YasuoWindWall.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -83,7 +88,7 @@
     <Compile Include="Managers\ManaManager.cs" />
     <Compile Include="Managers\SpellCastManager.cs" />
     <Compile Include="Managers\SpellManager.cs" />
-    <Compile Include="PluginLoader.cs" />
+    <Compile Include="PlugingLoad\PluginLoader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Utilities\CustomPermaMenu.cs" />
     <Compile Include="Utilities\Geometry.cs" />
@@ -100,11 +105,18 @@
     <Reference Include="LeagueSharp.Common">
       <HintPath>D:\qMLQe\I5QEqMLQe\References\LeagueSharp.Common.dll</HintPath>
     </Reference>
+    <Reference Include="LeagueSharp.Data, Version=1.1.0.1, Culture=neutral, PublicKeyToken=7b6e8d26eaf0534f, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\qMLQe\I5QEqMLQe\References\LeagueSharp.Data.dll</HintPath>
+    </Reference>
     <Reference Include="SharpDX">
       <HintPath>D:\qMLQe\I5QEqMLQe\References\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Direct3D9">
       <HintPath>D:\qMLQe\I5QEqMLQe\References\SharpDX.Direct3D9.dll</HintPath>
+    </Reference>
+    <Reference Include="SPrediction">
+      <HintPath>D:\qMLQe\I5QEqMLQe\References\SPrediction.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
