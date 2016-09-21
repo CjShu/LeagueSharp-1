@@ -33,8 +33,27 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="clipper_library">
+      <HintPath>D:\qMLQe\I5QEqMLQe\References\clipper_library.dll</HintPath>
+    </Reference>
+    <Reference Include="LeagueSharp">
+      <HintPath>D:\qMLQe\I5QEqMLQe\References\LeagueSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="LeagueSharp.Common">
+      <HintPath>D:\qMLQe\I5QEqMLQe\References\LeagueSharp.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX">
+      <HintPath>D:\qMLQe\I5QEqMLQe\References\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D9">
+      <HintPath>D:\qMLQe\I5QEqMLQe\References\SharpDX.Direct3D9.dll</HintPath>
+    </Reference>
+    <Reference Include="SPrediction">
+      <HintPath>D:\qMLQe\I5QEqMLQe\References\SPrediction.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -43,8 +62,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Common.cs" />
+    <Compile Include="Common\HpBarDraw.cs" />
+    <Compile Include="Orbwalking\Orbwalking.cs" />
+    <Compile Include="Prediction\OKTWPrediction.cs" />
+    <Compile Include="Prediction\SDKPrediction.cs" />
+    <Compile Include="Prediction\xcsoftPrediction.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Common\YasuoWindWall.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
