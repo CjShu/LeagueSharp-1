@@ -160,90 +160,94 @@
 
             if (!target.HasBuffOfType(BuffType.Invulnerability) && !target.IsZombie)
             {
-                switch (mode)
+                if (mode == 0)
                 {
-                    case 0:
+                    {
+                        var itemTarget = TargetSelector.GetTarget(750, TargetSelector.DamageType.Physical);
+
+                        if (itemTarget != null && E.IsReady())
                         {
-                            var itemTarget = TargetSelector.GetTarget(750, TargetSelector.DamageType.Physical);
+                            var dmg = GetComboDamage(itemTarget);
 
-                            if (itemTarget != null && E.IsReady())
-                            {
-                                var dmg = GetComboDamage(itemTarget);
+                            ItemManager.Target = itemTarget;
 
-                                ItemManager.Target = itemTarget;
+                            if (dmg > itemTarget.Health - 50)
+                                ItemManager.KillableTarget = true;
 
-                                if (dmg > itemTarget.Health - 50)
-                                    ItemManager.KillableTarget = true;
-
-                                ItemManager.UseTargetted = true;
-                            }
-
-
-                            if (Menu.Item("UseQCombo", true).GetValue<bool>() && Q.IsReady() && Player.Distance(target.Position) <= Q.Range)
-                            {
-                                Q.Cast(target);
-                            }
-
-                            if (Menu.Item("UseECombo", true).GetValue<bool>() && E.IsReady() && Player.Distance(target.Position) < E.Range &&
-                                Utils.TickCount - E.LastCastAttemptT > 0 &&
-                                Player.Distance(target.Position) > eDis && !Q.IsReady())
-                            {
-                                if (Menu.Item("smartE", true).GetValue<bool>() &&
-                                    Player.CountEnemiesInRange(500) > 2 &&
-                                    (!R.IsReady() || !(RSpell.State == SpellState.Surpressed && R.Level > 0)))
-                                    return;
-
-                                var delay = Menu.Item("E_Delay_Slider", true).GetValue<Slider>().Value;
-
-                                Orbwalker.SetAttack(false);
-                                Orbwalker.SetMovement(false);
-                                E.Cast(target);
-                                E.LastCastAttemptT = Utils.TickCount + delay;
-                            }
+                            ItemManager.UseTargetted = true;
                         }
-                        break;
-                    case 1:
+
+
+                        if (Menu.Item("UseQCombo", true).GetValue<bool>() && Q.IsReady() &&
+                            target.IsValidTarget(Q.Range))
                         {
-                            var itemTarget = TargetSelector.GetTarget(750, TargetSelector.DamageType.Physical);
-
-                            if (itemTarget != null && E.IsReady())
-                            {
-                                var dmg = GetComboDamage(itemTarget);
-
-                                ItemManager.Target = itemTarget;
-
-                                if (dmg > itemTarget.Health - 50)
-                                    ItemManager.KillableTarget = true;
-
-                                ItemManager.UseTargetted = true;
-                            }
-
-                            if (Menu.Item("UseECombo", true).GetValue<bool>() && E.IsReady() && Player.Distance(target.Position) < E.Range &&
-                                Utils.TickCount - E.LastCastAttemptT > 0 &&
-                                Player.Distance(target.Position) > eDis)
-                            {
-                                if (Menu.Item("smartE", true).GetValue<bool>() &&
-                                    Player.CountEnemiesInRange(500) > 2 &&
-                                    (!R.IsReady() || !(RSpell.State == SpellState.Surpressed && R.Level > 0)))
-                                    return;
-
-                                var delay = Menu.Item("E_Delay_Slider", true).GetValue<Slider>().Value;
-
-                                Orbwalker.SetAttack(false);
-                                Orbwalker.SetMovement(false);
-                                E.Cast(target);
-                                E.LastCastAttemptT = Utils.TickCount + delay;
-                            }
-
-                            if (Menu.Item("UseQCombo", true).GetValue<bool>() && Q.IsReady() && Player.Distance(target.Position) <= Q.Range)
-                            {
-                                Q.Cast(target);
-                            }
+                            Q.Cast(target);
                         }
-                        break;
+
+                        if (Menu.Item("UseECombo", true).GetValue<bool>() && E.IsReady() &&
+                            target.IsValidTarget(E.Range) &&
+                            Utils.TickCount - E.LastCastAttemptT > 0 &&
+                            Player.Distance(target.Position) > eDis && !Q.IsReady())
+                        {
+                            if (Menu.Item("smartE", true).GetValue<bool>() &&
+                                Player.CountEnemiesInRange(500) > 2 &&
+                                (!R.IsReady() || !(RSpell.State == SpellState.Surpressed && R.Level > 0)))
+                                return;
+
+                            var delay = Menu.Item("E_Delay_Slider", true).GetValue<Slider>().Value;
+
+                            Orbwalker.SetAttack(false);
+                            Orbwalker.SetMovement(false);
+                            E.Cast(target, true);
+                            E.LastCastAttemptT = Utils.TickCount + delay;
+                        }
+                    }
+                }
+                else if (mode == 1)
+                {
+                    {
+                        var itemTarget = TargetSelector.GetTarget(750, TargetSelector.DamageType.Physical);
+
+                        if (itemTarget != null && E.IsReady())
+                        {
+                            var dmg = GetComboDamage(itemTarget);
+
+                            ItemManager.Target = itemTarget;
+
+                            if (dmg > itemTarget.Health - 50)
+                                ItemManager.KillableTarget = true;
+
+                            ItemManager.UseTargetted = true;
+                        }
+
+                        if (Menu.Item("UseECombo", true).GetValue<bool>() && E.IsReady() &&
+                            target.IsValidTarget(E.Range) &&
+                            Utils.TickCount - E.LastCastAttemptT > 0 &&
+                            Player.Distance(target.Position) > eDis)
+                        {
+                            if (Menu.Item("smartE", true).GetValue<bool>() &&
+                                Player.CountEnemiesInRange(500) > 2 &&
+                                (!R.IsReady() || !(RSpell.State == SpellState.Surpressed && R.Level > 0)))
+                                return;
+
+                            var delay = Menu.Item("E_Delay_Slider", true).GetValue<Slider>().Value;
+
+                            Orbwalker.SetAttack(false);
+                            Orbwalker.SetMovement(false);
+                            E.Cast(target, true);
+                            E.LastCastAttemptT = Utils.TickCount + delay;
+                        }
+
+                        if (Menu.Item("UseQCombo", true).GetValue<bool>() && Q.IsReady() &&
+                            target.IsValidTarget(Q.Range))
+                        {
+                            Q.Cast(target, true);
+                        }
+                    }
                 }
 
-                if (Menu.Item("UseWCombo", true).GetValue<bool>() && W.IsReady() && Player.Distance(target.Position) <= W.Range && QSuccessfullyCasted())
+                if (Menu.Item("UseWCombo", true).GetValue<bool>() && W.IsReady() &&
+                    target.IsValidTarget(W.Range) && QSuccessfullyCasted())
                 {
                     W.Cast();
                 }
@@ -266,51 +270,49 @@
             var qTarget = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
             var wTarget = TargetSelector.GetTarget(W.Range, TargetSelector.DamageType.Magical);
             var eTarget = TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Magical);
-            TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Magical);
-
             var mode = Menu.Item("harassMode", true).GetValue<StringList>().SelectedIndex;
 
-            switch (mode)
+            if (mode == 0)
             {
-                case 0:
-                    if (Menu.Item("UseQHarass", true).GetValue<bool>() && Q.IsReady() && qTarget != null)
-                    {
-                        if (Player.Distance(qTarget.Position) <= Q.Range)
-                            Q.Cast(qTarget);
-                    }
+                if (Menu.Item("UseQHarass", true).GetValue<bool>() && Q.IsReady() && 
+                    qTarget != null && qTarget.IsValidTarget(Q.Range))
+                {
+                    Q.Cast(qTarget, true);
+                }
 
-                    if (Menu.Item("UseEHarass", true).GetValue<bool>() && eTarget != null && E.IsReady() && !Q.IsReady())
-                    {
-                        if (Player.Distance(eTarget.Position) < E.Range)
-                            E.Cast(eTarget);
-                    }
-                    break;
-                case 1:
-                    if (Menu.Item("UseEHarass", true).GetValue<bool>() && eTarget != null && E.IsReady())
-                    {
-                        if (Player.Distance(eTarget.Position) < E.Range)
-                            E.Cast(eTarget);
-                    }
+                if (Menu.Item("UseEHarass", true).GetValue<bool>() && eTarget != null && E.IsReady() &&
+                    !Q.IsReady() && eTarget.IsValidTarget(E.Range))
+                {
+                    E.Cast(eTarget, true);
+                }
+            }
+            else if (mode == 1)
+            {
+                if (Menu.Item("UseEHarass", true).GetValue<bool>() && eTarget != null &&
+                    E.IsReady() && eTarget.IsValidTarget(E.Range))
+                {
+                    E.Cast(eTarget, true);
+                }
 
-                    if (Menu.Item("UseQHarass", true).GetValue<bool>() && Q.IsReady() && qTarget != null)
-                    {
-                        if (Player.Distance(qTarget.Position) <= Q.Range)
-                            Q.Cast(qTarget);
-                    }
-                    break;
-                case 2:
-                    if (Menu.Item("UseQHarass", true).GetValue<bool>() && Q.IsReady() && qTarget != null)
-                    {
-                        if (Player.Distance(qTarget.Position) <= Q.Range)
-                            Q.Cast(qTarget);
-                    }
-                    break;
+                if (Menu.Item("UseQHarass", true).GetValue<bool>() && Q.IsReady() && qTarget != null &&
+                    qTarget.IsValidTarget(Q.Range))
+                {
+                    Q.Cast(qTarget, true);
+                }
+            }
+            else if (mode == 2)
+            {
+                if (Menu.Item("UseQHarass", true).GetValue<bool>() && Q.IsReady() && qTarget != null &&
+                    qTarget.IsValidTarget(Q.Range))
+                {
+                    Q.Cast(qTarget, true);
+                }
             }
 
-            if (Menu.Item("UseWHarass", true).GetValue<bool>() && wTarget != null && W.IsReady() && QSuccessfullyCasted())
+            if (Menu.Item("UseWHarass", true).GetValue<bool>() && wTarget != null && W.IsReady() &&
+                wTarget.IsValidTarget(W.Range) && QSuccessfullyCasted())
             {
-                if (Player.Distance(wTarget.Position) <= W.Range)
-                    W.Cast();
+                W.Cast();
             }
         }
 
@@ -318,7 +320,6 @@
         {
             var allMinions = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All,
                 MinionTeam.NotAlly);
-            MinionManager.GetMinions(Player.ServerPosition, W.Range);
 
             var useQ = Menu.Item("UseQHit", true).GetValue<bool>();
             var useW = Menu.Item("UseWHit", true).GetValue<bool>();
@@ -328,7 +329,8 @@
                 foreach (var minion in allMinions)
                 {
                     if (minion.IsValidTarget(Q.Range) &&
-                        HealthPrediction.GetHealthPrediction(minion, (int)(Player.Distance(minion.Position) * 1000 / 1400), 200) <
+                        HealthPrediction.GetHealthPrediction(
+                            minion, (int)(Player.Distance(minion.Position) * 1000 / 1400), 200) <
                         Player.GetSpellDamage(minion, SpellSlot.Q))
                     {
                         Q.Cast(minion);
@@ -419,7 +421,9 @@
             if (Menu.Item("rCancel", true).GetValue<bool>() && Player.CountEnemiesInRange(570) > 1)
                 return;
 
-            foreach (var target in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsValidTarget(1375) && !x.HasBuffOfType(BuffType.Invulnerability)).OrderByDescending(GetComboDamage))
+            foreach (var target in HeroManager.Enemies.Where(
+                x => x.IsValidTarget(1375) && !x.HasBuffOfType(BuffType.Invulnerability))
+                .OrderByDescending(GetComboDamage))
             {
                 if (target != null)
                 {
@@ -546,13 +550,11 @@
             if (!W.IsReady())
                 return;
 
-            foreach (var target in ObjectManager.Get<Obj_AI_Hero>())
+            foreach (var target in HeroManager.Enemies.Where(x => x.IsValidTarget(W.Range)))
             {
-                if (target != null && !target.IsDead && target.IsEnemy &&
-                    Player.Distance(target.ServerPosition) <= W.Range && target.IsValidTarget(W.Range))
+                if (target != null && !target.IsDead)
                 {
-                    if (Player.Distance(target.ServerPosition) < W.Range)
-                        W.Cast();
+                    W.Cast();
                 }
             }
         }
@@ -588,7 +590,8 @@
 
         protected override void ObjAiHeroOnOnIssueOrder(Obj_AI_Base sender, GameObjectIssueOrderEventArgs args)
         {
-            if (args.Order == GameObjectOrder.AttackUnit && Menu.Item("disableaa").GetValue<bool>() && Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+            if (args.Order == GameObjectOrder.AttackUnit && Menu.Item("disableaa").GetValue<bool>() &&
+                Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
                 args.Process = false;
             }
