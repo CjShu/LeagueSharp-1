@@ -86,14 +86,17 @@
                             return;
                         }
 
-                        if (poutput2.Hitchance >= SDKPrediction.HitChance.VeryHigh)
-                        {
-                            Spells.Cast(poutput2.CastPosition, true);
-                        }
-                        else if (predInput2.AoE && poutput2.AoeTargetsHitCount > 1 && poutput2.Hitchance >= SDKPrediction.HitChance.High)
-                        {
-                            Spells.Cast(poutput2.CastPosition, true);
-                        }
+                        //test
+                        Spells.Cast(poutput2.UnitPosition, true);
+
+                        //if (poutput2.Hitchance >= SDKPrediction.HitChance.VeryHigh)
+                        //{
+                        //    Spells.Cast(poutput2.CastPosition, true);
+                        //}
+                        //else if (predInput2.AoE && poutput2.AoeTargetsHitCount > 1 && poutput2.Hitchance >= SDKPrediction.HitChance.High)
+                        //{
+                        //    Spells.Cast(poutput2.CastPosition, true);
+                        //}
                     }
                     break;
                 case 3:

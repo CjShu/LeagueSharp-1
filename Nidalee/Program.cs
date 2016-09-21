@@ -17,7 +17,6 @@
         public static Spell E;
         public static Spell E1;
         public static Spell R;
-        //public static int SkinID;
         public static float Qcd, QcdEnd;
         public static float Q1Cd, Q1CdEnd;
         public static float Wcd, WcdEnd;
@@ -58,8 +57,6 @@
             W1.SetSkillshot(0.25f, 300f, 1500f, false, SkillshotType.SkillshotLine);
             W2.SetSkillshot(0.25f, 300f, 1800f, false, SkillshotType.SkillshotLine);
             E1.SetSkillshot(0.25f, 260f, 1800f, false, SkillshotType.SkillshotCone);
-
-            //SkinID = Me.BaseSkinId;
 
             Menu = new Menu("Flowers' Nidalee", "Flowers' Nidalee", true);
 
@@ -135,12 +132,6 @@
                 }
             }
 
-            //var SkinMenu = Menu.AddSubMenu(new Menu("SkinChance", "SkinChance"));
-            //{
-            //    SkinMenu.AddItem(new MenuItem("EnableSkin", "Enabled", true).SetValue(false)).ValueChanged += EnbaleSkin; ;
-            //    SkinMenu.AddItem(new MenuItem("SelectSkin", "Select Skin: ", true).SetValue(new StringList(new string[] { "Classic", "Snow Bunny", "Leopard", "French Maid", "Pharaoh", "Bewitching", "Headhunter", "Warring Kingdoms", "Challenger" }))); ;
-            //}
-
             var PredMenu = Menu.AddSubMenu(new Menu("Prediction", "Prediction"));
             {
                 PredMenu.AddItem(new MenuItem("SelectPred", "Select Prediction: ", true).SetValue(new StringList(new[] { "Common Prediction", "OKTW Prediction", "SDK Prediction", "SPrediction(Need F5 Reload)", "xcsoft AIO Prediction" }, 1)));
@@ -178,43 +169,57 @@
             Drawing.OnDraw += OnDraw;
         }
 
-        //private static void EnbaleSkin(object obj, OnValueChangeEventArgs Args)
-        //{
-        //    if (!Args.GetNewValue<bool>())
-        //    {
-        //        ObjectManager.Player.SetSkin(ObjectManager.Player.ChampionName, SkinID);
-        //    }
-        //}
-
         private static void OnDoCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs Args)
         {
-            if (sender.IsMe && !IsHumanizer)
+            if (sender.IsMe && !IsHumanizer && Orbwalking.IsAutoAttack(Args.SData.Name))
             {
-                if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+                switch (Orbwalker.ActiveMode)
                 {
-                    if (Menu.Item("ComboQCougar", true).GetValue<bool>() && Q.Level > 0 && Q1Cd == 0 && (E1Cd > 0 || E.Level == 0))
-                    {
-                        var target = (Obj_AI_Hero)Args.Target;
+                    case Orbwalking.OrbwalkingMode.Combo:
+                        var hero = (Obj_AI_Hero)Args.Target;
 
-                        if (target != null && target.IsValidTarget(Q1.Range))
+                        if (hero != null)
                         {
-                            Q1.Cast(target);
+                            if (Menu.Item("ComboECougar", true).GetValue<bool>() && E.Level > 0 && E1Cd == 0 && hero.IsValidTarget(E1.Range))
+                            {
+                                E1.Cast(hero.Position, true);
+                            }
+                            else if (Menu.Item("ComboQCougar", true).GetValue<bool>() && Q.Level > 0 && Q1Cd == 0 && hero.IsValidTarget(Q1.Range))
+                            {
+                                Q1.Cast(hero);
+                            }
                         }
-                    }
-                }
-
-                if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
-                {
-                    if (Menu.Item("JungleClearQCougar", true).GetValue<bool>() && Q.Level > 0 && Q1Cd == 0 && (E1Cd > 0 || E.Level == 0))
-                    {
+                        break;
+                    case Orbwalking.OrbwalkingMode.LaneClear:
                         var mob = (Obj_AI_Base)Args.Target;
                         var mobs = MinionManager.GetMinions(Me.Position, Q1.Range, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth);
 
-                        if (mob != null && mobs.Contains(mob) && mob.IsValidTarget(Q.Range))
+                        if (mob != null && mobs.Contains(mob))
                         {
-                            Q1.Cast(mob);
+                            if (Menu.Item("JungleClearECougar", true).GetValue<bool>() && E1Cd == 0 && mob.IsValidTarget(E1.Range))
+                            {
+                                E1.Cast(mob.Position, true);
+                            }
+                            else if (Menu.Item("JungleClearQCougar", true).GetValue<bool>() && Q.Level > 0 && Q1Cd == 0 && mob.IsValidTarget(Q1.Range))
+                            {
+                                Q1.Cast(mob);
+                            }
                         }
-                    }
+                        break;
+                    case Orbwalking.OrbwalkingMode.LastHit:
+                        break;
+                    case Orbwalking.OrbwalkingMode.Mixed:
+                        break;
+                    case Orbwalking.OrbwalkingMode.Freeze:
+                        break;
+                    case Orbwalking.OrbwalkingMode.CustomMode:
+                        break;
+                    case Orbwalking.OrbwalkingMode.None:
+                        break;
+                    case Orbwalking.OrbwalkingMode.Flee:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             }
         }
@@ -258,48 +263,45 @@
                 return;
             }
 
-            CheckNidStatus();
+            switch (Me.CharData.BaseSkinName.ToLower())
+            {
+                case "nidaleecougar":
+                    IsHumanizer = false;
+                    break;
+                case "nidalee":
+                    IsHumanizer = true;
+                    break;
+            }
+
             SetCoolDown();
-
-            if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
-            {
-                ComboLogic();
-            }
-
-            if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
-            {
-                HarassLogic();
-            }
-
-            if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
-            {
-                LaneClearLogic();
-                JungleClearLogic();
-            }
-
-            if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Flee)
-            {
-                FleeLogic();
-            }
-
             KillStealLogic();
             AutoHealLogic();
 
-            //if (Menu.Item("EnableSkin", true).GetValue<bool>())
-            //{
-            //    ObjectManager.Player.SetSkin(ObjectManager.Player.ChampionName, Menu.Item("SelectSkin", true).GetValue<StringList>().SelectedIndex);
-            //}
-        }
-
-        private static void CheckNidStatus()
-        {
-            if (Me.CharData.BaseSkinName.ToLower() == "nidaleecougar")
+            switch (Orbwalker.ActiveMode)
             {
-                IsHumanizer = false;
-            }
-            else if (Me.CharData.BaseSkinName.ToLower() == "nidalee")
-            {
-                IsHumanizer = true;
+                case Orbwalking.OrbwalkingMode.Combo:
+                    ComboLogic();
+                    break;
+                case Orbwalking.OrbwalkingMode.Mixed:
+                    HarassLogic();
+                    break;
+                case Orbwalking.OrbwalkingMode.LastHit:
+                    break;
+                case Orbwalking.OrbwalkingMode.LaneClear:
+                    LaneClearLogic();
+                    JungleClearLogic();
+                    break;
+                case Orbwalking.OrbwalkingMode.Freeze:
+                    break;
+                case Orbwalking.OrbwalkingMode.CustomMode:
+                    break;
+                case Orbwalking.OrbwalkingMode.None:
+                    break;
+                case Orbwalking.OrbwalkingMode.Flee:
+                    FleeLogic();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -334,7 +336,7 @@
                 {
                     var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
 
-                    if (target.IsValidTarget() && !target.IsDead && !target.IsZombie && target.IsValidTarget(Q.Range))
+                    if (target.IsValidTarget(Q.Range) && !target.IsDead && !target.IsZombie)
                     {
                         Q.CastTo(target);
                     }
@@ -520,13 +522,12 @@
 
             var bigmobs = mobs.Where(x => !x.CharData.BaseSkinName.ToLower().Contains("mini"));
             var mob = mobs.FirstOrDefault();
-            var canChangeHumanizer = ((Menu.Item("JungleClearQHumanizer", true).GetValue<bool>() && Qcd == 0) || 
-                (Menu.Item("JungleClearWHumanizer", true).GetValue<bool>() && Wcd == 0)) && 
+            var canChangeHumanizer = Menu.Item("JungleClearQHumanizer", true).GetValue<bool>() && Qcd == 0 && 
                 Me.ManaPercent >= Menu.Item("JungleClearQMana", true).GetValue<Slider>().Value;
 
             if (IsHumanizer && Me.ManaPercent >= Menu.Item("JungleClearQMana", true).GetValue<Slider>().Value)
             {
-                Obj_AI_Base[] bigmob = NewMethod(bigmobs);
+                var bigmob = NewMethod(bigmobs);
 
                 if (Menu.Item("JungleClearQHumanizer", true).GetValue<bool>() && Qcd == 0 && bigmob.Any())
                 {
@@ -538,9 +539,19 @@
                     W.CastTo(bigmob.FirstOrDefault(), true);
                 }
 
-                if (!canChangeHumanizer && W1Cd == 0 && (Q1Cd == 0 || E1Cd == 0))
+                if (Me.Level >= 3)
                 {
-                    R.Cast();
+                    if (!canChangeHumanizer && W1Cd == 0 && (Q1Cd == 0 || E1Cd == 0))
+                    {
+                        R.Cast();
+                    }
+                }
+                else
+                {
+                    if (!canChangeHumanizer && (W1Cd == 0 || Q1Cd == 0 || E1Cd == 0))
+                    {
+                        R.Cast();
+                    }
                 }
             }
             else if (!IsHumanizer)
@@ -570,9 +581,19 @@
                     Q1.Cast(mob, true);
                 }
 
-                if (canChangeHumanizer && bigmobs.Any() && Q1Cd != 0 && W1Cd != 0 && E1Cd != 0)
+                if (Me.Level >= 3)
                 {
-                    R.Cast();
+                    if (canChangeHumanizer && bigmobs.Any() && W1Cd > 0 && (E1Cd > 0 || Q1Cd > 0))
+                    {
+                        R.Cast();
+                    }
+                }
+                else
+                {
+                    if (canChangeHumanizer && bigmobs.Any() && (W1Cd > 0 || E1Cd > 0 || Q1Cd > 0))
+                    {
+                        R.Cast();
+                    }
                 }
             }
         }
@@ -655,11 +676,6 @@
 
             foreach (var ally in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsAlly && !x.IsMe && x.IsValidTarget(E.Range, false)))
             {
-                if (ally == null)
-                {
-                    continue;
-                }
-
                 if (!Menu.Item("HealAllyName" + ally.ChampionName.ToLower(), true).GetValue<bool>())
                 {
                     continue;
