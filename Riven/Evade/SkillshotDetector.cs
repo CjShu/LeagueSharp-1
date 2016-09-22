@@ -46,7 +46,7 @@ namespace Flowers_Riven.Evade
                 return;
             }
             
-            if (Config.Menu.Item("Enabled" + spellData.MenuItemName) == null)
+            if (Config.EvadeMenu.Item("Enabled" + spellData.MenuItemName) == null)
             {
                 return;
             }

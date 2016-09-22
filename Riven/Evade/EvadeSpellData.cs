@@ -69,11 +69,11 @@ namespace Flowers_Riven.Evade
 
         public bool IsTargetted => ValidTargets != null;
 
-        public int DangerLevel => Config.Menu.Item("DangerLevel" + Name) != null ?
-            Config.Menu.Item("DangerLevel" + Name).GetValue<Slider>().Value : _dangerLevel;
+        public int DangerLevel => Config.EvadeMenu.Item("DangerLevel" + Name) != null ?
+            Config.EvadeMenu.Item("DangerLevel" + Name).GetValue<Slider>().Value : _dangerLevel;
 
-        public bool Enabled => Config.Menu.Item("Enabled" + Name) == null || 
-            Config.Menu.Item("Enabled" + Name).GetValue<bool>();
+        public bool Enabled => Config.EvadeMenu.Item("Enabled" + Name) == null || 
+            Config.EvadeMenu.Item("Enabled" + Name).GetValue<bool>();
 
         public bool IsReady()
         {

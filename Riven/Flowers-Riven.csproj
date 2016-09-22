@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Flowers_Riven</RootNamespace>
-    <AssemblyName>Flowers-Riven</AssemblyName>
+    <AssemblyName>Flowers%27 Riven</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="clipper_library">
-      <HintPath>..\..\..\..\LeagueSharp\System\clipper_library.dll</HintPath>
+      <HintPath>D:\qMLQe\I5QEqMLQe\References\clipper_library.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp">
       <HintPath>D:\qMLQe\I5QEqMLQe\References\LeagueSharp.dll</HintPath>
@@ -60,6 +60,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\HpBarDraw.cs" />
+    <Compile Include="Logic\DoCast.cs" />
+    <Compile Include="Logic\Drawings.cs" />
     <Compile Include="Evade\Collision.cs" />
     <Compile Include="Evade\Config.cs" />
     <Compile Include="Evade\EarlyEvade.cs" />
@@ -74,13 +76,20 @@
     <Compile Include="Evade\SpellData.cs" />
     <Compile Include="Evade\SpellDatabase.cs" />
     <Compile Include="Evade\Utils.cs" />
+    <Compile Include="InitMenu.cs" />
+    <Compile Include="Logic\LoopEvent.cs" />
+    <Compile Include="Logic\Others.cs" />
     <Compile Include="Orbwalking\Orbwalking.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Common\VectorHelper.cs" />
+    <Compile Include="Logic\SpellCast.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="UpdateLog.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

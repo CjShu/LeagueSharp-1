@@ -104,7 +104,7 @@ namespace Flowers_Riven.Evade
         {
             var alreadyAdded = false;
 
-            if (Config.Menu.Item("DisableFow").GetValue<bool>() && !skillshot.Unit.IsVisible)
+            if (Config.EvadeMenu.Item("DisableFow").GetValue<bool>() && !skillshot.Unit.IsVisible)
             {
                 return;
             }
@@ -407,13 +407,13 @@ namespace Flowers_Riven.Evade
                 skillshot.Game_OnGameUpdate();
             }
 
-            if (!Config.Menu.Item("Enabled").GetValue<KeyBind>().Active)
+            if (!Config.EvadeMenu.Item("Enabled").GetValue<KeyBind>().Active)
             {
                 Evading = false;
                 return;
             }
 
-            if (PlayerChampionName == "Olaf" && Config.Menu.Item("DisableEvadeForOlafR").GetValue<bool>() && ObjectManager.Player.HasBuff("OlafRagnarok"))
+            if (PlayerChampionName == "Olaf" && Config.EvadeMenu.Item("DisableEvadeForOlafR").GetValue<bool>() && ObjectManager.Player.HasBuff("OlafRagnarok"))
             {
                 Evading = false;
                 return;
@@ -460,7 +460,7 @@ namespace Flowers_Riven.Evade
             {
                 if (ally.IsValidTarget(1000, false))
                 {
-                    var shieldAlly = Config.Menu.Item("shield" + ally.ChampionName);
+                    var shieldAlly = Config.EvadeMenu.Item("shield" + ally.ChampionName);
                     if (shieldAlly != null && shieldAlly.GetValue<bool>())
                     {
                         var allySafeResult = IsSafe(ally.ServerPosition.To2D());
@@ -528,7 +528,7 @@ namespace Flowers_Riven.Evade
 
                 if (Evading)
                 {
-                    var blockLevel = Config.Menu.Item("BlockSpells").GetValue<StringList>().SelectedIndex;
+                    var blockLevel = Config.EvadeMenu.Item("BlockSpells").GetValue<StringList>().SelectedIndex;
 
                     if (blockLevel == 0)
                     {
@@ -586,7 +586,7 @@ namespace Flowers_Riven.Evade
                 return;
             }
 
-            if (!Config.Menu.Item("Enabled").GetValue<KeyBind>().Active)
+            if (!Config.EvadeMenu.Item("Enabled").GetValue<KeyBind>().Active)
             {
                 return;
             }
@@ -1064,29 +1064,27 @@ namespace Flowers_Riven.Evade
 
         private static void Drawing_OnDraw(EventArgs args)
         {
-            if (!Config.Menu.Item("EnableDrawings").GetValue<bool>())
+            if (!Config.EvadeMenu.Item("EnableDrawings").GetValue<bool>())
             {
                 return;
             }
 
-            if (Config.Menu.Item("ShowEvadeStatus").GetValue<bool>())
+            if (Config.EvadeMenu.Item("ShowEvadeStatus").GetValue<bool>())
             {
                 var heropos = Drawing.WorldToScreen(ObjectManager.Player.Position);
-                if (Config.Menu.Item("Enabled").GetValue<KeyBind>().Active)
-                {
-                    Drawing.DrawText(heropos.X, heropos.Y, Color.Red, "Evade: ON");
-                }
+
+                Drawing.DrawText(heropos.X - 30, heropos.Y + 70, Config.EvadeMenu.Item("Enabled").GetValue<KeyBind>().Active ? Color.Lime : Color.Yellow, "Evade: " + (Config.EvadeMenu.Item("Enabled").GetValue<KeyBind>().Active ? "ON" : "Off"));
             }
 
-            var Border = Config.Menu.Item("Border").GetValue<Slider>().Value;
-            var missileColor = Config.Menu.Item("MissileColor").GetValue<Color>();
+            var Border = Config.EvadeMenu.Item("Border").GetValue<Slider>().Value;
+            var missileColor = Config.EvadeMenu.Item("MissileColor").GetValue<Color>();
 
             foreach (var skillshot in DetectedSkillshots)
             {
                 skillshot.Draw(
-                    (skillshot.Evade() && Config.Menu.Item("Enabled").GetValue<KeyBind>().Active)
-                        ? Config.Menu.Item("EnabledColor").GetValue<Color>()
-                        : Config.Menu.Item("DisabledColor").GetValue<Color>(), missileColor, Border);
+                    (skillshot.Evade() && Config.EvadeMenu.Item("Enabled").GetValue<KeyBind>().Active)
+                        ? Config.EvadeMenu.Item("EnabledColor").GetValue<Color>()
+                        : Config.EvadeMenu.Item("DisabledColor").GetValue<Color>(), missileColor, Border);
             }
         }
 

@@ -101,7 +101,7 @@ namespace Flowers_Riven.Evade
                 {
                     case CollisionObjectTypes.Minion:
 
-                        if (!Config.Menu.Item("MinionCollision").GetValue<bool>())
+                        if (!Config.EvadeMenu.Item("MinionCollision").GetValue<bool>())
                         {
                             break;
                         }
@@ -138,7 +138,7 @@ namespace Flowers_Riven.Evade
                         break;
 
                     case CollisionObjectTypes.Champions:
-                        if (!Config.Menu.Item("HeroCollision").GetValue<bool>())
+                        if (!Config.EvadeMenu.Item("HeroCollision").GetValue<bool>())
                         {
                             break;
                         }
@@ -173,7 +173,7 @@ namespace Flowers_Riven.Evade
                         break;
 
                     case CollisionObjectTypes.YasuoWall:
-                        if (!Config.Menu.Item("YasuoCollision").GetValue<bool>())
+                        if (!Config.EvadeMenu.Item("YasuoCollision").GetValue<bool>())
                         {
                             break;
                         }

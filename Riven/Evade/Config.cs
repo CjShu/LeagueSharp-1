@@ -40,11 +40,11 @@ namespace Flowers_Riven.Evade
         public const int EvadingRouteChangeTimeOffset = 250;
         public const int EvadePointChangeInterval = 300;
         public static int LastEvadePointChangeT = 0;
-        public static Menu Menu;
+        public static Menu EvadeMenu;
 
         public static void CreateMenu()
         {
-            Menu = new Menu("Evade", "Evade");
+            EvadeMenu = Flowers_Riven.Program.Menu.SubMenu("Evade");
 
             var evadeSpells = new Menu("Evade spells", "evadeSpells");
 
@@ -61,11 +61,11 @@ namespace Flowers_Riven.Evade
                     subMenu.AddItem(new MenuItem("WardJump" + spell.Name, "WardJump").SetValue(true));
                 }
 
-                subMenu.AddItem(new MenuItem("Enabled" + spell.Name, "Enabled").SetValue(true));
+                subMenu.AddItem(new MenuItem("Enabled" + spell.Name, "Enabled").SetValue(!spell.Name.Contains("Q")));
 
                 evadeSpells.AddSubMenu(subMenu);
             }
-            Menu.AddSubMenu(evadeSpells);
+            EvadeMenu.AddSubMenu(evadeSpells);
 
             var skillShots = new Menu("Skillshots", "Skillshots");
 
@@ -96,7 +96,7 @@ namespace Flowers_Riven.Evade
                 }
             }
 
-            Menu.AddSubMenu(skillShots);
+            EvadeMenu.AddSubMenu(skillShots);
 
             var shielding = new Menu("Ally shielding", "Shielding");
 
@@ -108,14 +108,14 @@ namespace Flowers_Riven.Evade
                         new MenuItem("shield" + ally.ChampionName, "Shield " + ally.ChampionName).SetValue(true));
                 }
             }
-            Menu.AddSubMenu(shielding);
+            EvadeMenu.AddSubMenu(shielding);
 
             var collision = new Menu("Collision", "Collision");
             collision.AddItem(new MenuItem("MinionCollision", "Minion collision").SetValue(false));
             collision.AddItem(new MenuItem("HeroCollision", "Hero collision").SetValue(false));
             collision.AddItem(new MenuItem("YasuoCollision", "Yasuo wall collision").SetValue(true));
             collision.AddItem(new MenuItem("EnableCollision", "Enabled").SetValue(false));
-            Menu.AddSubMenu(collision);
+            EvadeMenu.AddSubMenu(collision);
 
             var drawings = new Menu("Drawings", "Drawings");
             drawings.AddItem(new MenuItem("EnabledColor", "Enabled spell color").SetValue(Color.White));
@@ -124,7 +124,7 @@ namespace Flowers_Riven.Evade
             drawings.AddItem(new MenuItem("Border", "Border Width").SetValue(new Slider(2, 5, 1)));
 
             drawings.AddItem(new MenuItem("EnableDrawings", "Enabled").SetValue(true));
-            Menu.AddSubMenu(drawings);
+            EvadeMenu.AddSubMenu(drawings);
 
             var misc = new Menu("Misc", "Misc");
             misc.AddItem(new MenuItem("BlockSpells", "Block spells while evading").SetValue(new StringList(new []{"No", "Only dangerous", "Always"}, 1)));
@@ -138,15 +138,13 @@ namespace Flowers_Riven.Evade
             }
 
 
-            Menu.AddSubMenu(misc);
+            EvadeMenu.AddSubMenu(misc);
 
-            Menu.AddItem(
+            EvadeMenu.AddItem(
                 new MenuItem("Enabled", "Enabled").SetValue(new KeyBind("K".ToCharArray()[0], KeyBindType.Toggle, true))).Permashow(true, "Evade");
 
-            Menu.AddItem(
+            EvadeMenu.AddItem(
                 new MenuItem("OnlyDangerous", "Dodge only dangerous").SetValue(new KeyBind(32, KeyBindType.Press))).Permashow();
-
-            Flowers_Riven.Program.Menu.AddSubMenu(Menu);
         }
     }
 }

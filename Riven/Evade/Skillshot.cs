@@ -172,7 +172,7 @@ namespace Flowers_Riven.Evade
 
         public T GetValue<T>(string name)
         {
-            return Config.Menu.Item(name + SpellData.MenuItemName).GetValue<T>();
+            return Config.EvadeMenu.Item(name + SpellData.MenuItemName).GetValue<T>();
         }
 
         public bool IsActive()
@@ -199,7 +199,7 @@ namespace Flowers_Riven.Evade
                 return _cachedValue;
             }
 
-            if (!GetValue<bool>("IsDangerous") && Config.Menu.Item("OnlyDangerous").GetValue<KeyBind>().Active)
+            if (!GetValue<bool>("IsDangerous") && Config.EvadeMenu.Item("OnlyDangerous").GetValue<KeyBind>().Active)
             {
                 _cachedValue = false;
                 _cachedValueTick = Utils.TickCount;
@@ -216,7 +216,7 @@ namespace Flowers_Riven.Evade
         public void Game_OnGameUpdate()
         {
             if (SpellData.CollisionObjects.Length > 0 && SpellData.CollisionObjects != null &&
-                Utils.TickCount - _lastCollisionCalc > 50 && Config.Menu.Item("EnableCollision").GetValue<bool>())
+                Utils.TickCount - _lastCollisionCalc > 50 && Config.EvadeMenu.Item("EnableCollision").GetValue<bool>())
             {
                 _lastCollisionCalc = Utils.TickCount;
                 _collisionEnd = Collision.GetCollisionPoint(this);
