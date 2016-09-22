@@ -20,6 +20,7 @@
         public static int LastPingT;
         public static int LastECast;
         public static int LastShowNoit;
+        public static bool IsAttack;
         public static Vector2 PingLocation;
         public static Orbwalking.Orbwalker Orbwalker;
         public static HpBarDraw HpbarDraw = new HpBarDraw();
@@ -105,7 +106,7 @@
             var RMenu = Menu.AddSubMenu(new Menu("R Menu", "RMenu"));
             {
                 RMenu.AddItem(new MenuItem("RMenuAuto", "Auto R?", true).SetValue(true));
-                RMenu.AddItem(new MenuItem("RMenuSemi", "Semi R Key", true).SetValue(new KeyBind('T', KeyBindType.Press)));
+                RMenu.AddItem(new MenuItem("RMenuSemi", "Semi R Key(One Press One Shot)", true).SetValue(new KeyBind('T', KeyBindType.Press)));
                 RMenu.AddItem(new MenuItem("RMenuCheck", "Use R| Check is Safe?", true).SetValue(true));
                 RMenu.AddItem(new MenuItem("RMenuMin", "Use R| Min Range >= x", true).SetValue(new Slider(1000, 500, 3500)));
                 RMenu.AddItem(new MenuItem("RMenuKill", "Use R| Min Shot Can Kill >= x", true).SetValue(new Slider(3, 1, 4)));
@@ -179,6 +180,12 @@
             {
                 LastECast = Utils.TickCount;
             }
+
+            if (Orbwalking.IsAutoAttack(Args.SData.Name))
+            {
+                IsAttack = true;
+                Utility.DelayAction.Add(500, () => IsAttack = false);
+            }
         }
 
         private static void EnbaleSkin(object obj, OnValueChangeEventArgs Args)
@@ -196,7 +203,7 @@
             if (target.IsValidTarget(E.Range) &&
                 (gapcloser.End.DistanceToPlayer() <= 300 || target.DistanceToPlayer() <= 300))
             {
-                if (Menu.Item("GapE", true).GetValue<bool>() && E.IsReady() && Utils.TickCount - LastECast > 2500)
+                if (Menu.Item("GapE", true).GetValue<bool>() && E.IsReady() && Utils.TickCount - LastECast > 2500 && !IsAttack)
                 {
                     E.CastTo(target);
                 }
@@ -448,7 +455,7 @@
                 }
 
                 if (Menu.Item("AutoE", true).GetValue<bool>() && E.IsReady() && 
-                    target.IsValidTarget(E.Range) && Utils.TickCount - LastECast > 2500)
+                    target.IsValidTarget(E.Range) && Utils.TickCount - LastECast > 2500 && !IsAttack)
                 {
                     E.CastTo(target);
                 }
@@ -504,7 +511,7 @@
             var eTarget = TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Magical);
 
             if (Menu.Item("ComboE", true).GetValue<bool>() && E.IsReady() 
-                && CheckTarget(eTarget, E.Range) && Utils.TickCount - LastECast > 2500)
+                && CheckTarget(eTarget, E.Range) && Utils.TickCount - LastECast > 2500 && !IsAttack)
             {
                 if (!eTarget.CanMove())
                 {
@@ -540,7 +547,7 @@
                 var eTarget = TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Magical);
 
                 if (Menu.Item("HarassE", true).GetValue<bool>() && E.IsReady() 
-                    && CheckTarget(eTarget, E.Range) && Utils.TickCount - LastECast > 2500)
+                    && CheckTarget(eTarget, E.Range) && Utils.TickCount - LastECast > 2500 && !IsAttack)
                 {
                     E.CastTo(eTarget, true);
                 }
@@ -597,7 +604,7 @@
                 }
 
                 if (Menu.Item("JungleClearE", true).GetValue<bool>() && E.IsReady() &&
-                    mob.IsValidTarget(E.Range) && Utils.TickCount - LastECast > 2500)
+                    mob.IsValidTarget(E.Range) && Utils.TickCount - LastECast > 2500 && !IsAttack)
                 {
                     E.CastTo(mob ?? mobs.FirstOrDefault());
                 }
