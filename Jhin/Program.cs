@@ -63,9 +63,9 @@
                 ComboMenu.AddItem(new MenuItem("ComboWAA", "Use W| After Attack?", true).SetValue(true));
                 ComboMenu.AddItem(new MenuItem("ComboWOnly", "Use W| Only Use to MarkTarget?", true).SetValue(true));
                 ComboMenu.AddItem(new MenuItem("ComboE", "Use E", true).SetValue(true));
-                ComboMenu.AddItem(new MenuItem("ComboR", "Use R", true).SetValue(true));
-                ComboMenu.AddItem(new MenuItem("ComboRCheck", "Use R| Check is Safe?", true).SetValue(true));
-                ComboMenu.AddItem(new MenuItem("ComboRMin", "Use R| Min Range >= x", true).SetValue(new Slider(1000, 500, 3500)));
+                //ComboMenu.AddItem(new MenuItem("ComboR", "Use R", true).SetValue(true));
+                //ComboMenu.AddItem(new MenuItem("ComboRCheck", "Use R| Check is Safe?", true).SetValue(true));
+                //ComboMenu.AddItem(new MenuItem("ComboRMin", "Use R| Min Range >= x", true).SetValue(new Slider(1000, 500, 3500)));
                 ComboMenu.AddItem(new MenuItem("ComboItem", "Items Setting", true));
                 ComboMenu.AddItem(new MenuItem("ComboYoumuu", "Use Youmuu", true).SetValue(true));
                 ComboMenu.AddItem(new MenuItem("ComboCutlass", "Use Cutlass", true).SetValue(true));
