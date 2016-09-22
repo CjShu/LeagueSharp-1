@@ -654,6 +654,7 @@
                     Combo();
                     break;
                 case Orbwalking.OrbwalkingMode.Mixed:
+                    Harass();
                     break;
                 case Orbwalking.OrbwalkingMode.LastHit:
                     LastHit();

@@ -66,6 +66,13 @@
                 Menu.AddSubMenu(farm);
             }
 
+            var lastHit = new Menu("LastHit", "LastHit");
+            {
+                lastHit.AddItem(new MenuItem("UseQLastHit", "Use Q", true).SetValue(true));
+                ManaManager.AddManaManagertoMenu(harass, "LastHit", 30);
+                Menu.AddSubMenu(lastHit);
+            }
+
             var misc = new Menu("Misc", "Misc");
             {
                 misc.AddSubMenu(AoeSpellManager.AddHitChanceMenuCombo(true, true, true, false));
@@ -384,9 +391,14 @@
 
         private void LastHit()
         {
+            if (!ManaManager.HasMana("LastHit"))
+            {
+                return;
+            }
+
             var allMinions = MinionManager.GetMinions(Player.ServerPosition, Q.Range);
 
-            if (Q.IsReady())
+            if (Q.IsReady() && Menu.Item("UseQLastHit", true).GetValue<bool>())
             {
                 foreach (var minion in allMinions)
                 {
