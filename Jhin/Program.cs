@@ -64,9 +64,6 @@
                 ComboMenu.AddItem(new MenuItem("ComboWAA", "Use W| After Attack?", true).SetValue(true));
                 ComboMenu.AddItem(new MenuItem("ComboWOnly", "Use W| Only Use to MarkTarget?", true).SetValue(true));
                 ComboMenu.AddItem(new MenuItem("ComboE", "Use E", true).SetValue(true));
-                //ComboMenu.AddItem(new MenuItem("ComboR", "Use R", true).SetValue(true));
-                //ComboMenu.AddItem(new MenuItem("ComboRCheck", "Use R| Check is Safe?", true).SetValue(true));
-                //ComboMenu.AddItem(new MenuItem("ComboRMin", "Use R| Min Range >= x", true).SetValue(new Slider(1000, 500, 3500)));
                 ComboMenu.AddItem(new MenuItem("ComboItem", "Items Setting", true));
                 ComboMenu.AddItem(new MenuItem("ComboYoumuu", "Use Youmuu", true).SetValue(true));
                 ComboMenu.AddItem(new MenuItem("ComboCutlass", "Use Cutlass", true).SetValue(true));
@@ -108,7 +105,8 @@
                 RMenu.AddItem(new MenuItem("RMenuAuto", "Auto R?", true).SetValue(true));
                 RMenu.AddItem(new MenuItem("RMenuSemi", "Semi R Key(One Press One Shot)", true).SetValue(new KeyBind('T', KeyBindType.Press)));
                 RMenu.AddItem(new MenuItem("RMenuCheck", "Use R| Check is Safe?", true).SetValue(true));
-                RMenu.AddItem(new MenuItem("RMenuMin", "Use R| Min Range >= x", true).SetValue(new Slider(1000, 500, 3500)));
+                RMenu.AddItem(new MenuItem("RMenuMin", "Use R| Min Range >= x", true).SetValue(new Slider(1000, 500, 2500)));
+                RMenu.AddItem(new MenuItem("RMenuMax", "Use R| Man Range <= x", true).SetValue(new Slider(3000, 1500, 3500)));
                 RMenu.AddItem(new MenuItem("RMenuKill", "Use R| Min Shot Can Kill >= x", true).SetValue(new Slider(3, 1, 4)));
             }
 
@@ -386,6 +384,11 @@
                     }
 
                     if (target.DistanceToPlayer() <= Menu.Item("RMenuMin", true).GetValue<Slider>().Value)
+                    {
+                        return;
+                    }
+
+                    if (target.DistanceToPlayer() > Menu.Item("RMenuMax", true).GetValue<Slider>().Value)
                     {
                         return;
                     }
