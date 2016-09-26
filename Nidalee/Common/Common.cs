@@ -9,6 +9,62 @@
 
     public static class Common
     {
+        public static HitChance MinCommonHitChance
+        {
+            get
+            {
+                if (Program.Menu.Item("SetHitchance", true).GetValue<StringList>().SelectedIndex == 0)
+                {
+                    return HitChance.VeryHigh;
+                }
+
+                if (Program.Menu.Item("SetHitchance", true).GetValue<StringList>().SelectedIndex == 1)
+                {
+                    return HitChance.High;
+                }
+
+                if (Program.Menu.Item("SetHitchance", true).GetValue<StringList>().SelectedIndex == 2)
+                {
+                    return HitChance.Medium;
+                }
+
+                if (Program.Menu.Item("SetHitchance", true).GetValue<StringList>().SelectedIndex == 3)
+                {
+                    return HitChance.Low;
+                }
+
+                return HitChance.VeryHigh;
+            }
+        }
+
+        public static OKTWPrediction.HitChance MinOKTWHitChance
+        {
+            get
+            {
+                if (Program.Menu.Item("SetHitchance", true).GetValue<StringList>().SelectedIndex == 0)
+                {
+                    return OKTWPrediction.HitChance.VeryHigh;
+                }
+
+                if (Program.Menu.Item("SetHitchance", true).GetValue<StringList>().SelectedIndex == 1)
+                {
+                    return OKTWPrediction.HitChance.High;
+                }
+
+                if (Program.Menu.Item("SetHitchance", true).GetValue<StringList>().SelectedIndex == 2)
+                {
+                    return OKTWPrediction.HitChance.Medium;
+                }
+
+                if (Program.Menu.Item("SetHitchance", true).GetValue<StringList>().SelectedIndex == 3)
+                {
+                    return OKTWPrediction.HitChance.Low;
+                }
+
+                return OKTWPrediction.HitChance.VeryHigh;
+            }
+        }
+
         public static void CastTo(this Spell Spells, Obj_AI_Base target, bool AOE = false)
         {
             switch (Program.Menu.Item("SelectPred", true).GetValue<StringList>().SelectedIndex)
@@ -17,7 +73,7 @@
                     {
                         var SpellPred = Spells.GetPrediction(target, AOE);
 
-                        if (SpellPred.Hitchance >= HitChance.VeryHigh)
+                        if (SpellPred.Hitchance >= MinCommonHitChance)
                         {
                             Spells.Cast(SpellPred.CastPosition, true);
                         }
@@ -52,11 +108,11 @@
                             return;
                         }
 
-                        if (poutput2.Hitchance >= OKTWPrediction.HitChance.VeryHigh)
+                        if (poutput2.Hitchance >= MinOKTWHitChance)
                         {
                             Spells.Cast(poutput2.CastPosition, true);
                         }
-                        else if (predInput2.Aoe && poutput2.AoeTargetsHitCount > 1 && poutput2.Hitchance >= OKTWPrediction.HitChance.High)
+                        else if (predInput2.Aoe && poutput2.AoeTargetsHitCount > 1 && poutput2.Hitchance >= MinOKTWHitChance - 1)
                         {
                             Spells.Cast(poutput2.CastPosition, true);
                         }
@@ -100,8 +156,8 @@
                     }
                     break;
                 case 3:
-                {
-                    var hero = target as Obj_AI_Hero;
+                    {
+                        var hero = target as Obj_AI_Hero;
 
                         if (hero != null && hero.IsValid)
                         {
@@ -109,12 +165,12 @@
 
                             if (t.IsValidTarget())
                             {
-                                Spells.SPredictionCast(t, HitChance.VeryHigh);
+                                Spells.SPredictionCast(t, MinCommonHitChance);
                             }
                         }
                         else
                         {
-                            Spells.CastIfHitchanceEquals(target, HitChance.VeryHigh);
+                            Spells.CastIfHitchanceEquals(target, MinCommonHitChance);
                         }
                     }
                     break;
@@ -136,7 +192,6 @@
                     break;
             }
         }
-
         public static float DistanceSquared(this Obj_AI_Base source, Vector3 position)
         {
             return source.DistanceSquared(position.To2D());
