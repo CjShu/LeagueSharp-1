@@ -1,2 +1,0 @@
-D:\Sharp\GitHub\NewAssembly\LeagueSharp\Riven\bin\Debug\Flowers-Riven.exe.config
-D:\Sharp\GitHub\NewAssembly\LeagueSharp\Riven\bin\Debug\Flowers' Riven.exe.config
