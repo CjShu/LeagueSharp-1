@@ -130,7 +130,14 @@
 
             var PredMenu = Menu.AddSubMenu(new Menu("Prediction", "Prediction"));
             {
-                PredMenu.AddItem(new MenuItem("SelectPred", "Select Prediction: ", true).SetValue(new StringList(new[] { "Common Prediction", "OKTW Prediction", "SDK Prediction", "SPrediction(Need F5 Reload)", "xcsoft AIO Prediction" }, 1)));
+                PredMenu.AddItem(new MenuItem("SelectPred", "Select Prediction: ", true).SetValue(new StringList(new[]
+                {
+                    "Common Prediction", "OKTW Prediction", "SDK Prediction", "SPrediction(Need F5 Reload)",
+                    "xcsoft AIO Prediction"
+                }, 1)));
+                PredMenu.AddItem(
+                    new MenuItem("SetHitchance", "HitChance: ", true).SetValue(
+                        new StringList(new[] { "VeryHigh", "High", "Medium", "Low" })));
                 PredMenu.AddItem(new MenuItem("AboutCommonPred", "Common Prediction -> LeagueSharp.Commmon Prediction"));
                 PredMenu.AddItem(new MenuItem("AboutOKTWPred", "OKTW Prediction -> Sebby' Prediction"));
                 PredMenu.AddItem(new MenuItem("AboutSDKPred", "SDK Prediction -> LeagueSharp.SDKEx Prediction"));
