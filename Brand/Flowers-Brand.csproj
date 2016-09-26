@@ -34,16 +34,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="LeagueSharp">
-      <HintPath>D:\LeagueSharp\System\LeagueSharp.dll</HintPath>
+      <HintPath>D:\qMLQe\I5QEqMLQe\References\LeagueSharp.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp.Common">
-      <HintPath>D:\LeagueSharp\System\LeagueSharp.Common.dll</HintPath>
+      <HintPath>D:\qMLQe\I5QEqMLQe\References\LeagueSharp.Common.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
-      <HintPath>D:\LeagueSharp\System\SharpDX.dll</HintPath>
+      <HintPath>D:\qMLQe\I5QEqMLQe\References\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Direct3D9">
-      <HintPath>D:\LeagueSharp\System\SharpDX.Direct3D9.dll</HintPath>
+      <HintPath>D:\qMLQe\I5QEqMLQe\References\SharpDX.Direct3D9.dll</HintPath>
+    </Reference>
+    <Reference Include="SPrediction">
+      <HintPath>D:\qMLQe\I5QEqMLQe\References\SPrediction.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -56,8 +59,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HpBarDraw.cs" />
-    <Compile Include="OktwPrediction.cs" />
+    <Compile Include="Common\Common.cs" />
+    <Compile Include="Common\HpBarDraw.cs" />
+    <Compile Include="Common\YasuoWindWall.cs" />
+    <Compile Include="Prediction\OKTWPrediction.cs" />
+    <Compile Include="Prediction\SDKPrediction.cs" />
+    <Compile Include="Prediction\xcsoftPrediction.cs" />
+    <Compile Include="Orbwalking\Orbwalking.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

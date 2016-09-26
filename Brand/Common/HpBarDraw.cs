@@ -1,23 +1,20 @@
-﻿namespace Flowers_Commom
+﻿namespace Flowers_Brand.Common
 {
     using LeagueSharp;
-    using LeagueSharp.Common;
     using SharpDX;
     using SharpDX.Direct3D9;
     using System;
-    using System.Collections.Generic;
-    using Color = System.Drawing.Color;
 
     public class HpBarDraw
     {
         public static Device DxDevice = Drawing.Direct3DDevice;
         public static Line DxLine;
-        public float Hight = 9;
-        public float Width = 104;
+        public static float Hight = 9;
+        public static float Width = 104;
 
-        public Obj_AI_Hero Unit { get; set; }
+        public static Obj_AI_Hero Unit { get; set; }
 
-        private Vector2 Offset
+        private static Vector2 Offset
         {
             get
             {
@@ -30,7 +27,7 @@
             }
         }
 
-        public Vector2 StartPosition
+        public static Vector2 StartPosition
         {
             get { return new Vector2(Unit.HPBarPosition.X + Offset.X, Unit.HPBarPosition.Y + Offset.Y); }
         }
@@ -61,19 +58,19 @@
         }
 
 
-        private float GetHpProc(float dmg = 0)
+        private static float GetHpProc(float dmg = 0)
         {
             float Health = ((Unit.Health - dmg) > 0) ? (Unit.Health - dmg) : 0;
             return (Health / Unit.MaxHealth);
         }
 
-        private Vector2 GetHpPosAfterDmg(float dmg)
+        private static Vector2 GetHpPosAfterDmg(float dmg)
         {
             float w = GetHpProc(dmg) * Width;
             return new Vector2(StartPosition.X + w, StartPosition.Y);
         }
 
-        public void DrawDmg(float dmg, ColorBGRA color)
+        public static void DrawDmg(float dmg, ColorBGRA color)
         {
             Vector2 hpPosNow = GetHpPosAfterDmg(0);
             Vector2 hpPosAfter = GetHpPosAfterDmg(dmg);
@@ -81,17 +78,7 @@
             FullHPBar(hpPosNow, hpPosAfter, color);
         }
 
-        private void FullHPBar(int to, int from, Color color)
-        {
-            var sPos = StartPosition;
-
-            for (var i = from; i < to; i++)
-            {
-                Drawing.DrawLine(sPos.X + i, sPos.Y, sPos.X + i, sPos.Y + 9, 1, color);
-            }
-        }
-
-        private void FullHPBar(Vector2 from, Vector2 to, ColorBGRA color)
+        private static void FullHPBar(Vector2 from, Vector2 to, ColorBGRA color)
         {
             DxLine.Begin();
 
