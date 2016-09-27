@@ -64,6 +64,7 @@
                 ComboMenu.AddItem(new MenuItem("ComboWAA", "Use W| After Attack?", true).SetValue(true));
                 ComboMenu.AddItem(new MenuItem("ComboWOnly", "Use W| Only Use to MarkTarget?", true).SetValue(true));
                 ComboMenu.AddItem(new MenuItem("ComboE", "Use E", true).SetValue(true));
+                ComboMenu.AddItem(new MenuItem("ComboR", "Use R| In Shot Mode", true).SetValue(true));
                 ComboMenu.AddItem(new MenuItem("ComboItem", "Items Setting", true));
                 ComboMenu.AddItem(new MenuItem("ComboYoumuu", "Use Youmuu", true).SetValue(true));
                 ComboMenu.AddItem(new MenuItem("ComboCutlass", "Use Cutlass", true).SetValue(true));
@@ -368,7 +369,18 @@
 
         private static void RLogic()
         {
-            var target = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Physical);
+            Obj_AI_Hero target = null;
+
+            if (TargetSelector.GetSelectedTarget() != null &&
+                TargetSelector.GetSelectedTarget().DistanceToPlayer() <=
+                Menu.Item("RMenuMax", true).GetValue<Slider>().Value)
+            {
+                target = TargetSelector.GetSelectedTarget();
+            }
+            else
+            {
+                target = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Physical);
+            }
 
             if (R.IsReady() && CheckTarget(target, R.Range))
             {
@@ -410,6 +422,13 @@
                 if (R.Instance.Name == "JhinRShot")
                 {
                     if (Menu.Item("RMenuSemi", true).GetValue<KeyBind>().Active)
+                    {
+                        AutoUse(target);
+                        R.Cast(R.GetPrediction(target).UnitPosition, true);
+                    }
+
+                    if (Menu.Item("ComboR", true).GetValue<bool>() &&
+                        Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
                     {
                         AutoUse(target);
                         R.Cast(R.GetPrediction(target).UnitPosition, true);
