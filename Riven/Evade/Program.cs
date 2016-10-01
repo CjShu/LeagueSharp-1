@@ -1082,7 +1082,7 @@ namespace Flowers_Riven.Evade
             foreach (var skillshot in DetectedSkillshots)
             {
                 skillshot.Draw(
-                    (skillshot.Evade() && Config.EvadeMenu.Item("Enabled").GetValue<KeyBind>().Active)
+                    skillshot.Evade() && Config.EvadeMenu.Item("Enabled").GetValue<KeyBind>().Active
                         ? Config.EvadeMenu.Item("EnabledColor").GetValue<Color>()
                         : Config.EvadeMenu.Item("DisabledColor").GetValue<Color>(), missileColor, Border);
             }

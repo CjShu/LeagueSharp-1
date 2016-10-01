@@ -59,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Common.cs" />
     <Compile Include="Common\HpBarDraw.cs" />
     <Compile Include="Logic\DoCast.cs" />
     <Compile Include="Logic\Drawings.cs" />
@@ -78,7 +79,6 @@
     <Compile Include="Evade\Utils.cs" />
     <Compile Include="InitMenu.cs" />
     <Compile Include="Logic\LoopEvent.cs" />
-    <Compile Include="Logic\Others.cs" />
     <Compile Include="Orbwalking\Orbwalking.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

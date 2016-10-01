@@ -10,49 +10,47 @@
     {
         public static void Init()
         {
-            Game.OnUpdate += delegate
+            Game.OnUpdate += OnUpdate;
+        }
+
+        private static void OnUpdate(EventArgs args)
+        {
+            if (Program.Me.IsDead)
+                return;
+
+            Autobool();
+            KeelQLogic();
+            KillStealLogic();
+
+            if (Program.Menu.Item("EnableSkin", true).GetValue<bool>())
             {
-                if (Program.Me.IsDead)
-                    return;
+                ObjectManager.Player.SetSkin(ObjectManager.Player.ChampionName, Program.Menu.Item("SelectSkin", true).GetValue<StringList>().SelectedIndex);
+            }
 
-                Autobool();
-                KeelQLogic();
-                KillStealLogic();
-
-                if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
-                {
+            switch (Program.Orbwalker.ActiveMode)
+            {
+                case Orbwalking.OrbwalkingMode.Combo:
                     Combo();
-                }
-                if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Brust)
-                {
+                    break;
+                case Orbwalking.OrbwalkingMode.Brust:
                     Brust();
-                }
-                if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
-                {
+                    break;
+                case Orbwalking.OrbwalkingMode.Mixed:
                     Harass();
-                }
-                if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.QuickHarass)
-                {
+                    break;
+                case Orbwalking.OrbwalkingMode.QuickHarass:
                     QuickHarass();
-                }
-                if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
-                {
+                    break;
+                case Orbwalking.OrbwalkingMode.LaneClear:
                     LaneClear();
-                }
-                if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Flee)
-                {
+                    break;
+                case Orbwalking.OrbwalkingMode.Flee:
                     FleeLogic();
-                }
-                if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.WallJump)
-                {
+                    break;
+                case Orbwalking.OrbwalkingMode.WallJump:
                     WallJump();
-                }
-
-                if (Program.Menu.Item("EnableSkin", true).GetValue<bool>())
-                {
-                    ObjectManager.Player.SetSkin(ObjectManager.Player.ChampionName, Program.Menu.Item("SelectSkin", true).GetValue<StringList>().SelectedIndex);
-                }
-            };
+                    break;
+            }
         }
 
         private static void Autobool()
@@ -72,7 +70,9 @@
                 !Program.Me.IsRecalling() && Program.Me.HasBuff("RivenTriCleave"))
             {
                 if (Program.Me.GetBuff("RivenTriCleave").EndTime - Game.Time < 0.3)
+                {
                     Program.Q.Cast(Game.CursorPos);
+                }
             }
         }
 
@@ -151,61 +151,44 @@
                 {
                     if (Program.R.IsReady())
                     {
-                        if (Program.Menu.Item("R1Combo", true).GetValue<KeyBind>().Active && !Program.Me.HasBuff("RivenFengShuiEngine"))
+                        switch (Program.R.Instance.Name)
                         {
-                            if (t.Distance(Program.Me.ServerPosition) < Program.E.Range + Program.Me.AttackRange && Program.Me.CountEnemiesInRange(500) >= 1 &&
-                                !t.IsDead)
-                            {
-                                Program.R.Cast();
-                            }
-                        }
-
-                        if (Program.Me.HasBuff("RivenFengShuiEngine"))
-                        {
-                            if (t.IsValidTarget(850) && !t.IsDead)
-                            {
-                                switch (Program.Menu.Item("R2Mode", true).GetValue<StringList>().SelectedIndex)
+                            case "RivenFengShuiEngine":
+                                if (Program.Menu.Item("R1Combo", true).GetValue<KeyBind>().Active)
                                 {
-                                    case 0:
-                                        if (Program.R.GetDamage(t) > t.Health && t.IsValidTarget(Program.R.Range) && t.Distance(Program.Me.ServerPosition) < 600)
-                                        {
-                                            Program.CastR2 = true;
-                                        }
-                                        else
-                                        {
-                                            Program.CastR2 = false;
-                                        }
-                                        break;
-                                    case 1:
-                                        if (t.HealthPercent < 25 && t.Health > Program.R.GetDamage(t) + Program.Me.GetAutoAttackDamage(t) * 2)
-                                        {
-                                            Program.CastR2 = true;
-                                        }
-                                        else
-                                        {
-                                            Program.CastR2 = false;
-                                        }
-                                        break;
-                                    case 2:
-                                        if (t.IsValidTarget(Program.R.Range) && t.Distance(Program.Me.ServerPosition) < 600)
-                                        {
-                                            Program.CastR2 = true;
-                                        }
-                                        else
-                                        {
-                                            Program.CastR2 = false;
-                                        }
-                                        break;
-                                    case 3:
-                                        Program.CastR2 = false;
-                                        break;
+                                    if (t.Distance(Program.Me.ServerPosition) < Program.E.Range + Program.Me.AttackRange && Program.Me.CountEnemiesInRange(500) >= 1 &&
+                                        !t.IsDead)
+                                    {
+                                        Program.R.Cast();
+                                    }
                                 }
-                            }
-
-                            if (Program.CastR2 && !t.IsDead)
-                            {
-                                Program.R.Cast(t);
-                            }
+                                break;
+                            case "RivenIzunaBlade":
+                                if (t.IsValidTarget(850) && !t.IsDead)
+                                {
+                                    switch (Program.Menu.Item("R2Mode", true).GetValue<StringList>().SelectedIndex)
+                                    {
+                                        case 0:
+                                            if (Program.R.GetDamage(t) > t.Health && t.IsValidTarget(Program.R.Range) && t.Distance(Program.Me.ServerPosition) < 600)
+                                            {
+                                                Program.R.Cast(t);
+                                            }
+                                            break;
+                                        case 1:
+                                            if (t.HealthPercent < 25 && t.Health > Program.R.GetDamage(t) + Program.Me.GetAutoAttackDamage(t) * 2)
+                                            {
+                                                Program.R.Cast(t);
+                                            }
+                                            break;
+                                        case 2:
+                                            if (t.IsValidTarget(Program.R.Range) && t.Distance(Program.Me.ServerPosition) < 600)
+                                            {
+                                                Program.R.Cast(t);
+                                            }
+                                            break;
+                                    }
+                                }
+                                break;
                         }
                     }
                 }

@@ -16,7 +16,6 @@
         public static Menu Menu;
         public static Obj_AI_Hero Me;
         public static bool CanQ;
-        public static bool CastR2;
         public static bool CanFlash;
         public static Vector3 FleePosition = Vector3.Zero;
         public static Vector3 TargetPosition = Vector3.Zero;
@@ -52,10 +51,9 @@
 
             InitMenu.Init();
             LoopEvent.Init();
-            Drawings.Init();
-            SpellCast.Init();
             DoCast.Init();
-            Others.Init();
+            SpellCast.Init();
+            Drawings.Init();
         }
 
         public static void EnbaleSkin(object obj, OnValueChangeEventArgs Args)

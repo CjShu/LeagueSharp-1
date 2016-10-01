@@ -1,7 +1,7 @@
-﻿using System.Linq;
-
-namespace Flowers_Riven
+﻿namespace Flowers_Riven
 {
+    using System.Linq;
+    using Common;
     using LeagueSharp;
     using LeagueSharp.Common;
 
@@ -9,104 +9,109 @@ namespace Flowers_Riven
     {
         internal static void Init()
         {
-            Obj_AI_Base.OnDoCast += delegate (Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs Args)
+            Obj_AI_Base.OnDoCast += OnDoCast;
+        }
+
+        private static void OnDoCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs Args)
+        {
+            if (!sender.IsMe || !Orbwalking.IsAutoAttack(Args.SData.Name))
             {
-                if (!sender.IsMe || !Orbwalking.IsAutoAttack(Args.SData.Name))
+                return;
+            }
+
+            if (Args.Target == null)
+            {
+                return;
+            }
+
+            Program.QTarget = (Obj_AI_Base)Args.Target;
+
+            if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+            {
+                var target = Args.Target as Obj_AI_Hero;
+
+                if (target != null && !target.IsDead && !target.IsZombie)
                 {
-                    return;
-                }
+                    Program.CastItem(true, true);
 
-                if (Args.Target == null)
-                {
-                    return;
-                }
-
-                Program.QTarget = (Obj_AI_Base)Args.Target;
-
-                if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
-                {
-                    var target = Args.Target as Obj_AI_Hero;
-
-                    if (target != null && !target.IsDead && !target.IsZombie)
+                    if (Program.Q.IsReady())
                     {
-                        Program.CastItem(true, true);
-
-                        if (Program.Q.IsReady())
-                        {
-                            Program.CastQ(target);
-                        }
-                        else if (Program.W.IsReady() && target.IsValidTarget(Program.W.Range))
-                        {
-                            Program.W.Cast(target.Position);
-                        }
-                        else if (Program.E.IsReady() && target.Distance(Program.Me) > Orbwalking.GetRealAutoAttackRange(Program.Me) &&
-                                 target.IsValidTarget(Program.E.Range))
-                        {
-                            Program.E.Cast(target.Position);
-                        }
+                        Program.CastQ(target);
+                    }
+                    else if (Program.W.IsReady() && target.IsValidTarget(Program.W.Range))
+                    {
+                        Program.W.Cast(target.Position);
+                    }
+                    else if (Program.E.IsReady() && target.DistanceToPlayer() > 
+                        Orbwalking.GetRealAutoAttackRange(Program.Me) &&
+                             target.IsValidTarget(Program.E.Range))
+                    {
+                        Program.E.Cast(target.Position);
                     }
                 }
+            }
 
-                if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Brust)
+            if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Brust)
+            {
+                var target = Args.Target as Obj_AI_Hero;
+
+                if (target != null && !target.IsDead && !target.IsZombie)
                 {
-                    var target = Args.Target as Obj_AI_Hero;
+                    Program.CastItem(true, true);
 
-                    if (target != null && !target.IsDead && !target.IsZombie)
+                    if (Program.Q.IsReady())
                     {
-                        Program.CastItem(true, true);
-
-                        if (Program.Q.IsReady())
-                        {
-                            Program.CastQ(target);
-                        }
-                        else if (Program.W.IsReady() && target.IsValidTarget(Program.W.Range))
-                        {
-                            Program.W.Cast(target.Position);
-                        }
-                        else if (Program.E.IsReady() && target.Distance(Program.Me) > Orbwalking.GetRealAutoAttackRange(Program.Me) &&
-                                 target.IsValidTarget(Program.E.Range))
-                        {
-                            Program.E.Cast(target.Position);
-                        }
+                        Program.CastQ(target);
+                    }
+                    else if (Program.W.IsReady() && target.IsValidTarget(Program.W.Range))
+                    {
+                        Program.W.Cast(target.Position);
+                    }
+                    else if (Program.E.IsReady() && target.DistanceToPlayer() > 
+                        Orbwalking.GetRealAutoAttackRange(Program.Me) &&
+                             target.IsValidTarget(Program.E.Range))
+                    {
+                        Program.E.Cast(target.Position);
                     }
                 }
+            }
 
-                if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.QuickHarass)
+            if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.QuickHarass)
+            {
+                var target = Args.Target as Obj_AI_Hero;
+
+                if (target != null && !target.IsDead && !target.IsZombie)
                 {
-                    var target = Args.Target as Obj_AI_Hero;
+                    Program.CastItem(true);
 
-                    if (target != null && !target.IsDead && !target.IsZombie)
+                    if (Program.Q.IsReady() && Program.QStack != 2 &&
+                        Program.Menu.Item("HarassQ", true).GetValue<bool>())
                     {
-                        Program.CastItem(true);
-
-                        if (Program.Q.IsReady() && Program.QStack != 2 && Program.Menu.Item("HarassQ", true).GetValue<bool>())
-                        {
-                            Program.CastQ(target);
-                        }
+                        Program.CastQ(target);
                     }
                 }
+            }
 
-                if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
+            if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
+            {
+                var target = Args.Target as Obj_AI_Hero;
+
+                if (target != null && !target.IsDead && !target.IsZombie)
                 {
-                    var target = Args.Target as Obj_AI_Hero;
+                    Program.CastItem(true);
 
-                    if (target != null && !target.IsDead && !target.IsZombie)
+                    if (Program.Q.IsReady() && Program.Menu.Item("HarassQ", true).GetValue<bool>())
                     {
-                        Program.CastItem(true);
-
-                        if (Program.Q.IsReady() && Program.Menu.Item("HarassQ", true).GetValue<bool>())
-                        {
-                            Program.CastQ(target);
-                        }
+                        Program.CastQ(target);
                     }
                 }
+            }
 
-                if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
-                {
-                    LaneClear(Args);
-                    JungleClear(Args);
-                }
-            };
+            if (Program.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
+            {
+                LaneClear(Args);
+                JungleClear(Args);
+            }
         }
 
         private static void LaneClear(GameObjectProcessSpellCastEventArgs Args)
