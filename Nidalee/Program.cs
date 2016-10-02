@@ -156,7 +156,7 @@
                 DrawMenu.AddItem(new MenuItem("DrawE", "Draw E Range", true).SetValue(false));
                 DrawMenu.AddItem(new MenuItem("DrawCD", "Draw CoolDown", true).SetValue(true));
                 DrawMenu.AddItem(new MenuItem("DrawTarget", "Draw Have Passive Target", true).SetValue(true));
-                DrawMenu.AddItem(new MenuItem("DrawDamage", "Draw ComboDamage", true).SetValue(true));
+                DrawMenu.AddItem(new MenuItem("DrawDamage", "Draw ComboDamage", true).SetValue(new StringList(new [] {"Only Humanizer", "Only Cougar", "Both", "Off" })));
             }
 
             Menu.AddItem(new MenuItem("Credit", "Credit: NightMoon", true));
@@ -769,7 +769,7 @@
                     }
                 }
 
-                if (!Menu.Item("DrawDamage", true).GetValue<bool>())
+                if (Menu.Item("DrawDamage", true).GetValue<StringList>().SelectedIndex == 3)
                 {
                     return;
                 }
@@ -785,9 +785,20 @@
 
         private static float ComboDamage(Obj_AI_Hero target)
         {
-            var damage = GetQDamage(target) + GetQ1Damage(target) + GetWDamage(target) + GetW1Damage(target) + GetE1Damage(target) + Me.GetAutoAttackDamage(target);
+            var humanizer = GetQDamage(target) + GetWDamage(target);
+            var cougar = GetQ1Damage(target) + GetW1Damage(target) + GetE1Damage(target);
 
-            return (float)damage;
+            switch (Menu.Item("DrawDamage", true).GetValue<StringList>().SelectedIndex)
+            {
+                case 0:
+                    return (float)humanizer;
+                case 1:
+                    return (float)cougar;
+                case 2:
+                    return (float) (humanizer + cougar);
+            }
+
+            return 0;
         }
 
         private static float CheckCD(float Expires)
