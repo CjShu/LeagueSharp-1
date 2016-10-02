@@ -439,6 +439,11 @@
                         return;   
                     }
 
+                    if (!InRCone(target))
+                    {
+                        return;
+                    }
+
                     AutoUse(target);
                     R.Cast(R.GetPrediction(target).UnitPosition, true);
                 }
@@ -771,6 +776,22 @@
         private static bool CheckTarget(Obj_AI_Base target, float Range)
         {
             return target.IsValidTarget(Range) && !target.IsDead && !target.IsZombie && !DontCast(target);
+        }
+
+        private static bool InRCone(Obj_AI_Hero target) 
+        {
+            // Asuvril
+            // https://github.com/VivianGit/LeagueSharp/blob/master/Jhin%20As%20The%20Virtuoso/Jhin%20As%20The%20Virtuoso/Extensions.cs#L67-L79
+            var range = R.Range;
+            const float angle = 70f * (float)Math.PI / 180;
+            var end2 = target.Position.To2D() - Me.Position.To2D();
+            var edge1 = end2.Rotated(-angle / 2);
+            var edge2 = edge1.Rotated(angle);
+
+            var point = target.Position.To2D() - Me.Position.To2D();
+
+            return point.Distance(new Vector2(), true) < range * range && 
+                edge1.CrossProduct(point) > 0 && point.CrossProduct(edge2) > 0;
         }
 
         private static bool DontCast(Obj_AI_Base target)
