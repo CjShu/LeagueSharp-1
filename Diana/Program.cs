@@ -8,7 +8,7 @@
     using Color = System.Drawing.Color;
     using static Common;
 
-    internal class Program //eflash, flee mode
+    internal class Program //TODO: flee mode
     {
         public static Menu Menu;
         public static Obj_AI_Hero Me;
@@ -117,8 +117,8 @@
             {
                 MiscMenu.AddItem(new MenuItem("EGap", "Use E Anti Gapcloser", true).SetValue(true));
                 MiscMenu.AddItem(new MenuItem("EInt", "Use E Interrupt Spell", true).SetValue(true));
-                //MiscMenu.AddItem(
-                    //new MenuItem("EFlash", "E Flash Key", true).SetValue(new KeyBind('T', KeyBindType.Press)));
+                MiscMenu.AddItem(
+                    new MenuItem("EFlash", "E Flash Key", true).SetValue(new KeyBind('T', KeyBindType.Press)));
             }
 
             var SkinMenu = Menu.AddSubMenu(new Menu("SkinChance", "SkinChance"));
@@ -271,10 +271,10 @@
                     Menu.Item("SelectSkin", true).GetValue<StringList>().SelectedIndex);
             }
 
-            //if (Menu.Item("EFlash", true).GetValue<KeyBind>().Active)
-            //{
-            //    EFlash();
-            //}
+            if (Menu.Item("EFlash", true).GetValue<KeyBind>().Active)
+            {
+                EFlash();
+            }
 
             KillSteal();
 
@@ -305,18 +305,18 @@
                 Obj_AI_Hero target = null;
 
                 target = TargetSelector.GetSelectedTarget() ??
-                         TargetSelector.GetTarget(E.Range + 425f, TargetSelector.DamageType.Magical);
+                         TargetSelector.GetTarget(700f, TargetSelector.DamageType.Magical);
 
-                if (CheckTarget(target, E.Range + 425f) && target.DistanceToPlayer() > E.Range)
+                if (CheckTarget(target, 700f) && target.DistanceToPlayer() > E.Range)
                 {
                     var pos = Me.Position.Extend(target.Position, 425f);
 
-                    if (target.Position.Distance(pos) < E.Range && target.DistanceToPlayer() > E.Range)
+                    if (target.Position.Distance(pos) < 350f && target.DistanceToPlayer() > E.Range)
                     {
                         E.Cast();
-                        Utility.DelayAction.Add(150 + Game.Ping*2, () =>
+                        Utility.DelayAction.Add(100 + Game.Ping*2, () =>
                         {
-                            Me.Spellbook.CastSpell(Flash, pos);
+                            Me.Spellbook.CastSpell(Flash, target.Position);
                         });      
                     }
                 }
