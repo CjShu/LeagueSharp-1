@@ -416,36 +416,39 @@
                         return;
                     }
 
-                    R.Cast(R.GetPrediction(target).CastPosition, true);
+                    R.Cast(R.GetPrediction(target).UnitPosition, true);
                 }
 
                 if (R.Instance.Name == "JhinRShot")
                 {
-                    if (Menu.Item("RMenuSemi", true).GetValue<KeyBind>().Active)
+                    foreach (var t in HeroManager.Enemies.Where(x => x.IsValidTarget(R.Range) && InRCone(x)))
                     {
-                        AutoUse(target);
-                        R.Cast(R.GetPrediction(target).UnitPosition, true);
-                    }
+                        if (!InRCone(t))
+                        {
+                            return;
+                        }
 
-                    if (Menu.Item("ComboR", true).GetValue<bool>() &&
-                        Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
-                    {
-                        AutoUse(target);
-                        R.Cast(R.GetPrediction(target).UnitPosition, true);
-                    }
+                        if (Menu.Item("RMenuSemi", true).GetValue<KeyBind>().Active)
+                        {
+                            AutoUse(t);
+                            R.Cast(R.GetPrediction(t).UnitPosition, true);
+                        }
 
-                    if (!Menu.Item("RMenuAuto", true).GetValue<bool>())
-                    {
-                        return;   
-                    }
+                        if (Menu.Item("ComboR", true).GetValue<bool>() &&
+                            Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+                        {
+                            AutoUse(t);
+                            R.Cast(R.GetPrediction(t).UnitPosition, true);
+                        }
 
-                    if (!InRCone(target))
-                    {
-                        return;
-                    }
+                        if (!Menu.Item("RMenuAuto", true).GetValue<bool>())
+                        {
+                            return;
+                        }
 
-                    AutoUse(target);
-                    R.Cast(R.GetPrediction(target).UnitPosition, true);
+                        AutoUse(t);
+                        R.Cast(R.GetPrediction(t).UnitPosition, true);
+                    }
                 }
             }
         }
