@@ -19,10 +19,11 @@
         private static int LastQTime;
         private static int LastWTime;
 
-        private static readonly Menu Menu = Program.Menu;
+        private static readonly Menu Menu = Program.Championmenu;
         private static readonly Obj_AI_Hero Me = Program.Me;
         private static readonly Orbwalking.Orbwalker Orbwalker = Program.Orbwalker;
 
+        private static HpBarDraw HpBarDraw = new HpBarDraw();
 
         public Caitlyn()
         {

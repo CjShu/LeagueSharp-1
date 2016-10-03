@@ -67,7 +67,25 @@
   <ItemGroup>
     <Compile Include="Common\Common.cs" />
     <Compile Include="Common\HpBarDraw.cs" />
+    <Compile Include="Pluging\Ashe.cs" />
     <Compile Include="Pluging\Caitlyn.cs" />
+    <Compile Include="Pluging\Corki.cs" />
+    <Compile Include="Pluging\Draven.cs" />
+    <Compile Include="Pluging\Ezreal.cs" />
+    <Compile Include="Pluging\Garves.cs" />
+    <Compile Include="Pluging\Jhin.cs" />
+    <Compile Include="Pluging\Jinx.cs" />
+    <Compile Include="Pluging\Kalista.cs" />
+    <Compile Include="Pluging\KogMaw.cs" />
+    <Compile Include="Pluging\Lucian.cs" />
+    <Compile Include="Pluging\MissFortune.cs" />
+    <Compile Include="Pluging\Quinn.cs" />
+    <Compile Include="Pluging\Sivir.cs" />
+    <Compile Include="Pluging\Tristana.cs" />
+    <Compile Include="Pluging\Twitch.cs" />
+    <Compile Include="Pluging\Urgot.cs" />
+    <Compile Include="Pluging\Varus.cs" />
+    <Compile Include="Pluging\Vayne.cs" />
     <Compile Include="Prediction\OKTWPrediction.cs" />
     <Compile Include="Orbwalking\Orbwalking.cs" />
     <Compile Include="Program.cs" />
