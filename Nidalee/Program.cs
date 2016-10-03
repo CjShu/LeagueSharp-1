@@ -156,7 +156,7 @@
                 DrawMenu.AddItem(new MenuItem("DrawE", "Draw E Range", true).SetValue(false));
                 DrawMenu.AddItem(new MenuItem("DrawCD", "Draw CoolDown", true).SetValue(true));
                 DrawMenu.AddItem(new MenuItem("DrawTarget", "Draw Have Passive Target", true).SetValue(true));
-                DrawMenu.AddItem(new MenuItem("DrawDamage", "Draw ComboDamage", true).SetValue(new StringList(new [] {"Only Humanizer", "Only Cougar", "Both", "Off" })));
+                DrawMenu.AddItem(new MenuItem("DrawDamage", "Draw ComboDamage", true).SetValue(new StringList(new [] {"Only Humanizer", "Only Cougar", "Now Status", "Both", "Off" }, 3)));
             }
 
             Menu.AddItem(new MenuItem("Credit", "Credit: NightMoon", true));
@@ -795,6 +795,8 @@
                 case 1:
                     return (float)cougar;
                 case 2:
+                    return IsHumanizer ? (float) humanizer : (float) cougar;
+                case 3:
                     return (float) (humanizer + cougar);
             }
 
