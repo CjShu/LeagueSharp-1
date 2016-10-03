@@ -1,4 +1,4 @@
-﻿namespace Flowers_Caitlyn
+﻿namespace Flowers_ADC_Series.Pluging
 {
     using System;
     using System.Linq;
@@ -6,36 +6,26 @@
     using LeagueSharp.Common;
     using SharpDX;
     using Color = System.Drawing.Color;
+    using Orbwalking = Orbwalking;
     using static Common;
 
-    internal class Program
+    internal class Caitlyn
     {
-        public static Spell Q;
-        public static Spell W;
-        public static Spell E;
-        public static Spell R;
-        public static Menu Menu;
-        public static Obj_AI_Hero Me;
-        public static bool CanCastR;
-        public static int LastQTime;
-        public static int LastWTime;
-        public static Orbwalking.Orbwalker Orbwalker;
-        public static HpBarDraw HpBarDraw = new HpBarDraw();
+        private static Spell Q;
+        private static Spell W;
+        private static Spell E;
+        private static Spell R;
 
-        private static void Main(string[] Args)
+        private static int LastQTime;
+        private static int LastWTime;
+
+        private static readonly Menu Menu = Program.Menu;
+        private static readonly Obj_AI_Hero Me = Program.Me;
+        private static readonly Orbwalking.Orbwalker Orbwalker = Program.Orbwalker;
+
+
+        public Caitlyn()
         {
-            CustomEvents.Game.OnGameLoad += OnGameLoad;
-        }
-
-        private static void OnGameLoad(EventArgs Args)
-        {
-            if (ObjectManager.Player.ChampionName != "Caitlyn")
-            {
-                return;
-            }
-
-            Me = ObjectManager.Player;
-
             Q = new Spell(SpellSlot.Q, 1250f);
             W = new Spell(SpellSlot.W, 800f);
             E = new Spell(SpellSlot.E, 750f);
@@ -43,11 +33,6 @@
 
             Q.SetSkillshot(0.50f, 50f, 2000f, false, SkillshotType.SkillshotLine);
             E.SetSkillshot(0.25f, 60f, 1600f, true, SkillshotType.SkillshotLine);
-
-            Menu = new Menu("Flowers' Caitlyn", "Flowers' Caitlyn", true);
-
-            var OrbMenu = Menu.AddSubMenu(new Menu("Orbwalking", "Orbwalking"));
-            Orbwalker = new Orbwalking.Orbwalker(OrbMenu);
 
             var ComboMenu = Menu.AddSubMenu(new Menu("Combo", "Combo"));
             {
@@ -61,15 +46,31 @@
 
             }
 
+            var HarassMenu = Menu.AddSubMenu(new Menu("Harass", "Harass"));
+            {
+                HarassMenu.AddItem(new MenuItem("", "", true));
+                HarassMenu.AddItem(new MenuItem("", "", true));
+            }
+
+            var KillStealMenu = Menu.AddSubMenu(new Menu("KillSteal", "KillSteal"));
+            {
+                KillStealMenu.AddItem(new MenuItem("KillStealQ", "Use Q", true).SetValue(true));
+            }
+
             var FleeMenu = Menu.AddSubMenu(new Menu("Flee", "Flee"));
             {
                 FleeMenu.AddItem(new MenuItem("FleeE", "Use E", true).SetValue(true));
             }
 
+            var RMenu = Menu.AddSubMenu(new Menu("R Menu", "R Menu"));
+            {
+                RMenu.AddItem(new MenuItem("SemiR", "Semi-manual R Key", true).SetValue(new KeyBind('T', KeyBindType.Press)));
+            }
+
             var MiscMenu = Menu.AddSubMenu(new Menu("Misc", "Misc"));
             {
                 MiscMenu.AddItem(
-                    new MenuItem("EQKey", "One Key EQ target", true).SetValue(new KeyBind('T', KeyBindType.Press)));
+                    new MenuItem("EQKey", "One Key EQ target", true).SetValue(new KeyBind('G', KeyBindType.Press)));
             }
 
             var DrawMenu = Menu.AddSubMenu(new Menu("Drawings", "Drawings"));
@@ -82,25 +83,14 @@
                 DrawMenu.AddItem(new MenuItem("DrawDamage", "Draw ComboDamage", true).SetValue(true));
             }
 
-            Menu.AddToMainMenu();
-
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
             Game.OnUpdate += OnUpdate;
             Drawing.OnDraw += OnDraw;
             Drawing.OnEndScene += OnEndScene;
         }
 
-        private static void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs Args)
+        private void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs Args)
         {
-            if (sender.IsEnemy && sender is Obj_AI_Turret && Args.Target.IsMe)
-            {
-                CanCastR = false;
-            }
-            else
-            {
-                CanCastR = true;   
-            }
-
             if (!sender.IsMe)
                 return;
 
@@ -115,14 +105,14 @@
             }
         }
 
-        private static void OnUpdate(EventArgs args)
+        private void OnUpdate(EventArgs args)
         {
+            R.Range = 500 * R.Level + 1500;
+
             if (Me.IsDead || Me.IsRecalling())
             {
                 return;
             }
-
-            R.Range = 500 * (R.Level == 0 ? 1 : R.Level) + 1500;
 
             KillSteal();
 
@@ -138,14 +128,8 @@
                     LaneClear();
                     JungleClear();
                     break;
-                case Orbwalking.OrbwalkingMode.LastHit:
-                    break;
-                case Orbwalking.OrbwalkingMode.Freeze:
-                    break;
                 case Orbwalking.OrbwalkingMode.Flee:
                     Flee();
-                    break;
-                case Orbwalking.OrbwalkingMode.CustomMode:
                     break;
                 case Orbwalking.OrbwalkingMode.None:
                     if (Menu.Item("EQKey", true).GetValue<KeyBind>().Active)
@@ -153,17 +137,22 @@
                         OneKeyEQ();
                     }
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
         }
 
-        private static void KillSteal()
+        private void KillSteal()
         {
-   
+            if (Menu.Item("KillStealQ", true).GetValue<bool>() && Q.IsReady())
+            {
+                foreach (
+                    var target in HeroManager.Enemies.Where(x => x.IsValidTarget(Q.Range) && CheckTargetSureCanKill(x)))
+                {
+                    Q.CastTo(target);
+                }
+            }
         }
 
-        private static void Combo()
+        private void Combo()
         {
             var target = TargetSelector.GetSelectedTarget() ??
                          TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Physical);
@@ -189,7 +178,7 @@
                     {
                         if (target.IsFacing(Me))
                         {
-                            if (target.IsMelee && target.DistanceToPlayer() < 280)
+                            if (target.IsMelee && target.DistanceToPlayer() < 250)
                             {
                                 W.Cast(Me);
                             }
@@ -201,7 +190,7 @@
                         else
                         {
                             var Pos = W.GetPrediction(target).CastPosition +
-                                      Vector3.Normalize(target.ServerPosition - Me.ServerPosition)*150;
+                                      Vector3.Normalize(target.ServerPosition - Me.ServerPosition) * 150;
 
                             W.Cast(Pos);
                         }
@@ -210,22 +199,22 @@
             }
         }
 
-        private static void Harass()
+        private void Harass()
         {
-         
+
         }
 
-        private static void LaneClear()
+        private void LaneClear()
         {
-            
+
         }
 
-        private static void JungleClear()
+        private void JungleClear()
         {
-           
+
         }
 
-        private static void Flee()
+        private void Flee()
         {
             if (Menu.Item("FleeE", true).GetValue<bool>() && E.IsReady())
             {
@@ -233,7 +222,7 @@
             }
         }
 
-        private static void OneKeyEQ()
+        private void OneKeyEQ()
         {
             Orbwalking.MoveTo(Game.CursorPos);
 
@@ -254,7 +243,7 @@
             }
         }
 
-        private static void OnDraw(EventArgs Args)
+        private void OnDraw(EventArgs Args)
         {
             if (!Me.IsDead && !MenuGUI.IsShopOpen && !MenuGUI.IsChatOpen && !MenuGUI.IsScoreboardOpen)
             {
@@ -290,7 +279,7 @@
             }
         }
 
-        private static void OnEndScene(EventArgs Args)
+        private void OnEndScene(EventArgs Args)
         {
             if (!Me.IsDead && !MenuGUI.IsShopOpen && !MenuGUI.IsChatOpen && !MenuGUI.IsScoreboardOpen)
             {
@@ -299,65 +288,6 @@
                     Utility.DrawCircle(Me.Position, R.Range, Color.FromArgb(14, 194, 255), 1, 30, true);
 #pragma warning restore 618
             }
-        }
-
-        private static double ComboDamage(Obj_AI_Hero target)
-        {
-            if (target != null && target.IsValidTarget())
-            {
-                var Damage = 0d;
-
-                Damage += Me.GetAutoAttackDamage(target);
-
-                if (Q.IsReady())
-                {
-                    Damage += Me.Spellbook.GetSpell(SpellSlot.Q).IsReady() ? Me.GetSpellDamage(target, SpellSlot.Q) : 0d;
-                }
-
-                if (E.IsReady())
-                {
-                    Damage += Me.Spellbook.GetSpell(SpellSlot.E).IsReady() ? Me.GetSpellDamage(target, SpellSlot.E) : 0d;
-                }
-
-                if (R.IsReady())
-                {
-                    Damage += Me.Spellbook.GetSpell(SpellSlot.R).IsReady() ? Me.GetSpellDamage(target, SpellSlot.R) * Menu.Item("RMenuKill", true).GetValue<Slider>().Value : 0d;
-                }
-
-                if (target.ChampionName == "Moredkaiser")
-                    Damage -= target.Mana;
-
-                // exhaust
-                if (Me.HasBuff("SummonerExhaust"))
-                    Damage = Damage * 0.6f;
-
-                // blitzcrank passive
-                if (target.HasBuff("BlitzcrankManaBarrierCD") && target.HasBuff("ManaBarrier"))
-                    Damage -= target.Mana / 2f;
-
-                // kindred r
-                if (target.HasBuff("KindredRNoDeathBuff"))
-                    Damage = 0;
-
-                // tryndamere r
-                if (target.HasBuff("UndyingRage") && target.GetBuff("UndyingRage").EndTime - Game.Time > 0.3)
-                    Damage = 0;
-
-                // kayle r
-                if (target.HasBuff("JudicatorIntervention"))
-                    Damage = 0;
-
-                // zilean r
-                if (target.HasBuff("ChronoShift") && target.GetBuff("ChronoShift").EndTime - Game.Time > 0.3)
-                    Damage = 0;
-
-                // fiora w
-                if (target.HasBuff("FioraW"))
-                    Damage = 0;
-
-                return Damage;
-            }
-            return 0d;
         }
     }
 }

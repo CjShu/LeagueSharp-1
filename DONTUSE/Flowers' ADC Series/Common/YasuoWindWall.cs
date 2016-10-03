@@ -1,4 +1,4 @@
-﻿namespace Flowers_Jinx
+﻿namespace Flowers_ADC_Series
 {
     using LeagueSharp;
     using LeagueSharp.Common;
