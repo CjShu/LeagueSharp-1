@@ -106,7 +106,7 @@
             }
         }
 
-        private void OnUpdate(EventArgs args)
+        private void OnUpdate(EventArgs Args)
         {
             R.Range = 500 * R.Level + 1500;
 

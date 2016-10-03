@@ -1,12 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Flowers_ADC_Series.Pluging
+﻿namespace Flowers_ADC_Series.Pluging
 {
-    class Varus
+    using System;
+    using System.Linq;
+    using LeagueSharp;
+    using LeagueSharp.Common;
+    using SharpDX;
+    using Color = System.Drawing.Color;
+    using Orbwalking = Orbwalking;
+    using static Common;
+
+    internal class Varus
     {
+        private static Spell Q;
+        private static Spell W;
+        private static Spell E;
+        private static Spell R;
+
+        private static readonly Menu Menu = Program.Championmenu;
+        private static readonly Obj_AI_Hero Me = Program.Me;
+        private static readonly Orbwalking.Orbwalker Orbwalker = Program.Orbwalker;
+
+        private static HpBarDraw HpBarDraw = new HpBarDraw();
+
+        public Varus()
+        {
+            
+        }
     }
 }

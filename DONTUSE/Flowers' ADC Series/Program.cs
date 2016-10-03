@@ -14,7 +14,7 @@
         public static Obj_AI_Hero Me;
         public static Orbwalking.Orbwalker Orbwalker;
 
-        public static string[] DangerSpellName = new[]
+        public static string[] DangerSpellName =
         {
             "KatarinaR", "GalioIdolOfDurand", "GragasE", "Crowstorm", "BandageToss", "LissandraE",
             "AbsoluteZero", "AlZaharNetherGrasp", "FallenOne", "PantheonRJump", "CaitlynAceintheHole",
