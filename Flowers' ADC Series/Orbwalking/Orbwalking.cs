@@ -408,7 +408,7 @@
 
                 if (ping <= 30) //First world problems kappa
                 {
-                    Utility.DelayAction.Add(30 - ping, () => Obj_AI_Base_OnDoCast_Delayed(sender, Args));
+                    LeagueSharp.Common.Utility.DelayAction.Add(30 - ping, () => Obj_AI_Base_OnDoCast_Delayed(sender, Args));
 
                     return;
                 }

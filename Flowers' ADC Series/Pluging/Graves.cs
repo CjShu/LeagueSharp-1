@@ -320,7 +320,7 @@
                     Render.Circle.DrawCircle(Me.Position, Q.Range, Color.Green, 1);
                 }
 
-                if (Menu.Item("DrawW", true).GetValue<bool>() && W.Level > 0)
+                if (Menu.Item("DrawW", true).GetValue<bool>() && W.IsReady())
                 {
                     Render.Circle.DrawCircle(Me.Position, W.Range, Color.FromArgb(9, 253, 242), 1);
                 }

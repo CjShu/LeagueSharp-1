@@ -93,6 +93,11 @@
     <Compile Include="Prediction\SDKPrediction.cs" />
     <Compile Include="Prediction\xcsoftPrediction.cs" />
     <Compile Include="Common\YasuoWindWall.cs" />
+    <Compile Include="Utility\AutoLevels.cs" />
+    <Compile Include="Utility\AutoPotions.cs" />
+    <Compile Include="Utility\Defensive.cs" />
+    <Compile Include="Utility\Offensive.cs" />
+    <Compile Include="Utility\SkinChance.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

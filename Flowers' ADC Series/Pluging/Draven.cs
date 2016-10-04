@@ -24,7 +24,15 @@
 
         public Draven()
         {
-            
+            Q = new Spell(SpellSlot.Q);
+            W = new Spell(SpellSlot.W);
+            E = new Spell(SpellSlot.E, 950);
+            R = new Spell(SpellSlot.R, 3000f);
+
+            E.SetSkillshot(0.25f, 100, 1400, false, SkillshotType.SkillshotLine);
+            R.SetSkillshot(0.4f, 160, 2000, false, SkillshotType.SkillshotLine);
+
+
         }
     }
 }

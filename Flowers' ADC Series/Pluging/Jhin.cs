@@ -266,7 +266,7 @@
                 Orbwalker.SetAttack(false);
                 Orbwalker.SetMovement(false);
             }
-            else //if (R.Instance.Name == "JhinR")
+            else
             {
                 Orbwalker.SetAttack(true);
                 Orbwalker.SetMovement(true);
@@ -275,11 +275,6 @@
             RLogic();
             KillSteal();
             Auto();
-
-            if (Menu.Item("EnableSkin", true).GetValue<bool>())
-            {
-                ObjectManager.Player.SetSkin(ObjectManager.Player.ChampionName, Menu.Item("SelectSkin", true).GetValue<StringList>().SelectedIndex);
-            }
 
             switch (Orbwalker.ActiveMode)
             {
@@ -601,7 +596,7 @@
                     Render.Circle.DrawCircle(Me.Position, Q.Range, Color.Green, 1);
                 }
 
-                if (Menu.Item("DrawW", true).GetValue<bool>() && W.Level > 0)
+                if (Menu.Item("DrawW", true).GetValue<bool>() && W.IsReady())
                 {
                     Render.Circle.DrawCircle(Me.Position, W.Range, Color.FromArgb(9, 253, 242), 1);
                 }

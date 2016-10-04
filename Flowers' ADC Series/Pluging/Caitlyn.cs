@@ -199,7 +199,9 @@
             if (Menu.Item("KillStealQ", true).GetValue<bool>() && Q.IsReady())
             {
                 foreach (
-                    var target in HeroManager.Enemies.Where(x => x.IsValidTarget(Q.Range) && CheckTargetSureCanKill(x)))
+                    var target in
+                    HeroManager.Enemies.Where(
+                        x => x.IsValidTarget(Q.Range) && CheckTargetSureCanKill(x) && x.Health < Q.GetDamage(x)))
                 {
                     Q.CastTo(target);
                 }
@@ -236,7 +238,7 @@
                 if (Menu.Item("ComboW", true).GetValue<bool>() && W.IsReady() && target.IsValidTarget(W.Range) &&
                     W.Instance.Ammo >= Menu.Item("ComboWCount", true).GetValue<Slider>().Value)
                 {
-                    if (LastWTime - Utils.TickCount > 1500)
+                    if (Utils.TickCount - LastWTime > 1500)
                     {
                         if (target.IsFacing(Me))
                         {
@@ -402,7 +404,7 @@
                     Render.Circle.DrawCircle(Me.Position, Q.Range, Color.Green, 1);
                 }
 
-                if (Menu.Item("DrawW", true).GetValue<bool>() && W.Level > 0)
+                if (Menu.Item("DrawW", true).GetValue<bool>() && W.IsReady())
                 {
                     Render.Circle.DrawCircle(Me.Position, W.Range, Color.FromArgb(9, 253, 242), 1);
                 }

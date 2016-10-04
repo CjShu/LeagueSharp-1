@@ -199,7 +199,12 @@
                 {
                     var mob =
                         MinionManager.GetMinions(Me.Position, E.Range, MinionTypes.All, MinionTeam.Neutral,
-                            MinionOrderTypes.MaxHealth).FirstOrDefault();
+                                MinionOrderTypes.MaxHealth)
+                            .FirstOrDefault(
+                                x =>
+                                    !x.Name.ToLower().Contains("mini") && !x.Name.ToLower().Contains("baron") &&
+                                    !x.Name.ToLower().Contains("dragon") && !x.Name.ToLower().Contains("crab") &&
+                                    !x.Name.ToLower().Contains("herald"));
 
                     if (mob != null && mob.IsValidTarget(E.Range))
                     {

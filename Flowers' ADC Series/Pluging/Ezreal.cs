@@ -107,7 +107,7 @@
 
             Game.OnUpdate += OnUpdate;
             Orbwalking.BeforeAttack += BeforeAttack;
-            Orbwalking.AfterAttack += AfterAttack;
+            Obj_AI_Base.OnDoCast += OnDoCast;
             AntiGapcloser.OnEnemyGapcloser += OnEnemyGapcloser;
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
             Drawing.OnDraw += OnDraw;
@@ -302,17 +302,12 @@
                         {
                             if (Menu.Item("LaneClearQOut", true).GetValue<bool>())
                             {
-                                var mins = minions.Where(x => x.DistanceToPlayer() > Orbwalking.GetRealAutoAttackRange(Me));
+                                var mins = minions.Where(x => x.DistanceToPlayer() > Orbwalking.GetRealAutoAttackRange(Me) && x.Health < Q.GetDamage(x));
 
-                                if (mins.Any())
-                                {
-                                    Q.Cast(mins.FirstOrDefault(), true);
-                                }
+                                Q.Cast(mins.Any() ? mins.FirstOrDefault() : minions.FirstOrDefault(), true);
                             }
                             else
-                            {
                                 Q.Cast(minions.FirstOrDefault(), true);
-                            }
                         }
                     }
                 }
@@ -391,39 +386,46 @@
             }
         }
 
-        private void AfterAttack(AttackableUnit unit, AttackableUnit target)
+        private void OnDoCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs Args)
         {
-            if (unit.IsMe)
+            if (sender.IsMe && Orbwalking.IsAutoAttack(Args.SData.Name))
             {
-                var t = (Obj_AI_Hero)target;
+                var t = (Obj_AI_Base)Args.Target;
 
                 if (t != null && !t.IsDead && !t.IsZombie)
                 {
                     if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
                     {
+                        var target = (Obj_AI_Hero) Args.Target;
+
                         if (Menu.Item("ComboQ", true).GetValue<bool>() && Q.IsReady() && t.IsValidTarget(Q.Range))
                         {
-                            Q.CastTo(t);
+                            Q.CastTo(target);
                         }
 
                         if (Menu.Item("ComboW", true).GetValue<bool>() && W.IsReady() && t.IsValidTarget(W.Range))
                         {
-                            W.CastTo(t);
+                            W.CastTo(target);
                         }
                     }
                     else if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
                     {
-                        if (Menu.Item("Harasstarget" + t.ChampionName.ToLower(), true).GetValue<bool>() &&
-                            Me.ManaPercent >= Menu.Item("HarassMana", true).GetValue<Slider>().Value)
+                        if (t is Obj_AI_Hero)
                         {
-                            if (Menu.Item("HarassQ", true).GetValue<bool>() && Q.IsReady() && t.IsValidTarget(Q.Range))
-                            {
-                                Q.CastTo(t);
-                            }
+                            var target = (Obj_AI_Hero)Args.Target;
 
-                            if (Menu.Item("HarassW", true).GetValue<bool>() && W.IsReady() && t.IsValidTarget(W.Range))
+                            if (Menu.Item("Harasstarget" + target.ChampionName.ToLower(), true).GetValue<bool>() &&
+                                Me.ManaPercent >= Menu.Item("HarassMana", true).GetValue<Slider>().Value)
                             {
-                                W.CastTo(t);
+                                if (Menu.Item("HarassQ", true).GetValue<bool>() && Q.IsReady() && t.IsValidTarget(Q.Range))
+                                {
+                                    Q.CastTo(t);
+                                }
+
+                                if (Menu.Item("HarassW", true).GetValue<bool>() && W.IsReady() && t.IsValidTarget(W.Range))
+                                {
+                                    W.CastTo(t);
+                                }
                             }
                         }
                     }
@@ -465,7 +467,7 @@
                     Render.Circle.DrawCircle(Me.Position, Q.Range, Color.Green, 1);
                 }
 
-                if (Menu.Item("DrawW", true).GetValue<bool>() && W.Level > 0)
+                if (Menu.Item("DrawW", true).GetValue<bool>() && W.IsReady())
                 {
                     Render.Circle.DrawCircle(Me.Position, W.Range, Color.FromArgb(9, 253, 242), 1);
                 }

@@ -143,7 +143,7 @@
 
         private void OnDoCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs Args)
         {
-            if (!sender.IsMe || Orbwalking.IsAutoAttack(Args.SData.Name) || !Me.HasBuff("AsheQAttack") || !Q.IsReady())
+            if (!sender.IsMe || !Orbwalking.IsAutoAttack(Args.SData.Name))
             {
                 return;
             }
@@ -155,15 +155,19 @@
                     {
                         var target = (Obj_AI_Hero)Args.Target;
 
-                        if (CheckTarget(target, Orbwalking.GetRealAutoAttackRange(Me)))
+                        if (target != null && !target.IsDead && !target.IsZombie)
                         {
                             if (Menu.Item("ComboSaveMana", true).GetValue<bool>() && Me.Mana <
-                                R.Instance.ManaCost + W.Instance.ManaCost + Q.Instance.ManaCost)
+                                (R.IsReady() ? R.Instance.ManaCost : 0) + W.Instance.ManaCost + Q.Instance.ManaCost)
                             {
                                 return;
                             }
 
-                            Q.Cast();
+                            if (Me.HasBuff("asheqcastready"))
+                            {
+                                Q.Cast();
+                                Orbwalking.ResetAutoAttackTimer();
+                            }
                         }
                     }
                     break;
@@ -188,8 +192,11 @@
                                 continue;
                             }
 
-                            Q.Cast();
-                            return;
+                            if (Me.HasBuff("asheqcastready"))
+                            {
+                                Q.Cast();
+                                Orbwalking.ResetAutoAttackTimer();
+                            }
                         }
                     }
                     break;
@@ -443,7 +450,7 @@
         {
             if (!Me.IsDead && !MenuGUI.IsShopOpen && !MenuGUI.IsChatOpen && !MenuGUI.IsScoreboardOpen)
             {
-                if (Menu.Item("DrawW", true).GetValue<bool>() && W.Level > 0)
+                if (Menu.Item("DrawW", true).GetValue<bool>() && W.IsReady())
                 {
                     Render.Circle.DrawCircle(Me.Position, W.Range, Color.FromArgb(9, 253, 242), 1);
                 }

@@ -44,7 +44,7 @@
 
             var HarassMenu = Menu.AddSubMenu(new Menu("Harass", "Harass"));
             {
-                HarassMenu.AddItem(new MenuItem("HarassE", "Use E", true).SetValue(true));
+                HarassMenu.AddItem(new MenuItem("HarassE", "Use E", true).SetValue(false));
                 HarassMenu.AddItem(new MenuItem("HarassEToMinion", "Use E| To Minion", true).SetValue(true));
                 HarassMenu.AddItem(new MenuItem("HarassMana", "When Player ManaPercent >= x%", true).SetValue(new Slider(60)));
             }
@@ -83,7 +83,7 @@
             {
                 MiscMenu.AddItem(new MenuItem("Forcustarget", "Forcus Attack Passive Target", true).SetValue(true));
                 MiscMenu.AddItem(new MenuItem("InterruptR", "Use R Interrupt Spell", true).SetValue(true));
-                MiscMenu.AddItem(new MenuItem("AntiR", "Use R Anti Gapcloser", true).SetValue(true));
+                MiscMenu.AddItem(new MenuItem("AntiR", "Use R Anti Gapcloser", true).SetValue(false));
                 MiscMenu.AddItem(new MenuItem("AntiRengar", "Use R Anti Rengar", true).SetValue(true));
                 MiscMenu.AddItem(new MenuItem("AntiKhazix", "Use R Anti Khazix", true).SetValue(true));
                 MiscMenu.AddItem(new MenuItem("SemiE", "Semi-manual E Key", true).SetValue(new KeyBind('E', KeyBindType.Press)));
@@ -221,7 +221,7 @@
                     E.CastOnUnit(target, true);
                 }
 
-                if (Menu.Item("ComboR").GetValue<bool>() && R.IsReady() && Me.HealthPercent <= Menu.Item("ComboRHp").GetValue<Slider>().Value)
+                if (Menu.Item("ComboR", true).GetValue<bool>() && R.IsReady() && Me.HealthPercent <= Menu.Item("ComboRHp", true).GetValue<Slider>().Value)
                 {
                     var dangerenemy = HeroManager.Enemies.Where(e => e.IsValidTarget(R.Range)).
                         OrderBy(enemy => enemy.Distance(Me)).FirstOrDefault();
@@ -399,7 +399,7 @@
                         {
                             if (Menu.Item("ComboQ", true).GetValue<bool>() && Q.IsReady())
                             {
-                                if (Menu.Item("ComboQOnlyPassive").GetValue<bool>())
+                                if (Menu.Item("ComboQOnlyPassive", true).GetValue<bool>())
                                 {
                                     var Target = Args.Target.Type == GameObjectType.obj_AI_Hero ? (Obj_AI_Hero)Args.Target : null;
 
@@ -463,7 +463,7 @@
         {
             if (!Me.IsDead && !MenuGUI.IsShopOpen && !MenuGUI.IsChatOpen && !MenuGUI.IsScoreboardOpen)
             {
-                if (Menu.Item("DrawW", true).GetValue<bool>() && W.Level > 0)
+                if (Menu.Item("DrawW", true).GetValue<bool>() && W.IsReady())
                 {
                     Render.Circle.DrawCircle(Me.Position, W.Range, Color.FromArgb(9, 253, 242), 1);
                 }

@@ -126,50 +126,57 @@
 
         private void KillSteal()
         {
-            var wTarget = TargetSelector.GetTarget(W.Range, TargetSelector.DamageType.Physical);
-
-            if (Menu.Item("KillStealW", true).GetValue<bool>() && CheckTarget(wTarget, W.Range) && W.IsReady() &&
-                wTarget.Health < Me.GetSpellDamage(wTarget, SpellSlot.W))
+            if (Menu.Item("KillStealW", true).GetValue<bool>() && W.IsReady())
             {
-                W.CastTo(wTarget);
+                foreach (
+                    var target in
+                    HeroManager.Enemies.Where(
+                        x => x.IsValidTarget(W.Range) && CheckTargetSureCanKill(x) && x.Health < W.GetDamage(x)))
+                {
+                    if (CheckTarget(target, W.Range))
+                    {
+                        W.CastTo(target);
+                    }
+                }
             }
 
-            var qTarget = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
-
-            if (Menu.Item("KillStealQ", true).GetValue<bool>() && CheckTarget(qTarget, Q.Range) && Q.IsReady())
+            if (Menu.Item("KillStealQ", true).GetValue<bool>() && Q.IsReady())
             {
-                if (Q.IsKillable(qTarget) && Me.Distance(qTarget.Position) < QExtend.Range && Q.IsReady())
+                foreach (
+                    var target in
+                    HeroManager.Enemies.Where(
+                        x => x.IsValidTarget(QExtend.Range) && CheckTargetSureCanKill(x) && x.Health < Q.GetDamage(x)))
                 {
-                    if (qTarget.IsValidTarget(Q.Range))
+                    if (CheckTarget(target, QExtend.Range))
                     {
-                        Q.Cast(qTarget);
-                    }
-                    else
-                    {
-                        var pred = QExtend.GetPrediction(qTarget, true);
-                        var collisions = MinionManager.GetMinions(Me.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
-
-                        if (!collisions.Any())
+                        if (target.IsValidTarget(Q.Range))
                         {
-                            return;
+                            Q.Cast(target, true);
                         }
-
-                        foreach (var minion in collisions)
+                        else
                         {
-                            var poly = new Geometry.Polygon.Rectangle(Me.ServerPosition, Me.ServerPosition.Extend(minion.ServerPosition, QExtend.Range), QExtend.Width);
+                            var pred = QExtend.GetPrediction(target, true);
+                            var collisions = MinionManager.GetMinions(Me.ServerPosition, Q.Range, MinionTypes.All,
+                                MinionTeam.NotAlly);
 
-                            if (poly.IsInside(pred.UnitPosition))
+                            if (!collisions.Any())
                             {
-                                if (Q.Cast(minion) == Spell.CastStates.SuccessfullyCasted)
+                                return;
+                            }
+
+                            foreach (var minion in collisions)
+                            {
+                                var poly = new Geometry.Polygon.Rectangle(Me.ServerPosition, Me.ServerPosition.Extend(minion.ServerPosition, QExtend.Range), QExtend.Width);
+
+                                if (poly.IsInside(pred.UnitPosition))
                                 {
-                                    Q.LastCastAttemptT = Utils.TickCount;
+                                    Q.Cast(minion);
                                     return;
                                 }
                             }
                         }
                     }
                 }
-                Q.CastOnUnit(qTarget, true);
             }
         }
 
@@ -389,7 +396,7 @@
                     Render.Circle.DrawCircle(Me.Position, Q.Range, Color.Green, 1);
                 }
 
-                if (Menu.Item("DrawW", true).GetValue<bool>() && W.Level > 0)
+                if (Menu.Item("DrawW", true).GetValue<bool>() && W.IsReady())
                 {
                     Render.Circle.DrawCircle(Me.Position, W.Range, Color.FromArgb(9, 253, 242), 1);
                 }

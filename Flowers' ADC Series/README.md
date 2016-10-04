@@ -1,5 +1,6 @@
 ﻿DONE:
 Ashe
+Caitlyn
 Ezreal
 Graves
 Jhin
@@ -10,7 +11,6 @@ Twitch
 Vayne
 
 TODO:
-Caitlyn
 Corki
 Draven
 Jinx

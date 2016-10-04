@@ -37,7 +37,7 @@
                 ComboMenu.AddItem(new MenuItem("ComboW", "Use W", true).SetValue(true));
                 ComboMenu.AddItem(new MenuItem("ComboR", "Use R", true).SetValue(true));
                 ComboMenu.AddItem(
-                    new MenuItem("ComboRCount", "Use R| When Enemies Counts >= x", true).SetValue(new Slider(60)));
+                    new MenuItem("ComboRCount", "Use R| When Enemies Counts >= x", true).SetValue(new Slider(3, 1, 5)));
             }
 
             var HarassMenu = Menu.AddSubMenu(new Menu("Harass", "Harass"));
@@ -55,7 +55,7 @@
                 LaneClearMenu.AddItem(new MenuItem("LaneClearW", "Use W", true).SetValue(true));
                 LaneClearMenu.AddItem(new MenuItem("LaneClearWTurret", "Use W| Attack Turret", true).SetValue(true));
                 LaneClearMenu.AddItem(
-                    new MenuItem("LaneClearWMana", "If Player ManaPercent >= %", true).SetValue(new Slider(60)));
+                    new MenuItem("LaneClearMana", "If Player ManaPercent >= %", true).SetValue(new Slider(60)));
             }
 
             var JungleClearMenu = Menu.AddSubMenu(new Menu("JungleClear", "JungleClear"));
@@ -260,7 +260,7 @@
                 }
                 else if (Args.Target is Obj_AI_Turret || Args.Target.Type == GameObjectType.obj_AI_Turret)
                 {
-                    if (Me.ManaPercent >= Menu.Item("LaneClearWMana", true).GetValue<Slider>().Value)
+                    if (Me.ManaPercent >= Menu.Item("LaneClearMana", true).GetValue<Slider>().Value)
                     {
                         if (Menu.Item("LaneClearWTurret", true).GetValue<bool>() && W.IsReady() && 
                             Me.CountEnemiesInRange(1000) == 0)
@@ -275,7 +275,7 @@
 
         private void LaneClearW()
         {
-            if (Me.ManaPercent >= Menu.Item("LaneClearWMana", true).GetValue<Slider>().Value)
+            if (Me.ManaPercent >= Menu.Item("LaneClearMana", true).GetValue<Slider>().Value)
             {
                 if (Menu.Item("LaneClearW", true).GetValue<bool>() && W.IsReady())
                 {
