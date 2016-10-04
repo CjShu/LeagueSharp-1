@@ -49,20 +49,20 @@
                     new MenuItem("HarassWMana", "When Player ManaPercent >= x%", true).SetValue(new Slider(60)));
             }
 
-            var ClearMenu = Menu.AddSubMenu(new Menu("LaneClear", "LaneClear"));
+            var LaneClearMenu = Menu.AddSubMenu(new Menu("LaneClear", "LaneClear"));
             {
-                ClearMenu.AddItem(new MenuItem("LaneClearW", "Use W", true).SetValue(true));
-                ClearMenu.AddItem(
+                LaneClearMenu.AddItem(new MenuItem("LaneClearW", "Use W", true).SetValue(true));
+                LaneClearMenu.AddItem(
                     new MenuItem("LaneClearWCount", "If W CanHit Counts >= ", true).SetValue(new Slider(3, 1, 5)));
-                ClearMenu.AddItem(
+                LaneClearMenu.AddItem(
                     new MenuItem("LaneClearWMana", "If Player ManaPercent >= %", true).SetValue(new Slider(60)));
             }
 
             var JungleClearMenu = Menu.AddSubMenu(new Menu("JungleClear", "JungleClear"));
             {
-                ClearMenu.AddItem(new MenuItem("JungleClearQ", "Use Q", true).SetValue(true));
-                ClearMenu.AddItem(new MenuItem("JungleClearW", "Use W", true).SetValue(true));
-                ClearMenu.AddItem(
+                JungleClearMenu.AddItem(new MenuItem("JungleClearQ", "Use Q", true).SetValue(true));
+                JungleClearMenu.AddItem(new MenuItem("JungleClearW", "Use W", true).SetValue(true));
+                JungleClearMenu.AddItem(
                     new MenuItem("JungleClearMana", "When Player ManaPercent >= x%", true).SetValue(new Slider(30)));
             }
 
