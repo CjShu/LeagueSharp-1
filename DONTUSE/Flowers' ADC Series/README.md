@@ -7,6 +7,7 @@ Lucian
 Sivir
 Tristana
 Twitch
+Vayne
 
 TODO:
 Caitlyn
@@ -19,4 +20,3 @@ MissFortune
 Quinn
 Urgot
 Varus
-Vayne
