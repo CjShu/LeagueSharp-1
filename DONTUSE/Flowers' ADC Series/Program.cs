@@ -73,7 +73,7 @@
                             "Explorer Ezreal", "Pulsefire Ezreal", "TPA Ezreal", "Debonair Ezreal",
                             "Ace of Spades Ezreal"
                         };
-                    case "Garves":
+                    case "Graves":
                         return new[]
                         {
                             "Classic", "Hired Gun Graves", "Jailbreak Graves", "Mafia Graves", "Riot Graves",
@@ -256,8 +256,8 @@
                         var ezreal = new Pluging.Ezreal();
                         Game.PrintChat("Flowers' " + Me.ChampionName + " Load Succeed! Credit: NightMoon");
                         break;
-                    case "Garves":
-                        var garves = new Pluging.Garves();
+                    case "Graves":
+                        var graves = new Pluging.Graves();
                         Game.PrintChat("Flowers' " + Me.ChampionName + " Load Succeed! Credit: NightMoon");
                         break;
                     case "Jhin":
