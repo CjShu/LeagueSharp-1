@@ -45,34 +45,42 @@
             var HarassMenu = Menu.AddSubMenu(new Menu("Harass", "Harass"));
             {
                 HarassMenu.AddItem(new MenuItem("HarassW", "Use W", true).SetValue(true));
-                HarassMenu.AddItem(new MenuItem("HarassWMana", "When Player ManaPercent >= x%", true).SetValue(new Slider(60)));
+                HarassMenu.AddItem(
+                    new MenuItem("HarassWMana", "When Player ManaPercent >= x%", true).SetValue(new Slider(60)));
             }
 
             var ClearMenu = Menu.AddSubMenu(new Menu("LaneClear", "LaneClear"));
             {
                 ClearMenu.AddItem(new MenuItem("LaneClearW", "Use W", true).SetValue(true));
-                ClearMenu.AddItem(new MenuItem("LaneClearWCount", "If W CanHit Counts >= ", true).SetValue(new Slider(3, 1, 5)));
-                ClearMenu.AddItem(new MenuItem("LaneClearWMana", "If Player ManaPercent >= %", true).SetValue(new Slider(60)));
+                ClearMenu.AddItem(
+                    new MenuItem("LaneClearWCount", "If W CanHit Counts >= ", true).SetValue(new Slider(3, 1, 5)));
+                ClearMenu.AddItem(
+                    new MenuItem("LaneClearWMana", "If Player ManaPercent >= %", true).SetValue(new Slider(60)));
             }
 
             var JungleClearMenu = Menu.AddSubMenu(new Menu("JungleClear", "JungleClear"));
             {
                 ClearMenu.AddItem(new MenuItem("JungleClearQ", "Use Q", true).SetValue(true));
                 ClearMenu.AddItem(new MenuItem("JungleClearW", "Use W", true).SetValue(true));
-                ClearMenu.AddItem(new MenuItem("JungleClearMana", "When Player ManaPercent >= x%", true).SetValue(new Slider(30)));
+                ClearMenu.AddItem(
+                    new MenuItem("JungleClearMana", "When Player ManaPercent >= x%", true).SetValue(new Slider(30)));
             }
 
             var RMenu = Menu.AddSubMenu(new Menu("R Menu", "R Menu"));
             {
                 RMenu.AddItem(new MenuItem("AutoR", "Auto R?", true).SetValue(true));
                 RMenu.AddItem(new MenuItem("Interrupt", "Interrupt Danger Spells", true).SetValue(true));
-                RMenu.AddItem(new MenuItem("SemiR", "Semi-manual R Key", true).SetValue(new KeyBind('T', KeyBindType.Press)));
+                RMenu.AddItem(
+                    new MenuItem("SemiR", "Semi-manual R Key", true).SetValue(new KeyBind('T', KeyBindType.Press)));
                 RMenu.AddItem(new MenuItem("AntiGapCloser", "Anti GapCloser", true).SetValue(true));
-                RMenu.AddItem(new MenuItem("AntiGapCloserHp", "AntiGapCloser |When Player HealthPercent <= x%", true).SetValue(new Slider(30)));
+                RMenu.AddItem(
+                    new MenuItem("AntiGapCloserHp", "AntiGapCloser |When Player HealthPercent <= x%", true).SetValue(
+                        new Slider(30)));
                 RMenu.AddItem(new MenuItem("AntiGapCloserRList", "AntiGapCloser R List:"));
                 foreach (var target in HeroManager.Enemies)
                 {
-                    RMenu.AddItem(new MenuItem("AntiGapCloserR" + target.ChampionName.ToLower(), "GapCloser: " + target.ChampionName, true).SetValue(true));
+                    RMenu.AddItem(new MenuItem("AntiGapCloserR" + target.ChampionName.ToLower(), 
+                        "GapCloser: " + target.ChampionName, true).SetValue(true));
                 }
             }
 
@@ -82,7 +90,8 @@
                 KillStealMenu.AddItem(new MenuItem("KillStealR", "KillSteal R", true).SetValue(true));
                 foreach (var target in HeroManager.Enemies)
                 {
-                    KillStealMenu.AddItem(new MenuItem("KillStealR" + target.ChampionName.ToLower(), "Kill: " + target.ChampionName, true).SetValue(true));
+                    KillStealMenu.AddItem(new MenuItem("KillStealR" + target.ChampionName.ToLower(), 
+                        "Kill: " + target.ChampionName, true).SetValue(true));
                 }
             }
 
