@@ -141,6 +141,11 @@
                 DrawMenu.AddItem(new MenuItem("nightmoon.draw.damage", "Draw Combo Damage", true).SetValue(true));
             }
 
+            if (Menu.Item("SelectPred", true).GetValue<StringList>().SelectedIndex == 3)
+            {
+                SPrediction.Prediction.Initialize(PredMenu);
+            }
+
             Menu.AddToMainMenu();
 
             Game.OnUpdate += OnUpdate;
