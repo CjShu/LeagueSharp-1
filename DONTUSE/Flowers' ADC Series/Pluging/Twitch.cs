@@ -61,6 +61,7 @@
 
             var KillStealMenu = Menu.AddSubMenu(new Menu("KillSteal", "KillSteal"));
             {
+                KillStealMenu.AddItem(new MenuItem("KillStealW", "Use W", true).SetValue(true));
                 KillStealMenu.AddItem(new MenuItem("KillStealE", "Use E", true).SetValue(true));
             }
 
@@ -126,6 +127,21 @@
                     if (CheckTarget(target, E.Range))
                     {
                         E.Cast();
+                    }
+                }
+            }
+
+            if (Menu.Item("KillStealW", true).GetValue<bool>() && W.IsReady())
+            {
+                foreach (
+                    var target in
+                    HeroManager.Enemies.Where(
+                        x => x.IsValidTarget(W.Range) && CheckTargetSureCanKill(x) && x.Health < W.GetDamage(x))
+                )
+                {
+                    if (CheckTarget(target, W.Range))
+                    {
+                        W.CastTo(target);
                     }
                 }
             }
