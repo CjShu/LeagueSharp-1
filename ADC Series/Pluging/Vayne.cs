@@ -327,7 +327,7 @@
 
                 if (Menu.Item("Forcus", true).GetValue<bool>() && CheckTarget(ForcusTarget))
                 {
-                    Orbwalker.ForceTarget(ForcusTarget);
+                    TargetSelector.SetTarget(ForcusTarget);
                 }
 
                 if (Menu.Item("ComboQ", true).GetValue<bool>() && Q.IsReady())
