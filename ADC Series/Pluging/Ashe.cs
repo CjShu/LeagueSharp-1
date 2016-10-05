@@ -317,9 +317,9 @@
                 if (CheckTarget(target, 1000))
                 {
                     var EPred = E.GetPrediction(target);
-                    var Col = NavMesh.GetCollisionFlags(EPred.CastPosition);
 
-                    if (Col == CollisionFlags.Grass && !target.IsVisible)
+                    if ((NavMesh.GetCollisionFlags(EPred.CastPosition) == CollisionFlags.Grass ||
+                         NavMesh.IsWallOfGrass(target.ServerPosition, 20)) && !target.IsVisible)
                     {
                         E.Cast(EPred.CastPosition);
                     }
