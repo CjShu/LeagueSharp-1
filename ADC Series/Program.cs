@@ -120,10 +120,10 @@
                     //    var missFortune = new Pluging.MissFortune();
                     //    Game.PrintChat("Flowers' ADC Series: " + Me.ChampionName + " Load Succeed! Credit: NightMoon");
                     //    break;
-                    //case "Quinn":
-                    //    var quinn = new Pluging.Quinn();
-                    //    Game.PrintChat("Flowers' ADC Series: " + Me.ChampionName + " Load Succeed! Credit: NightMoon");
-                    //    break;
+                    case "Quinn":
+                        var quinn = new Pluging.Quinn();
+                        Game.PrintChat("Flowers' ADC Series: " + Me.ChampionName + " Load Succeed! Credit: NightMoon");
+                        break;
                     case "Sivir":
                         var sivir = new Pluging.Sivir();
                         Game.PrintChat("Flowers' ADC Series: " + Me.ChampionName + " Load Succeed! Credit: NightMoon");

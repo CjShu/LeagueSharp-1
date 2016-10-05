@@ -5,6 +5,7 @@ Ezreal
 Graves
 Jhin
 Lucian
+Quinn.
 Sivir
 Tristana
 Twitch
@@ -17,6 +18,5 @@ Jinx
 Kalista
 KogMaw
 MissFortune
-Quinn
 Urgot
 Varus
