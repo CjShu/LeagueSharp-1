@@ -94,6 +94,12 @@
                 FleeMenu.AddItem(new MenuItem("FleeW", "Use W", true).SetValue(true));
             }
 
+            var MiscMenu = Menu.AddSubMenu(new Menu("Misc", "Misc"));
+            {
+                MiscMenu.AddItem(
+                    new MenuItem("SemiR", "Semi-manual R Key", true).SetValue(new KeyBind('T', KeyBindType.Press)));
+            }
+
             var DrawMenu = Menu.AddSubMenu(new Menu("Drawings", "Drawings"));
             {
                 DrawMenu.AddItem(new MenuItem("DrawQ", "Draw Q Range", true).SetValue(false));
@@ -175,6 +181,7 @@
 
             R.Range = Me.HasBuff("CorkiMissileBarrageCounterBig") ? 1500f : 1300f;
 
+            SemiRLogic();
             AutoHarass();
             KillSteal();
 
@@ -196,9 +203,26 @@
             }
         }
 
+        private void SemiRLogic()
+        {
+            if (Menu.Item("SemiR", true).GetValue<KeyBind>().Active && R.IsReady())
+            {
+                var target = TargetSelector.GetSelectedTarget() ??
+                             TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Physical);
+
+                if (CheckTarget(target, R.Range))
+                {
+                    R.CastTo(target);
+                }
+            }
+        }
+
         private void AutoHarass()
         {
-            if (Menu.Item("AutoHarass", true).GetValue<KeyBind>().Active)
+            if (Menu.Item("AutoHarass", true).GetValue<KeyBind>().Active &&
+                Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo &&
+                Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Mixed &&
+                !Me.IsRecalling())
             {
                 Harass();
             }
