@@ -71,7 +71,7 @@
 
             var MiscMenu = Menu.AddSubMenu(new Menu("Misc", "Misc"));
             {
-                MiscMenu.AddItem(new MenuItem("Forcus", "Auto Forcus Attack Passive Target", true).SetValue(true));
+                MiscMenu.AddItem(new MenuItem("Forcus", "Forcus Attack Passive Target", true).SetValue(true));
                 MiscMenu.AddItem(new MenuItem("Interrupt", "Interrupt Danger Spells", true).SetValue(true));
                 MiscMenu.AddItem(new MenuItem("Gapcloser", "Anti Gapcloser", true).SetValue(true));
                 MiscMenu.AddItem(new MenuItem("AntiAlistar", "Anti Alistar", true).SetValue(true));
