@@ -53,14 +53,16 @@
                 HarassMenu.AddItem(new MenuItem("HarassQ", "Use Q", true).SetValue(true));
                 HarassMenu.AddItem(new MenuItem("HarassQExtended", "Use Q Extended", true).SetValue(true));
                 HarassMenu.AddItem(new MenuItem("HarassW", "Use W", true).SetValue(false));
-                HarassMenu.AddItem(new MenuItem("HarassMana", "When Player ManaPercent >= x%", true).SetValue(new Slider(60)));
+                HarassMenu.AddItem(
+                    new MenuItem("HarassMana", "When Player ManaPercent >= x%", true).SetValue(new Slider(60)));
             }
 
             var LaneClearMenu = Menu.AddSubMenu(new Menu("LaneClear", "LaneClear"));
             {
                 LaneClearMenu.AddItem(new MenuItem("LaneClearQ", "Use Q", true).SetValue(true));
                 LaneClearMenu.AddItem(new MenuItem("LaneClearW", "Use W", true).SetValue(true));
-                LaneClearMenu.AddItem(new MenuItem("LaneClearMana", "When Player ManaPercent >= x%", true).SetValue(new Slider(60)));
+                LaneClearMenu.AddItem(
+                    new MenuItem("LaneClearMana", "When Player ManaPercent >= x%", true).SetValue(new Slider(60)));
             }
 
             var JungleClearMenu = Menu.AddSubMenu(new Menu("JungleClear", "JungleClear"));
@@ -68,7 +70,8 @@
                 JungleClearMenu.AddItem(new MenuItem("JungleClearQ", "Use Q", true).SetValue(true));
                 JungleClearMenu.AddItem(new MenuItem("JungleClearW", "Use W", true).SetValue(true));
                 JungleClearMenu.AddItem(new MenuItem("JungleClearE", "Use E", true).SetValue(true));
-                JungleClearMenu.AddItem(new MenuItem("JungleClearMana", "When Player ManaPercent >= x%", true).SetValue(new Slider(30)));
+                JungleClearMenu.AddItem(
+                    new MenuItem("JungleClearMana", "When Player ManaPercent >= x%", true).SetValue(new Slider(30)));
             }
 
             var KillStealMenu = Menu.AddSubMenu(new Menu("KillSteal", "KillSteal"));
