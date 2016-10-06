@@ -221,20 +221,6 @@
                         }
                     }
                     break;
-                case Orbwalking.OrbwalkingMode.LastHit:
-                    break;
-                case Orbwalking.OrbwalkingMode.LaneClear:
-                    break;
-                case Orbwalking.OrbwalkingMode.Freeze:
-                    break;
-                case Orbwalking.OrbwalkingMode.CustomMode:
-                    break;
-                case Orbwalking.OrbwalkingMode.None:
-                    break;
-                case Orbwalking.OrbwalkingMode.Flee:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -290,16 +276,6 @@
                     LaneClear();
                     JungleClear();
                     break;
-                case Orbwalking.OrbwalkingMode.Freeze:
-                    break;
-                case Orbwalking.OrbwalkingMode.CustomMode:
-                    break;
-                case Orbwalking.OrbwalkingMode.None:
-                    break;
-                case Orbwalking.OrbwalkingMode.Flee:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
         }
 
