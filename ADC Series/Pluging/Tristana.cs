@@ -383,7 +383,7 @@
             {
                 if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo || Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
                 {
-                    foreach (var enemy in HeroManager.Enemies.Where(enemy => enemy.HasBuff("TristanaEChargeSound")))
+                    foreach (var enemy in HeroManager.Enemies.Where(enemy => Orbwalking.InAutoAttackRange(enemy) && enemy.HasBuff("TristanaEChargeSound")))
                     {
                         TargetSelector.SetTarget(enemy);
                         return;
