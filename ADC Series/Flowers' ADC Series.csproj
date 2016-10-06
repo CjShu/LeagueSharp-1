@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="Common\Common.cs" />
     <Compile Include="Common\HpBarDraw.cs" />
+    <Compile Include="Lizzaran.SFX\ListExtensions.cs" />
     <Compile Include="Pluging\Ashe.cs" />
     <Compile Include="Pluging\Caitlyn.cs" />
     <Compile Include="Pluging\Corki.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="Pluging\Urgot.cs" />
     <Compile Include="Pluging\Varus.cs" />
     <Compile Include="Pluging\Vayne.cs" />
+    <Compile Include="Prediction\CPrediction.cs" />
     <Compile Include="Prediction\OKTWPrediction.cs" />
     <Compile Include="Orbwalking\Orbwalking.cs" />
     <Compile Include="Program.cs" />
@@ -105,6 +107,7 @@
   <ItemGroup>
     <None Include="README.md" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
