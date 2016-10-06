@@ -24,7 +24,14 @@
 
         public Jinx()
         {
-            
+            Q = new Spell(SpellSlot.Q);
+            W = new Spell(SpellSlot.W, 1500f);
+            E = new Spell(SpellSlot.E, 920f);
+            R = new Spell(SpellSlot.R, 3000f);
+
+            W.SetSkillshot(0.6f, 60f, 3300f, true, SkillshotType.SkillshotLine);
+            E.SetSkillshot(1.2f, 100f, 1750f, false, SkillshotType.SkillshotCircle);
+            R.SetSkillshot(0.7f, 140f, 1500f, false, SkillshotType.SkillshotLine);
         }
     }
 }
