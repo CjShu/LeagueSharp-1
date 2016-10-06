@@ -259,11 +259,26 @@
                 return false;
             }
 
+            if (target.HasBuff("ShroudofDarkness"))
+            {
+                return false;
+            }
+
+            if (target.HasBuff("SivirShield"))
+            {
+                return false;
+            }
+
             return !target.HasBuff("FioraW");
         }
 
         public static bool CheckTargetSureCanKill(Obj_AI_Base target)
         {
+            if (target == null)
+            {
+                return false;
+            }
+
             if (target.HasBuff("KindredRNoDeathBuff"))
             {
                 return false;
@@ -284,16 +299,61 @@
                 return false;
             }
 
+            if (target.HasBuff("ShroudofDarkness"))
+            {
+                return false;
+            }
+
+            if (target.HasBuff("SivirShield"))
+            {
+                return false;
+            }
+
             return !target.HasBuff("FioraW");
         }
 
         public static double ComboDamage(Obj_AI_Hero target)
         {
-            if (CheckTarget(target))
+            if (target != null && !target.IsDead && !target.IsZombie)
             {
-                var Damage = 0d;
+                if (target.HasBuff("KindredRNoDeathBuff"))
+                {
+                    return 0;
+                }
 
-                Damage += ObjectManager.Player.GetAutoAttackDamage(target) +
+                if (target.HasBuff("UndyingRage") && target.GetBuff("UndyingRage").EndTime - Game.Time > 0.3)
+                {
+                    return 0;
+                }
+
+                if (target.HasBuff("JudicatorIntervention"))
+                {
+                    return 0;
+                }
+
+                if (target.HasBuff("ChronoShift") && target.GetBuff("ChronoShift").EndTime - Game.Time > 0.3)
+                {
+                    return 0;
+                }
+
+                if (target.HasBuff("FioraW"))
+                {
+                    return 0;
+                }
+
+                if (target.HasBuff("ShroudofDarkness"))
+                {
+                    return 0;
+                }
+
+                if (target.HasBuff("SivirShield"))
+                {
+                    return 0;
+                }
+
+                var damage = 0d;
+
+                damage += ObjectManager.Player.GetAutoAttackDamage(target) +
                           (ObjectManager.Player.Spellbook.GetSpell(SpellSlot.Q).IsReady()
                               ? ObjectManager.Player.GetSpellDamage(target, SpellSlot.Q)
                               : 0d) +
@@ -312,37 +372,31 @@
                               : 0d);
 
                 if (target.ChampionName == "Moredkaiser")
-                    Damage -= target.Mana;
+                {
+                    damage -= target.Mana;
+                }
 
-                // exhaust
                 if (ObjectManager.Player.HasBuff("SummonerExhaust"))
-                    Damage = Damage * 0.6f;
+                {
+                    damage = damage * 0.6f;
+                }
 
-                // blitzcrank passive
+                if (target.HasBuff("GarenW"))
+                {
+                    damage = damage * 0.7f;
+                }
+
+                if (target.HasBuff("ferocioushowl"))
+                {
+                    damage = damage * 0.7f;
+                }
+
                 if (target.HasBuff("BlitzcrankManaBarrierCD") && target.HasBuff("ManaBarrier"))
-                    Damage -= target.Mana / 2f;
+                {
+                    damage -= target.Mana / 2f;
+                }
 
-                // kindred r
-                if (target.HasBuff("KindredRNoDeathBuff"))
-                    Damage = 0;
-
-                // tryndamere r
-                if (target.HasBuff("UndyingRage") && target.GetBuff("UndyingRage").EndTime - Game.Time > 0.3)
-                    Damage = 0;
-
-                // kayle r
-                if (target.HasBuff("JudicatorIntervention"))
-                    Damage = 0;
-
-                // zilean r
-                if (target.HasBuff("ChronoShift") && target.GetBuff("ChronoShift").EndTime - Game.Time > 0.3)
-                    Damage = 0;
-
-                // fiora w
-                if (target.HasBuff("FioraW"))
-                    Damage = 0;
-
-                return Damage;
+                return damage;
             }
 
             return 0d;
