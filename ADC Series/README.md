@@ -4,6 +4,7 @@ Caitlyn
 Ezreal
 Graves
 Jhin
+Kalista
 Lucian
 Quinn.
 Sivir
@@ -15,7 +16,6 @@ TODO:
 Corki
 Draven
 Jinx
-Kalista
 KogMaw
 MissFortune
 Urgot
