@@ -1,10 +1,11 @@
 ﻿DONE:
 Ashe
 Caitlyn
+Corki.
 Ezreal
 Graves
 Jhin
-Kalista
+Kalista.
 Lucian
 Quinn.
 Sivir
@@ -13,7 +14,7 @@ Twitch
 Vayne
 
 TODO:
-Corki
+
 Draven
 Jinx
 KogMaw
