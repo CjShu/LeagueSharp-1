@@ -26,11 +26,11 @@
         {
             Q = new Spell(SpellSlot.Q);
             W = new Spell(SpellSlot.W);
-            E = new Spell(SpellSlot.E, 950);
+            E = new Spell(SpellSlot.E, 950f);
             R = new Spell(SpellSlot.R, 3000f);
 
-            E.SetSkillshot(0.25f, 100, 1400, false, SkillshotType.SkillshotLine);
-            R.SetSkillshot(0.4f, 160, 2000, false, SkillshotType.SkillshotLine);
+            E.SetSkillshot(0.25f, 100f, 1400f, false, SkillshotType.SkillshotLine);
+            R.SetSkillshot(0.4f, 160f, 2000f, false, SkillshotType.SkillshotLine);
 
 
         }
