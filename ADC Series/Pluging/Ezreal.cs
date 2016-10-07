@@ -63,7 +63,8 @@
             var LaneClearMenu = Menu.AddSubMenu(new Menu("LaneClear", "LaneClear"));
             {
                 LaneClearMenu.AddItem(new MenuItem("LaneClearQ", "Use Q", true).SetValue(true));
-                LaneClearMenu.AddItem(new MenuItem("LaneClearQOut", "Use Q| Out of Attack Range Farm", true).SetValue(true));
+                LaneClearMenu.AddItem(
+                    new MenuItem("LaneClearQOut", "Use Q| Out of Attack Range Farm", true).SetValue(true));
                 LaneClearMenu.AddItem(new MenuItem("LaneClearW", "Use W", true).SetValue(true));
                 LaneClearMenu.AddItem(
                     new MenuItem("LaneClearMana", "When Player ManaPercent >= x%", true).SetValue(new Slider(60)));
@@ -199,22 +200,29 @@
                     if (target.DistanceToPlayer() > Orbwalking.GetRealAutoAttackRange(Me) &&
                         Me.CountEnemiesInRange(1200) <= 2 && CheckTargetSureCanKill(target))
                     {
-                        if (target.Health < E.GetDamage(target) + Me.GetAutoAttackDamage(target) &&
-                            target.Distance(Game.CursorPos) < Me.Distance(Game.CursorPos))
+                        if (HealthPrediction.GetHealthPrediction(target, 250) > 0)
                         {
-                            usee = true;
-                        }
+                            if (target.Health < E.GetDamage(target) + Me.GetAutoAttackDamage(target) &&
+                                target.Distance(Game.CursorPos) < Me.Distance(Game.CursorPos))
+                            {
+                                usee = true;
+                            }
 
-                        if (target.Health < E.GetDamage(target) + W.GetDamage(target) && W.IsReady() &&
-                            target.Distance(Game.CursorPos) + 350 < Me.Distance(Game.CursorPos))
-                        {
-                            usee = true;
-                        }
+                            if (target.Health < E.GetDamage(target) + W.GetDamage(target) && W.IsReady() &&
+                                target.Distance(Game.CursorPos) + 350 < Me.Distance(Game.CursorPos))
+                            {
+                                usee = true;
+                            }
 
-                        if (target.Health < E.GetDamage(target) + Q.GetDamage(target) && Q.IsReady() &&
-                            target.Distance(Game.CursorPos) + 300 < Me.Distance(Game.CursorPos))
+                            if (target.Health < E.GetDamage(target) + Q.GetDamage(target) && Q.IsReady() &&
+                                target.Distance(Game.CursorPos) + 300 < Me.Distance(Game.CursorPos))
+                            {
+                                usee = true;
+                            }
+                        }
+                        else
                         {
-                            usee = true;
+                            usee = false;
                         }
                     }
 
@@ -302,7 +310,12 @@
                         {
                             if (Menu.Item("LaneClearQOut", true).GetValue<bool>())
                             {
-                                var mins = minions.Where(x => x.DistanceToPlayer() > Orbwalking.GetRealAutoAttackRange(Me) && x.Health < Q.GetDamage(x));
+                                var mins =
+                                    minions.Where(
+                                        x =>
+                                            x.DistanceToPlayer() > Orbwalking.GetRealAutoAttackRange(Me) &&
+                                            x.Health < Q.GetDamage(x) &&
+                                            HealthPrediction.GetHealthPrediction(x, 250) > 0);
 
                                 Q.Cast(mins.Any() ? mins.FirstOrDefault() : minions.FirstOrDefault(), true);
                             }
