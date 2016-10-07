@@ -566,6 +566,8 @@
                     orbwalkerKeyMenu.AddItem(new MenuItem("Burst", "Burst").SetValue(new KeyBind('T', KeyBindType.Press)));
                 }
 
+                Menu.AddItem(new MenuItem("EnableOrbwalker", "Enable Orbwalker").SetValue(true));
+
                 player = ObjectManager.Player;
                 Game.OnUpdate += GameOnOnGameUpdate;
                 Drawing.OnDraw += DrawingOnOnDraw;
@@ -1060,6 +1062,8 @@
                     {
                         return;
                     }
+
+                    Move = Menu.Item("EnableOrbwalker").GetValue<bool>();
 
                     var target = GetTarget();
 

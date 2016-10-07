@@ -46,7 +46,7 @@
     <Compile Include="Pluging\KogMaw.cs" />
     <Compile Include="Pluging\Lucian.cs" />
     <Compile Include="Pluging\Vayne.cs" />
-    <Compile Include="Managers\Orbwalking.cs" />
+    <Compile Include="Orbwalking\Orbwalking.cs" />
     <Compile Include="Pluging\Ahri.cs" />
     <Compile Include="Pluging\Akali.cs" />
     <Compile Include="Pluging\Anivia.cs" />
