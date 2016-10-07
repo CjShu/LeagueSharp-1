@@ -60,14 +60,16 @@
                 HarassMenu.AddItem(new MenuItem("HarassW", "Use W", true).SetValue(true));
                 HarassMenu.AddItem(new MenuItem("HarassWOnly", "Use W| Only Use to MarkTarget?", true).SetValue(true));
                 HarassMenu.AddItem(new MenuItem("HarassE", "Use E", true).SetValue(true));
-                HarassMenu.AddItem(new MenuItem("HarassMana", "When Player ManaPercent >= x%", true).SetValue(new Slider(60)));
+                HarassMenu.AddItem(
+                    new MenuItem("HarassMana", "When Player ManaPercent >= x%", true).SetValue(new Slider(60)));
             }
 
             var LaneClearMenu = Menu.AddSubMenu(new Menu("LaneClear", "LaneClear"));
             {
                 LaneClearMenu.AddItem(new MenuItem("LaneClearQ", "Use Q", true).SetValue(true));
                 LaneClearMenu.AddItem(new MenuItem("LaneClearW", "Use W", true).SetValue(true));
-                LaneClearMenu.AddItem(new MenuItem("LaneClearMana", "When Player ManaPercent >= x%", true).SetValue(new Slider(60)));
+                LaneClearMenu.AddItem(
+                    new MenuItem("LaneClearMana", "When Player ManaPercent >= x%", true).SetValue(new Slider(60)));
             }
 
             var JungleClearMenu = Menu.AddSubMenu(new Menu("JungleClear", "JungleClear"));
@@ -75,7 +77,8 @@
                 JungleClearMenu.AddItem(new MenuItem("JungleClearQ", "Use Q", true).SetValue(true));
                 JungleClearMenu.AddItem(new MenuItem("JungleClearW", "Use W", true).SetValue(true));
                 JungleClearMenu.AddItem(new MenuItem("JungleClearE", "Use E", true).SetValue(true));
-                JungleClearMenu.AddItem(new MenuItem("JungleClearMana", "When Player ManaPercent >= x%", true).SetValue(new Slider(30)));
+                JungleClearMenu.AddItem(
+                    new MenuItem("JungleClearMana", "When Player ManaPercent >= x%", true).SetValue(new Slider(30)));
             }
 
             var KillStealMenu = Menu.AddSubMenu(new Menu("KillSteal", "KillSteal"));
@@ -87,11 +90,16 @@
             var RMenu = Menu.AddSubMenu(new Menu("R Menu", "RMenu"));
             {
                 RMenu.AddItem(new MenuItem("RMenuAuto", "Auto R?", true).SetValue(true));
-                RMenu.AddItem(new MenuItem("RMenuSemi", "Semi R Key(One Press One Shot)", true).SetValue(new KeyBind('T', KeyBindType.Press)));
+                RMenu.AddItem(
+                    new MenuItem("RMenuSemi", "Semi R Key(One Press One Shot)", true).SetValue(new KeyBind('T',
+                        KeyBindType.Press)));
                 RMenu.AddItem(new MenuItem("RMenuCheck", "Use R| Check is Safe?", true).SetValue(true));
-                RMenu.AddItem(new MenuItem("RMenuMin", "Use R| Min Range >= x", true).SetValue(new Slider(1000, 500, 2500)));
-                RMenu.AddItem(new MenuItem("RMenuMax", "Use R| Man Range <= x", true).SetValue(new Slider(3000, 1500, 3500)));
-                RMenu.AddItem(new MenuItem("RMenuKill", "Use R| Min Shot Can Kill >= x", true).SetValue(new Slider(3, 1, 4)));
+                RMenu.AddItem(
+                    new MenuItem("RMenuMin", "Use R| Min Range >= x", true).SetValue(new Slider(1000, 500, 2500)));
+                RMenu.AddItem(
+                    new MenuItem("RMenuMax", "Use R| Man Range <= x", true).SetValue(new Slider(3000, 1500, 3500)));
+                RMenu.AddItem(
+                    new MenuItem("RMenuKill", "Use R| Min Shot Can Kill >= x", true).SetValue(new Slider(3, 1, 4)));
             }
 
             var MiscMenu = Menu.AddSubMenu(new Menu("Misc", "Misc"));
