@@ -80,10 +80,10 @@
                         var caitlyn = new Pluging.Caitlyn();
                         Game.PrintChat("Flowers' ADC Series: " + Me.ChampionName + " Load Succeed! Credit: NightMoon");
                         break;
-                    //case "Corki":
-                    //    var corki = new Pluging.Corki();
-                    //    Game.PrintChat("Flowers' ADC Series: " + Me.ChampionName + " Load Succeed! Credit: NightMoon");
-                    //    break;
+                    case "Corki":
+                        var corki = new Pluging.Corki();
+                        Game.PrintChat("Flowers' ADC Series: " + Me.ChampionName + " Load Succeed! Credit: NightMoon");
+                        break;
                     //case "Draven":
                     //    var draven = new Pluging.Draven();
                     //    Game.PrintChat("Flowers' ADC Series: " + Me.ChampionName + " Load Succeed! Credit: NightMoon");
@@ -108,10 +108,10 @@
                         var kalista = new Pluging.Kalista();
                         Game.PrintChat("Flowers' ADC Series: " + Me.ChampionName + " Load Succeed! Credit: NightMoon");
                         break;
-                    //case "KogMaw":
-                    //    var kogMaw = new Pluging.KogMaw();
-                    //    Game.PrintChat("Flowers' ADC Series: " + Me.ChampionName + " Load Succeed! Credit: NightMoon");
-                    //    break;
+                    case "KogMaw":
+                        var kogMaw = new Pluging.KogMaw();
+                        Game.PrintChat("Flowers' ADC Series: " + Me.ChampionName + " Load Succeed! Credit: NightMoon");
+                        break;
                     case "Lucian":
                         var lucian = new Pluging.Lucian();
                         Game.PrintChat("Flowers' ADC Series: " + Me.ChampionName + " Load Succeed! Credit: NightMoon");
